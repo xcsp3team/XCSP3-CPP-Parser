@@ -16,26 +16,27 @@ instances/ contains some instances:
          tsp.xml: it contains only extensional constraints and is satisfiable.
          obj.xml: a small example with an objective, optimal value is 11
 
+
 3. Implementation
 -----------------
 You need to create a class that inherits XCSP3CoreCallbacks.h and to override all (or some)
 functions of this class.
 
-class MySolverCallbacks : public  XCSP3PrintCallbacks{....}
+class MySolverCallbacks : public  XCSP3CoreCallbacks{....}
 
   3.1 Managing variables.
   -----------------------
 For managing variables, it seems relevant to introduce a map for making the correspondence
 between the variables of the parser and the variables in your solver.
 For managing constraints, we suggest to add a reference (pointer) to the problem under construction.
-Here, is an example, were the problem is created when reading the tag <instance>.
+Here, is an example, where the problem is created when reading the tag <instance>.
 
 class MySolverCallbacks : public  XCSP3PrintCallbacks{
     public:
         MySolver::Problem *problem;
         std::map<string,MySolver::Variable*> mapping;
 
-    void beginInstance(InstanceType type){ 
+    void beginInstance(InstanceType type){
             problem = new MyProblem("");
     }
 
@@ -51,7 +52,7 @@ class MySolverCallbacks : public  XCSP3PrintCallbacks{
 
     // This a function transforms a vector of XVariable in vector of MyVariable
     void toMyVariables(vector<XVariable*> &src, vector<MyVariable*> &dest) {
-            for(int i = 0;i<src.size();i++) 
+            for(int i = 0;i<src.size();i++)
                 dest.push_back(mapping[src[i]->id]);
     }
 
@@ -109,7 +110,7 @@ Other primitive constraints will be recognized later.
   3.4 Other constraints
   ---------------------
   You can continue to override all functions of the class XCSP3CoreCallback depending the constraints your solver manages.
-  Of course, depending the constraint different functions are called. Here, is an example with allDiff constraint.
+  Of course, depending the constraint,  different functions are called. Here, is an example with allDiff constraint.
 
     void newConstraintAllDiff(string id, vector<XVariable *> list){
             vector<Variable*> vars;
@@ -137,7 +138,7 @@ in the list for example or a variable can appear in the list and also elsewhere 
 ----------
   As it is defined in XCSP3 report, blocks of constraints identify  constraints that are semantically linked.
   Groups of constraints (or single constraints, or variables) can have the attribute class used to identify them.
-  Classes allow to define multiple models in one single file. For example, class symmetryBreaking indetify all variables/constraints
+  Classes allow to define multiple models in one single file. For example, class symmetryBreaking identify all variables/constraints
   used to break symmetries.
   If you want to remove such variables/constraints, you need to call the function XCSP3CoreCallbacks::addClassToDiscard.
   (See directory samples/main.cc to see a simple call of this function).

@@ -49,21 +49,25 @@ Let's take an example to give a clear idea of how it can work:
 
 1. the solver calls the parser
 2. the parser reads the XML file, chunk by chunk
-3. when the parser reads the instance tag, it calls the solver
-function beginInstance(). When the parser reads the </instance> tag, 
-it calls the function endInstance()
-4. It does the same calls for tags variables and constraints, group,
+3. when the parser reads the &lt;instance&gt; tag, it calls the solver callback's
+function <code>beginInstance()</code>. When the parser reads the &lt;/instance&gt; tag,
+it calls the function <code>endInstance()</code>.
+4. It does the same calls for tags variables, constraints, group,
  slide, block and objectives. These functions are not essentials. Their original
- implementation are empty.
-5. when the parser reads the var tag, the callback's function
-buildVariableInteger is called (depending if the domain is a range or not).
+ implementations are empty.
+5. when the parser reads the &lt;var&gt; tag, the callback's function
+<code>buildVariableInteger</code> is called (depending if the domain is a range or not).
 You must override these two functions in order to create your own variables.
 6. the same occurs for each type of constraint, with the dedicated
-call to buildConstraintXXX where XXX is either Extension, Intension....
-Note that many of these functions are surrounded.
-7. Given an array of variables, a call to buildVariableInteger will occur
+call to <code>buildConstraintXXX</code> where XXX is either Extension, Intension....
+Note that all of these functions are surrounded and throw an exception if they
+are not overriden.
+7. Given an array of variables, a call to <code>buildVariableInteger</code> will occur
 for each element of the array
-8. Given a group of constraint, a call to the dedicated builConstraintXXX will occur for each arguments
-of the group
+8. Given a group of constraint, a call to the dedicated <code>builConstraintXXX</code> will occur for each arguments
+of the group (the same occurs for slide).
+
+<b>Note</b> This parser uses std::regex. You need clang compiler or g++ with a version >= 4.9
+
 
 
