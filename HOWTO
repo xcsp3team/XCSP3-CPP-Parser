@@ -1,0 +1,99 @@
+
+You need to create a class that inherits XCSP3CoreCallbacks.h and to override all (or a part)
+functions of this class.
+
+The file XCSP3PrintCallbacks.h  is an example of implementation of the SAX parser.
+It prints each entry (variable/constraint...) on the console.
+The file main.cc shows how to declare your parser.
+
+We suggest to create a map between XVariable (the variables created by the parser) 
+and your solver's variables in order to facilitate the construction of constraint.
+
+Here, is an example:
+
+class MySolverCallbacks : public  XCSP3PrintCallbacks{
+    public: 
+        MySolver::Problem *problem;
+        std::map<string,MySolver::Variable*> mapping;
+    ....
+
+    void beginInstance(InstanceType type){ 
+            problem = new MyProblem("");
+    }
+
+    void buildVariableInteger(string id, int minValue, int maxValue) override {
+        MyVariable *v = problem->createVariable(id,new DomainRange(minValue,maxValue));
+        mapping[variable->id] = v;
+    }
+
+    virtual void buildVariableInteger(string id, vector<int> &values) override {
+        MyVariable *v = problem->createVariable(id,new MyDomainValue(variable->domain->values));
+        mapping[variable->id] = v;
+    }
+
+
+    ....
+    // Then I create a function that transforms a vector of XVariable in vector of MyVariable
+    void toMyVariables(vector<XVariable*> &src, vector<MyVariable*> &dest) {
+            for(int i = 0;i<src.size();i++) 
+                dest.push_back(mapping[src[i]->id]);
+    }
+
+    ...
+ 
+    // And now, a simple alldiff constraint :
+
+
+    void newConstraintAllDiff(string id, vector<XVariable *> list){
+            vector<Variable*> vars;
+            toMyVariables(list,vars);
+            problem->createConstraintAllDiff(constraint->id,vars);
+    }
+
+    ... AND SO ON...
+
+
+
+
+Note that :
+If in array of variables is declared:
+ - A call to buildVariableInteger(...) is done for each entry of the array (with associated name x[0]....
+
+If a group of constraint is called:
+ - A call to buildConstraintXXX  is done for each arguments of the group
+
+The same occurs for slide meta tag.
+
+
+-- Some options
+
+
+
+-- Call to the parser
+Here is an example of definition/code needed to call the parser
+
+
+
+  MyCallback cb; // my interface between the parser and the solver
+
+  try
+  {
+    XMLParser_libxml2 parser(&cb);
+    parser.parse(fileName); // fileName is a string
+  }
+  catch (exception &e)
+  {
+    cout.flush();
+    cerr << "\n\tUnexpected exception :\n";
+    cerr << "\t" << e.what() << endl;
+    exit(1);
+  }
+
+  return 0;
+}
+
+
+-- Compilation
+In order to compile you need to use library libxml2 and, so, to add something like -I/usr/local/XXXX/libxml2/2.9.2/include/libxml2 -lxml2
+when you create your executable.
+
