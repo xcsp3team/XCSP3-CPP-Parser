@@ -51,14 +51,17 @@ void XMLParser::InstanceTagAction::beginTag(const AttributeList &attributes) {
 
 void XMLParser::InstanceTagAction::endTag() {
     this->parser->manager->endInstance();
-    for(XEntity *xe : this->parser->toFree)
+    /*for(XEntity *xe : this->parser->toFree)
+        delete xe;
+    for(XIntegerEntity *xe : this->parser->toFreeEntity)
         delete xe;
     this->parser->toFree.clear();
-    for(XDomainInteger *xdomain :this->parser->allDomains)
+    for(XDomainInteger *xdomain :this->parser->allDomains) {
         delete xdomain;
-    for(std::map<string, XEntity *>::iterator it = this->parser->variablesList.begin();
-        it != this->parser->variablesList.end(); ++it)
+    }
+    for(std::map<string, XEntity *>::iterator it = this->parser->variablesList.begin(); it != this->parser->variablesList.end(); ++it) {
         delete it->second;
+    }*/
 }
 
 
@@ -248,6 +251,7 @@ void XMLParser::DomainTagAction::endTag() {
         for(unsigned int j = 0; j < flatIndexes.size(); j++) {
             varArray->indexesFor(flatIndexes[j], indexes);
             varArray->variables[flatIndexes[j]] = new XVariable(varArray->id, d, indexes);
+            this->parser->toFree.push_back(varArray->variables[flatIndexes[j]]);
         }
     }
 }
@@ -513,11 +517,13 @@ void XMLParser::AllDiffEqualTagAction::endTag() {
                     ctl->matrix.push_back(vector<XVariable *>(this->parser->lists[i].begin(),
                                                               this->parser->lists[i].end()));
                 this->parser->manager->newConstraintAllDiffList(ctl);
+                delete ct;
                 ct = ctl;
             } else {
                 if(this->parser->matrix.size() > 0) { // Matrix
                     XConstraintAllDiffMatrix *ctm = new XConstraintAllDiffMatrix(this->id, this->parser->classes, this->parser->matrix);
                     this->parser->manager->newConstraintAllDiffMatrix(ctm);
+                    delete ct;
                     ct = ctm;
                 } else {
                     // Alldiff classic
@@ -1121,9 +1127,9 @@ void XMLParser::ListOfVariablesOrIntegerOrIntervalTagAction::beginTag(const Attr
 
 
 void XMLParser::ListOfVariablesOrIntegerOrIntervalTagAction::text(const UTF8String txt, bool last) {
-    keepIntervals = true;
+    this->parser->keepIntervals = true;
     this->parser->parseSequence(txt, listToFill);
-    keepIntervals = false;
+    this->parser->keepIntervals = false;
 }
 
 

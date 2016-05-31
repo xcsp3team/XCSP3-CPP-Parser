@@ -69,7 +69,6 @@ void XMLParser::startElement(UTF8String name, const AttributeList &attributes) {
 }
 
 
-
 void XMLParser::endElement(UTF8String name) {
     // consume the last tokens
     if(!textLeft.empty()) {
@@ -133,7 +132,7 @@ void XMLParser::characters(UTF8String chars) {
         }
     }
 
-    for(it = brk; it != chars.end(); ++it)
+    for(it = brk ; it != chars.end() ; ++it)
         textLeft.append(*it);
 
     chars = chars.substr(chars.begin(), brk);
@@ -187,7 +186,7 @@ void XMLParser::parseSequence(const UTF8String txt, vector<XVariable *> &list, v
 
         UTF8String token = tokenizer.nextToken();
         bool isSep = false;
-        for(unsigned int i = 0; i < delimiters.size(); i++) {
+        for(unsigned int i = 0 ; i < delimiters.size() ; i++) {
             string tt;
             token.to(tt);
             if(tt.size() == 1 && tt[0] == delimiters[i]) {
@@ -228,7 +227,7 @@ void XMLParser::parseSequence(const UTF8String txt, vector<XVariable *> &list, v
                     if(keepIntervals) {
                         list.push_back(new XEInterval(current, first, last));
                     } else {
-                        for(int i = first; i <= last; i++) {
+                        for(int i = first ; i <= last ; i++) {
                             XInteger *xi = new XInteger(to_string(i), i);
                             list.push_back(xi);
                             toFree.push_back(xi);
@@ -255,6 +254,7 @@ void XMLParser::parseSequence(const UTF8String txt, vector<XVariable *> &list, v
     }
 
 }
+
 
 // Return True if START appears;
 bool XMLParser::parseTuples(const UTF8String txt, vector<vector<int> > &tuples) {
@@ -319,12 +319,16 @@ void XMLParser::parseListOfIntegerOrInterval(const UTF8String txt, vector<XInteg
         if(pos == UTF8String::npos) {
             int val;
             token.to(val);
-            listToFill.push_back(new XIntegerValue(val));
+            XIntegerValue *xv = new XIntegerValue(val);
+            listToFill.push_back(xv);
+            toFreeEntity.push_back(xv);
         } else {
             int first, last;
             token.substr(0, pos).to(first);
             token.substr(pos + 2).to(last);
-            listToFill.push_back(new XIntegerInterval(first, last));
+            XIntegerInterval *xi = new XIntegerInterval(first, last);
+            listToFill.push_back(xi);
+            toFreeEntity.push_back(xi);
         }
     }
 }
@@ -336,100 +340,102 @@ void XMLParser::parseListOfIntegerOrInterval(const UTF8String txt, vector<XInteg
 
 
 XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
-this->manager = new XCSP3Manager(cb, variablesList);
-unknownTagHandler = new UnknownTagAction(this, "unknown");
+    keepIntervals = false;
+    this->manager = new XCSP3Manager(cb, variablesList);
+    unknownTagHandler = new UnknownTagAction(this, "unknown");
 
 
-registerTagAction(tagList, new InstanceTagAction(this, "instance"));
+    registerTagAction(tagList, new InstanceTagAction(this, "instance"));
 
-registerTagAction(tagList, new VariablesTagAction(this, "variables"));
-registerTagAction(tagList, varTagAction = new VarTagAction(this, "var"));
-registerTagAction(tagList, new ArrayTagAction(this, "array"));
-registerTagAction(tagList, new DomainTagAction(this, "domain"));
-
-
-registerTagAction(tagList, new ConstraintsTagAction(this, "constraints"));
-
-registerTagAction(tagList, new ExtensionTagAction(this, "extension"));
-registerTagAction(tagList, this->listTag = new ListTagAction(this, "list"));
-registerTagAction(tagList, new ConflictOrSupportTagAction(this, "supports"));
-registerTagAction(tagList, new ConflictOrSupportTagAction(this, "conflicts"));
-
-registerTagAction(tagList, new IntensionTagAction(this, "intension"));
-
-registerTagAction(tagList, new AllDiffEqualTagAction(this, "allDifferent"));
-registerTagAction(tagList, new AllDiffEqualTagAction(this, "allEqual"));
-
-registerTagAction(tagList, new SumTagAction(this, "sum"));
-registerTagAction(tagList, new ListOfIntegerTagAction(this, "coeffs"));
-registerTagAction(tagList, new ConditionTagAction(this, "condition"));
-
-registerTagAction(tagList, new OrderedTagAction(this, "ordered"));
+    registerTagAction(tagList, new VariablesTagAction(this, "variables"));
+    registerTagAction(tagList, varTagAction = new VarTagAction(this, "var"));
+    registerTagAction(tagList, new ArrayTagAction(this, "array"));
+    registerTagAction(tagList, new DomainTagAction(this, "domain"));
 
 
-registerTagAction(tagList, new ChannelTagAction(this, "channel"));
+    registerTagAction(tagList, new ConstraintsTagAction(this, "constraints"));
 
-registerTagAction(tagList, new LexTagAction(this, "lex"));
+    registerTagAction(tagList, new ExtensionTagAction(this, "extension"));
+    registerTagAction(tagList, this->listTag = new ListTagAction(this, "list"));
+    registerTagAction(tagList, new ConflictOrSupportTagAction(this, "supports"));
+    registerTagAction(tagList, new ConflictOrSupportTagAction(this, "conflicts"));
 
-registerTagAction(tagList, new CountTagAction(this, "count"));
-registerTagAction(tagList, new CardinalityTagAction(this, "cardinality"));
+    registerTagAction(tagList, new IntensionTagAction(this, "intension"));
+
+    registerTagAction(tagList, new AllDiffEqualTagAction(this, "allDifferent"));
+    registerTagAction(tagList, new AllDiffEqualTagAction(this, "allEqual"));
+
+    registerTagAction(tagList, new SumTagAction(this, "sum"));
+    registerTagAction(tagList, new ListOfIntegerTagAction(this, "coeffs"));
+    registerTagAction(tagList, new ConditionTagAction(this, "condition"));
+
+    registerTagAction(tagList, new OrderedTagAction(this, "ordered"));
+
+
+    registerTagAction(tagList, new ChannelTagAction(this, "channel"));
+
+    registerTagAction(tagList, new LexTagAction(this, "lex"));
+
+    registerTagAction(tagList, new CountTagAction(this, "count"));
+    registerTagAction(tagList, new CardinalityTagAction(this, "cardinality"));
 
 
 // Value and Values are quite identical
-registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "values", this->values));
-registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "value", this->values));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "values", this->values));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "value", this->values));
 
 
-registerTagAction(tagList, new NValuesTagAction(this, "nValues"));
-registerTagAction(tagList, new InstantiationTagAction(this, "instantiation"));
+    registerTagAction(tagList, new NValuesTagAction(this, "nValues"));
+    registerTagAction(tagList, new InstantiationTagAction(this, "instantiation"));
 
 
-registerTagAction(tagList, new GroupTagAction(this, "group"));
-registerTagAction(tagList, new ArgsTagAction(this, "args"));
+    registerTagAction(tagList, new GroupTagAction(this, "group"));
+    registerTagAction(tagList, new ArgsTagAction(this, "args"));
 
-registerTagAction(tagList, new MinMaxTagAction(this, "minimum"));
-registerTagAction(tagList, new MinMaxTagAction(this, "maximum"));
+    registerTagAction(tagList, new MinMaxTagAction(this, "minimum"));
+    registerTagAction(tagList, new MinMaxTagAction(this, "maximum"));
 
-registerTagAction(tagList, new IndexTagAction(this, "index"));
+    registerTagAction(tagList, new IndexTagAction(this, "index"));
 
-registerTagAction(tagList, new ElementTagAction(this, "element"));
+    registerTagAction(tagList, new ElementTagAction(this, "element"));
 
-registerTagAction(tagList, new NoOverlapTagAction(this, "noOverlap"));
-registerTagAction(tagList, new CumulativeTagAction(this, "cumulative"));
-registerTagAction(tagList, new OriginsTagAction(this, "origins", this->origins));
-registerTagAction(tagList, new OriginsTagAction(this, "lengths", this->lengths));
-registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "ends", this->ends));
-registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "heights", this->heights));
+    registerTagAction(tagList, new NoOverlapTagAction(this, "noOverlap"));
+    registerTagAction(tagList, new CumulativeTagAction(this, "cumulative"));
+    registerTagAction(tagList, new OriginsTagAction(this, "origins", this->origins));
+    registerTagAction(tagList, new OriginsTagAction(this, "lengths", this->lengths));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "ends", this->ends));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "heights", this->heights));
 
-registerTagAction(tagList, new ListOfVariablesOrIntegerOrIntervalTagAction(this, "occurs", this->occurs));
-registerTagAction(tagList, new StretchTagAction(this, "stretch"));
-registerTagAction(tagList, new ListOfIntegerOrIntervalTagAction(this, "widths", this->widths));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerOrIntervalTagAction(this, "occurs", this->occurs));
+    registerTagAction(tagList, new StretchTagAction(this, "stretch"));
+    registerTagAction(tagList, new ListOfIntegerOrIntervalTagAction(this, "widths", this->widths));
 
-registerTagAction(tagList, new OperatorTagAction(this, "operator"));
+    registerTagAction(tagList, new OperatorTagAction(this, "operator"));
 
-registerTagAction(tagList, new RegularTagAction(this, "regular"));
-registerTagAction(tagList, new MDDTagAction(this, "mdd"));
-registerTagAction(tagList, new StringTagAction(this, "start"));
-registerTagAction(tagList, new StringTagAction(this, "final"));
-registerTagAction(tagList, new TransitionsTagAction(this, "transitions"));
-registerTagAction(tagList, new PatternsTagAction(this, "patterns"));
+    registerTagAction(tagList, new RegularTagAction(this, "regular"));
+    registerTagAction(tagList, new MDDTagAction(this, "mdd"));
+    registerTagAction(tagList, new StringTagAction(this, "start"));
+    registerTagAction(tagList, new StringTagAction(this, "final"));
+    registerTagAction(tagList, new TransitionsTagAction(this, "transitions"));
+    registerTagAction(tagList, new PatternsTagAction(this, "patterns"));
 
-registerTagAction(tagList, new ObjectivesTagAction(this, "objectives"));
-registerTagAction(tagList, new MinimizeOrMaximizeTagAction(this, "minimize"));
-registerTagAction(tagList, new MinimizeOrMaximizeTagAction(this, "maximize"));
+    registerTagAction(tagList, new ObjectivesTagAction(this, "objectives"));
+    registerTagAction(tagList, new MinimizeOrMaximizeTagAction(this, "minimize"));
+    registerTagAction(tagList, new MinimizeOrMaximizeTagAction(this, "maximize"));
 
-registerTagAction(tagList, new ListOfIntegerTagAction(this, "except"));
-registerTagAction(tagList, new MatrixTagAction(this, "matrix"));
+    registerTagAction(tagList, new ListOfIntegerTagAction(this, "except"));
+    registerTagAction(tagList, new MatrixTagAction(this, "matrix"));
 
-registerTagAction(tagList, new BlockTagAction(this, "block"));
-registerTagAction(tagList, new SlideTagAction(this, "slide"));
+    registerTagAction(tagList, new BlockTagAction(this, "block"));
+    registerTagAction(tagList, new SlideTagAction(this, "slide"));
 
 }
 
+
 XMLParser::~XMLParser() {
     delete unknownTagHandler;
-    for(TagActionList::iterator it = tagList.begin();
-        it != tagList.end(); ++it)
+    for(TagActionList::iterator it = tagList.begin() ;
+        it != tagList.end() ; ++it)
         delete (*it).second;
 }
 

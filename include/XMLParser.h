@@ -55,7 +55,6 @@
 #include "UTF8String.h"
 #include "AttributeList.h"
 
-static bool keepIntervals = false;
 /**
  * @namespace CSPXMLParser
  * @brief this namespace encloses all definitions relative to the
@@ -223,7 +222,9 @@ namespace XCSP3Core {
         int nbParameters;
         bool closed;
         vector<XEntity *> toFree;
+        vector<XIntegerEntity *> toFreeEntity;
 
+        bool keepIntervals;
 
         void registerTagAction(TagActionList &tagList, TagAction *action) {
             tagList[action->getTagName()] = action;
