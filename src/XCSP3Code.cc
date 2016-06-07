@@ -77,8 +77,7 @@ XVariable::XVariable(std::string idd, XDomainInteger *dom, std::vector<int> inde
 }
 
 
-XVariable::~XVariable() {
-}
+XVariable::~XVariable() { }
 
 
 XParameterVariable::XParameterVariable(std::string lid) : XVariable(lid, NULL) {
@@ -357,10 +356,9 @@ void XInitialCondition::extractCondition(XCondition &xc) { // Create the op and 
     try {
         xc.val = stoi(tmp1);
         xc.operandType = INTEGER;
-    } catch(invalid_argument e) {
+    } catch(const invalid_argument &e) {
         xc.var = tmp1;
         xc.operandType = VARIABLE;
-
     }
 }
 
@@ -407,7 +405,8 @@ void XConstraintExtension::unfoldParameters(XConstraintGroup *group, vector<XVar
 
 
 void XConstraintIntension::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
-    function = ((XConstraintIntension *) original)->function;
+    XConstraintIntension *xi = dynamic_cast<XConstraintIntension *>(original);
+    function = xi->function;
     group->unfoldString(function, arguments);
 }
 
@@ -499,6 +498,9 @@ void XConstraintChannel::unfoldParameters(XConstraintGroup *group, vector<XVaria
 void XConstraintNoOverlap::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
     XConstraint::unfoldParameters(group, arguments, original);
     XLengths::unfoldParameters(group, arguments, original);
+    XConstraintNoOverlap *xc = dynamic_cast<XConstraintNoOverlap *>(original);
+    zeroIgnored = xc->zeroIgnored;
+
 }
 
 
@@ -514,7 +516,7 @@ void XConstraintCumulative::unfoldParameters(XConstraintGroup *group, vector<XVa
 
 
 void XConstraintStretch::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
-    throw runtime_error("group is not yet allowed with cumulative constraint");
+    throw runtime_error("group is not yet allowed with stretch constraint");
 }
 
 

@@ -449,7 +449,11 @@ void XMLParser::MDDTagAction::beginTag(const AttributeList &attributes) {
 
 void XMLParser::MDDTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
-    constraint->transitions.assign(this->parser->transitions.begin(), this->parser->transitions.end());
+    constraint->transitions.clear();
+    for(int i = 0 ; i < this->parser->transitions.size() ; i++) {
+        XTransition &xt = this->parser->transitions[i];
+        constraint->transitions.push_back(XTransition(xt.from, xt.val, xt.to));
+    }
 
     if(this->group == NULL) {
         this->parser->manager->newConstraintMDD(constraint);
@@ -1232,6 +1236,7 @@ void XMLParser::InstantiationTagAction::beginTag(const AttributeList &attributes
 
 void XMLParser::InstantiationTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
+    constraint->values.clear();
     for(XEntity *xi : this->parser->values) {
         int v;
         isInteger(xi, v);
@@ -1541,7 +1546,6 @@ void XMLParser::TransitionsTagAction::text(const UTF8String txt, bool last) {
     tokenizer.addSeparator(')');
     tokenizer.addSeparator(',');
     tokenizer.addSeparator('(');
-    string from, to;
     int val;
     // nb = 0 : from nb=1 : val nb=2 to
     while(tokenizer.hasMoreTokens()) {
@@ -1552,6 +1556,7 @@ void XMLParser::TransitionsTagAction::text(const UTF8String txt, bool last) {
             continue;
         }
         if(token == UTF8String(")")) {
+            assert(from !="");
             this->parser->transitions.push_back(XTransition(from, val, to));
             continue;
         }

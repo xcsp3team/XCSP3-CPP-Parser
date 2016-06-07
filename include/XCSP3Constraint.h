@@ -199,7 +199,7 @@ namespace XCSP3Core {
         vector<XTransition> &transitions;
 
 
-        XConstraintRegular(std::string idd, std::string c) : XConstraint(idd, c), start(st), final(fi), transitions(tr) { transitions.clear(); }
+        XConstraintRegular(std::string idd, std::string c) : XConstraint(idd, c), start(st), final(fi), transitions(tr) { }
     };
 
     /***************************************************************************
@@ -211,7 +211,7 @@ namespace XCSP3Core {
         vector<XTransition> &transitions;
 
 
-        XConstraintMDD(std::string idd, std::string c) : XConstraint(idd, c), transitions(tr) { transitions.clear(); }
+        XConstraintMDD(std::string idd, std::string c) : XConstraint(idd, c), transitions(tr) {  }
     };
 
     /***************************************************************************
@@ -226,7 +226,7 @@ namespace XCSP3Core {
         vector<int> &except;
 
 
-        XConstraintAllDiff(std::string idd, std::string c) : XConstraint(idd, c), except(_except) { except.clear(); }
+        XConstraintAllDiff(std::string idd, std::string c) : XConstraint(idd, c), except(_except) { }
     };
 
 
@@ -302,7 +302,7 @@ namespace XCSP3Core {
         vector<int> &coeffs;
 
 
-        XConstraintSum(std::string idd, std::string c) : XConstraint(idd, c), coeffs(_coeffs) { coeffs.clear(); }
+        XConstraintSum(std::string idd, std::string c) : XConstraint(idd, c), coeffs(_coeffs) { }
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -312,7 +312,7 @@ namespace XCSP3Core {
         vector<int> &except;
 
 
-        XConstraintNValues(std::string idd, std::string c) : XConstraint(idd, c), except(_except) { except.clear(); }
+        XConstraintNValues(std::string idd, std::string c) : XConstraint(idd, c), except(_except) { }
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -453,7 +453,7 @@ namespace XCSP3Core {
     class XConstraintInstantiation : public XConstraint {
     public :
         vector<int> &values;
-        XConstraintInstantiation(std::string idd, std::string c) : XConstraint(idd, c), values(_values) { values.clear(); }
+        XConstraintInstantiation(std::string idd, std::string c) : XConstraint(idd, c), values(_values) { }
     };
 
 

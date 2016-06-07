@@ -895,6 +895,7 @@ namespace XCSP3Core {
         class TransitionsTagAction : public TagAction {
         public:
             int nb;
+            std::string from, to;
             TransitionsTagAction(XMLParser *parser, string name) : TagAction(parser, name) { }
             void beginTag(const AttributeList &attributes) override;
             void text(const UTF8String txt, bool last) override;
