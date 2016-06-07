@@ -298,6 +298,8 @@ void XMLParser::BasicConstraintTagAction::beginTag(const AttributeList &attribut
 
     if(!attributes["class"].isNull())
         attributes["class"].to(this->parser->classes);
+    else
+        this->parser->classes = "";
 
     this->parser->listTag->nbCallsToList = 0;
     this->parser->lists.clear();
@@ -305,7 +307,6 @@ void XMLParser::BasicConstraintTagAction::beginTag(const AttributeList &attribut
     this->parser->matrix.clear();
     this->parser->patterns.clear();
 
-    this->parser->classes = "";
 
     this->parser->integers.clear();
     this->parser->values.clear();
@@ -1323,6 +1324,7 @@ void XMLParser::GroupTagAction::beginTag(const AttributeList &attributes) {
 
     if(!attributes["class"].isNull())
         attributes["class"].to(tmp);
+
 
     group = new XConstraintGroup(lid, tmp);
     this->parser->manager->beginGroup(lid);
