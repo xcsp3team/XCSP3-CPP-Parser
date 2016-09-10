@@ -2,14 +2,15 @@ C++ = g++
 CFLAGS = -g -Wall -std=c++11 
 EXEC = test
 
-LIBS = -lXML2
-INC = -I/usr/local/opt/libxml2/include/libxml2/  -I../include
+LIBS = `xml2-config --libs`
+INC = `xml2-config --cflags`  -I../include
 CPP_FILES := $(wildcard ../src/*.cc)
 OBJ_FILES := $(addprefix ../obj/,$(notdir $(CPP_FILES:.cc=.o)))
 all: main.cc $(OBJ_FILES) 
 	$(C++)  $(CFLAGS) $(INC) -L/usr/local/opt/libxml2/lib/ $(LIBS) -o $(EXEC) $^
 
 ../obj/%.o: ../src/%.cc
+	-@(test -d "../obj") || mkdir ../obj
 	$(C++) $(CFLAGS) $(INC) -c -o $@ $<
 
 lib: $(OBJ_FILES) 

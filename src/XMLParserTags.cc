@@ -196,8 +196,8 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList &attributes) {
             if(stringSizes[i].size() == 0)
                 continue;
             sizes.push_back(std::stoi(stringSizes[i].substr(0, stringSizes[i].size() - 1)));
-            varArray = new XVariableArray(id, sizes);
         }
+        varArray = new XVariableArray(id, sizes);
 
         domain = new XDomainInteger();
         this->parser->allDomains.push_back(domain);
@@ -242,9 +242,9 @@ void XMLParser::DomainTagAction::endTag() {
 
     split(forAttr, ' ', allCompactForms);
     for(unsigned int i = 0; i < allCompactForms.size(); i++) {
-        int pos = forAttr.find('[');
-        name = forAttr.substr(0, pos);
-        string compactForm = forAttr.substr(pos);
+        int pos = allCompactForms[i].find('[');
+        name = allCompactForms[i].substr(0, pos);
+        string compactForm = allCompactForms[i].substr(pos);
         vector<int> flatIndexes;
         vector<int> indexes;
         varArray->getVarsFor(vars, compactForm, &flatIndexes, true);

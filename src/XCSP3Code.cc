@@ -556,7 +556,7 @@ void XCSP3Core::ReplaceStringInPlace(std::string &subject, const std::string &se
 
 
 std::string &XCSP3Core::ltrim(std::string &s) {
-    s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::iswspace))));
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1( std::ptr_fun(std::iswspace))));
     return s;
 }
 
