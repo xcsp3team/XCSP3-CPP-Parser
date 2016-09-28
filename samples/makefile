@@ -7,7 +7,7 @@ INC = `xml2-config --cflags`  -I../include
 CPP_FILES := $(wildcard ../src/*.cc)
 OBJ_FILES := $(addprefix ../obj/,$(notdir $(CPP_FILES:.cc=.o)))
 all: main.cc $(OBJ_FILES) 
-	$(C++)  $(CFLAGS) $(INC) -L/usr/local/opt/libxml2/lib/ $(LIBS) -o $(EXEC) $^
+	$(C++)  $(CFLAGS) $(INC) -o $(EXEC) $^ $(LIBS)
 
 ../obj/%.o: ../src/%.cc
 	-@(test -d "../obj") || mkdir ../obj
@@ -17,7 +17,7 @@ lib: $(OBJ_FILES)
 	ar rcsv ../lib/libparserxcsp3core.a $(OBJ_FILES)
 
 testlib: main.cc
-	$(C++)  $(CFLAGS) $(INC) -L/usr/local/opt/libxml2/lib/ -L ../lib $(LIBS) -lparserxcsp3core -o testlib main.cc
+	$(C++)  $(CFLAGS) $(INC) -o testlib main.cc -L ../lib $(LIBS) -lparserxcsp3core
 
 clean: 
 	rm -rf ../obj/*.o test ../lib/*
