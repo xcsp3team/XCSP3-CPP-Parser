@@ -115,6 +115,7 @@ namespace XCSP3Core {
         //--------------------------------------------------------------------------------------
 
         virtual void buildConstraintExtension(string id, vector<XVariable *> list, vector<vector<int> > &tuples, bool support, bool hasStar) {
+            std::cout << "WARNING: tuples are not cheked wrt domains" << std::endl;
             throw runtime_error("extension constraint is not yet supported");
         }
 
@@ -125,6 +126,7 @@ namespace XCSP3Core {
 
 
         virtual void buildConstraintExtensionAs(string id, vector<XVariable *> list, bool support, bool hasStar) {
+            std::cout << "WARNING: domains of variables are not necessary the same" << std::endl;
             throw runtime_error("This extension constraint contains exactly the same tuples than previous one");
         }
 
