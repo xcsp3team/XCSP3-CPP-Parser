@@ -215,6 +215,7 @@ void XCSP3Manager::newConstraintOrdered(XConstraintOrdered *constraint) {
 
 
 void XCSP3Manager::newConstraintLex(XConstraintLex *constraint) {
+    cout << "AA" << constraint->classes << endl;
     if(discardedClasses(constraint->classes))
         return;
     callback->buildConstraintLex(constraint->id, constraint->lists, constraint->op);
@@ -338,7 +339,7 @@ void XCSP3Manager::newConstraintNValues(XConstraintNValues *constraint) {
 
     // Special AllDiff case
     if(callback->recognizeNValuesCases && xc.operandType == INTEGER && constraint->except.size() == 0
-       && (xc.op == OrderType::EQ && ((unsigned int)xc.val) == constraint->list.size())) {
+       && (xc.op == OrderType::EQ && ((unsigned int) xc.val) == constraint->list.size())) {
         callback->buildConstraintAlldifferent(constraint->id, constraint->list);
         return;
     }
@@ -349,6 +350,7 @@ void XCSP3Manager::newConstraintNValues(XConstraintNValues *constraint) {
     }
     callback->buildConstraintNValues(constraint->id, constraint->list, constraint->except, xc);
 }
+
 
 void XCSP3Manager::newConstraintCardinality(XConstraintCardinality *constraint) {
     if(discardedClasses(constraint->classes))
@@ -517,9 +519,9 @@ void XCSP3Manager::newConstraintNoOverlap(XConstraintNoOverlap *constraint) {
     }
 
     if(intLengths.size() > 0)
-        callback->buildConstraintNoOverlap(constraint->id, constraint->origins, intLengths,constraint->zeroIgnored);
+        callback->buildConstraintNoOverlap(constraint->id, constraint->origins, intLengths, constraint->zeroIgnored);
     else
-        callback->buildConstraintNoOverlap(constraint->id, constraint->origins, varLengths,constraint->zeroIgnored);
+        callback->buildConstraintNoOverlap(constraint->id, constraint->origins, varLengths, constraint->zeroIgnored);
 }
 
 
@@ -541,8 +543,7 @@ void XCSP3Manager::newConstraintNoOverlapKDim(XConstraintNoOverlap *constraint) 
         if(isInteger(xe, v)) {
             intLengths.back().push_back(v);
             isInt = true;
-        }
-        else {
+        } else {
             XVariable *xv = (XVariable *) xe;
             varLengths.back().push_back(xv);
         }
@@ -561,6 +562,7 @@ void XCSP3Manager::newConstraintNoOverlapKDim(XConstraintNoOverlap *constraint) 
     else
         callback->buildConstraintNoOverlap(constraint->id, origins, varLengths, constraint->zeroIgnored);
 }
+
 
 void XCSP3Manager::newConstraintCumulative(XConstraintCumulative *constraint) {
     if(discardedClasses(constraint->classes))
@@ -618,69 +620,85 @@ void XCSP3Manager::newConstraintCumulative(XConstraintCumulative *constraint) {
 //--------------------------------------------------------------------------------------
 
 
-template<class T> void XCSP3Manager::unfoldConstraint(XConstraintGroup *group, int i, void (XCSP3Manager::*newConstraint)(T* )) {
+template<class T>
+void XCSP3Manager::unfoldConstraint(XConstraintGroup *group, int i, void (XCSP3Manager::*newConstraint)(T *)) {
     T *constraint = new T(group->constraint->id, group->constraint->classes);
     group->unfoldArgumentNumber(i, constraint);
     (this->*newConstraint)(constraint);
     delete constraint;
 }
 
+
 void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
     if(discardedClasses(group->classes))
         return;
 
+    vector<XVariable *> previousArguments; // Used to check if extension arguments have same domains
     for(unsigned int i = 0; i < group->arguments.size(); i++) {
         if(group->type == INTENSION)
-            unfoldConstraint<XConstraintIntension>(group,i,&XCSP3Manager::newConstraintIntension);
-
+            unfoldConstraint<XConstraintIntension>(group, i, &XCSP3Manager::newConstraintIntension);
         if(group->type == EXTENSION) {
             XConstraintExtension *ce = new XConstraintExtension(group->constraint->id, group->constraint->classes);
             group->unfoldArgumentNumber(i, ce);
-            if(i > 0)
+
+            if(i > 0) {
+                // Check previous arguments
+                bool same = true;
+                for(unsigned int j = 0; j < previousArguments.size(); j++)
+                    if(previousArguments[j]->domain->equals(ce->list[j]->domain) == false) {
+                        same = false;
+                        break;
+                    }
+                if(same == false)
+                    previousArguments.clear();
+            }
+
+
+            if(i > 0 && previousArguments.size() > 0)
                 newConstraintExtensionAsLastOne(ce);
             else {
-                // I prefer to copy scope than tuples...
-                vector<XVariable*> list;
-                list.assign(group->constraint->list.begin(),group->constraint->list.end());
-                group->constraint->list.assign(ce->list.begin(),ce->list.end());
-                newConstraintExtension((XConstraintExtension*)group->constraint);
-                group->constraint->list.assign(list.begin(),list.end());
+                vector<XVariable *> list;
+                list.assign(group->constraint->list.begin(), group->constraint->list.end());
+                group->constraint->list.assign(ce->list.begin(), ce->list.end());
+                previousArguments.assign(ce->list.begin(), ce->list.end());
+                newConstraintExtension((XConstraintExtension *) group->constraint);
+                group->constraint->list.assign(list.begin(), list.end());
             }
             delete ce;
         }
 
         if(group->type == ALLDIFF)
-            unfoldConstraint<XConstraintAllDiff>(group,i,&XCSP3Manager::newConstraintAllDiff);
+            unfoldConstraint<XConstraintAllDiff>(group, i, &XCSP3Manager::newConstraintAllDiff);
         if(group->type == ALLEQUAL)
-            unfoldConstraint<XConstraintAllEqual>(group,i,&XCSP3Manager::newConstraintAllEqual);
+            unfoldConstraint<XConstraintAllEqual>(group, i, &XCSP3Manager::newConstraintAllEqual);
         if(group->type == SUM)
-            unfoldConstraint<XConstraintSum>(group,i,&XCSP3Manager::newConstraintSum);
+            unfoldConstraint<XConstraintSum>(group, i, &XCSP3Manager::newConstraintSum);
         if(group->type == ORDERED)
-            unfoldConstraint<XConstraintOrdered>(group,i,&XCSP3Manager::newConstraintOrdered);
+            unfoldConstraint<XConstraintOrdered>(group, i, &XCSP3Manager::newConstraintOrdered);
         if(group->type == COUNT)
-            unfoldConstraint<XConstraintCount>(group,i,&XCSP3Manager::newConstraintCount);
+            unfoldConstraint<XConstraintCount>(group, i, &XCSP3Manager::newConstraintCount);
         if(group->type == NVALUES)
-            unfoldConstraint<XConstraintNValues>(group,i,&XCSP3Manager::newConstraintNValues);
+            unfoldConstraint<XConstraintNValues>(group, i, &XCSP3Manager::newConstraintNValues);
         if(group->type == CARDINALITY)
-            unfoldConstraint<XConstraintCardinality>(group,i,&XCSP3Manager::newConstraintCardinality);
+            unfoldConstraint<XConstraintCardinality>(group, i, &XCSP3Manager::newConstraintCardinality);
         if(group->type == MAXIMUM)
-            unfoldConstraint<XConstraintMaximum>(group,i,&XCSP3Manager::newConstraintMaximum);
+            unfoldConstraint<XConstraintMaximum>(group, i, &XCSP3Manager::newConstraintMaximum);
         if(group->type == MINIMUM)
-            unfoldConstraint<XConstraintMinimum>(group,i,&XCSP3Manager::newConstraintMinimum);
+            unfoldConstraint<XConstraintMinimum>(group, i, &XCSP3Manager::newConstraintMinimum);
         if(group->type == ELEMENT)
-            unfoldConstraint<XConstraintElement>(group,i,&XCSP3Manager::newConstraintElement);
+            unfoldConstraint<XConstraintElement>(group, i, &XCSP3Manager::newConstraintElement);
         if(group->type == NOOVERLAP)
-            unfoldConstraint<XConstraintNoOverlap>(group,i,&XCSP3Manager::newConstraintNoOverlap);
+            unfoldConstraint<XConstraintNoOverlap>(group, i, &XCSP3Manager::newConstraintNoOverlap);
         if(group->type == STRETCH)
-            unfoldConstraint<XConstraintStretch>(group,i,&XCSP3Manager::newConstraintStretch);
+            unfoldConstraint<XConstraintStretch>(group, i, &XCSP3Manager::newConstraintStretch);
         if(group->type == LEX)
-            unfoldConstraint<XConstraintLex>(group,i,&XCSP3Manager::newConstraintLex);
+            unfoldConstraint<XConstraintLex>(group, i, &XCSP3Manager::newConstraintLex);
         if(group->type == CHANNEL)
-            unfoldConstraint<XConstraintChannel>(group,i,&XCSP3Manager::newConstraintChannel);
+            unfoldConstraint<XConstraintChannel>(group, i, &XCSP3Manager::newConstraintChannel);
         if(group->type == REGULAR)
-            unfoldConstraint<XConstraintRegular>(group,i,&XCSP3Manager::newConstraintRegular);
+            unfoldConstraint<XConstraintRegular>(group, i, &XCSP3Manager::newConstraintRegular);
         if(group->type == MDD)
-            unfoldConstraint<XConstraintMDD>(group,i,&XCSP3Manager::newConstraintMDD);
+            unfoldConstraint<XConstraintMDD>(group, i, &XCSP3Manager::newConstraintMDD);
         if(group->type == CUMULATIVE) {
             throw runtime_error("Cumulative constraint is not yet supported");
         }
