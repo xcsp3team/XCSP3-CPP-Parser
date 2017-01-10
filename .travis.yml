@@ -1,0 +1,17 @@
+# This is used by Travis CI site in
+# order to build the code online.
+
+language: cpp
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-6
+      - g++-6
+
+script:
+  - cd samples
+  - sed -i 's/g++/g++-6/' makefile
+  - make
