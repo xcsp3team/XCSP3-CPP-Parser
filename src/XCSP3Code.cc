@@ -562,7 +562,7 @@ std::string &XCSP3Core::ltrim(std::string &s) {
 
 
 std::string &XCSP3Core::rtrim(std::string &s) {
-    s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::iswspace))).base(), s.end());
+    s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun(std::iswspace))).base(), s.end());
     return s;
 }
 
