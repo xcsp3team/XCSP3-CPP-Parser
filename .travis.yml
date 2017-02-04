@@ -12,8 +12,8 @@ addons:
       - g++-6
 
 script:
+  - CXX=g++-6
   - cd samples
-  - sed -i 's/g++/g++-6/' makefile
 
   # Execute the default recipe
   - make
