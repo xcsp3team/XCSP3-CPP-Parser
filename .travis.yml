@@ -14,4 +14,25 @@ addons:
 script:
   - cd samples
   - sed -i 's/g++/g++-6/' makefile
+
+  # Execute the default recipe
   - make
+
+  # Test the parser with a TSP instance
+  - ./test ../instances/tsp-25-843.xml > /dev/null
+  # Test the parser with a Constraint Optimisation instance
+  - ./test ../instances/obj.xml > /dev/null
+  # Test the parser with an instance with all the kinds of constraints:
+  # This fails as the parser's sample solver doesn't support every constraint
+  - eval ! ./test ../instances/example.xml > /dev/null
+
+  # Execute the library recipes
+  - make lib
+  - make testlib
+
+  # Perform the three tests again for the 'testlib' executable
+  - ./testlib ../instances/tsp-25-843.xml > /dev/null
+  - ./testlib ../instances/obj.xml > /dev/null
+  - eval ! ./testlib ../instances/example.xml > /dev/null
+
+  - make clean
