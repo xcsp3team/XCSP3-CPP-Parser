@@ -10,7 +10,7 @@ all: main.cc $(OBJ_FILES)
 	$(C++)  $(CFLAGS) $(INC) -o $(EXEC) $^ $(LIBS)
 
 ../obj/%.o: ../src/%.cc
-	-@(test -d "../obj") || mkdir ../obj
+	@mkdir -p ../obj
 	$(C++) $(CFLAGS) $(INC) -c -o $@ $<
 
 lib: $(OBJ_FILES) 
