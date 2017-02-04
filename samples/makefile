@@ -14,6 +14,7 @@ all: main.cc $(OBJ_FILES)
 	$(C++) $(CFLAGS) $(INC) -c -o $@ $<
 
 lib: $(OBJ_FILES) 
+	@mkdir -p ../lib
 	ar rcsv ../lib/libparserxcsp3core.a $(OBJ_FILES)
 
 testlib: main.cc
