@@ -21,6 +21,6 @@ testlib: main.cc
 	$(C++)  $(CFLAGS) $(INC) -o testlib main.cc -L ../lib $(LIBS) -lparserxcsp3core
 
 clean: 
-	rm -rf ../obj/*.o test ../lib/*
+	rm -rf ../obj/*.o test ../lib/* testlib
 
 
