@@ -144,7 +144,7 @@ namespace XCSP3Core {
         // Language constraints
         //--------------------------------------------------------------------------------------
 
-        virtual void buildConstraintRegular(string id, vector<XVariable *> &list, string st, string final, vector<XTransition> &transitions) {
+        virtual void buildConstraintRegular(string id, vector<XVariable *> &list, string st, vector<string> &final, vector<XTransition> &transitions) {
             throw runtime_error("regular constraint is not yet supported");
         }
 

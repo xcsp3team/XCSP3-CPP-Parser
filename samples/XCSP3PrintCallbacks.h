@@ -92,7 +92,7 @@ namespace XCSP3Core {
         virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k, XVariable *y) override;
 
 
-        virtual void buildConstraintRegular(string id, vector<XVariable *> &list, string st, string final, vector<XTransition> &transitions) override;
+        virtual void buildConstraintRegular(string id, vector<XVariable *> &list, string st, vector<string> &final, vector<XTransition> &transitions) override;
 
         virtual void buildConstraintMDD(string id, vector<XVariable *> &list, vector<XTransition> &transitions) override;
 
@@ -381,11 +381,13 @@ void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, OrderType op, XVar
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintRegular(string id, vector<XVariable *> &list, string start, string final, vector<XTransition> &transitions) {
+void XCSP3PrintCallbacks::buildConstraintRegular(string id, vector<XVariable *> &list, string start, vector<string> &final, vector<XTransition> &transitions) {
     cout << "\n    regular constraint" << endl;
     cout << "        ";displayList(list);
     cout << "        start: " << start << endl;
-    cout << "        final: " << final << endl;
+    cout << "        final: ";
+    displayList(final,",");
+    cout << endl;
     cout << "        transitions: ";
     for(unsigned int i = 0 ; i < (transitions.size() > 4 ? 4 : transitions.size()) ; i++) {
         cout << "(" << transitions[i].from << "," << transitions[i].val << "," << transitions[i].to << ") ";

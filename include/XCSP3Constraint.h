@@ -190,12 +190,13 @@ namespace XCSP3Core {
     };
 
     static vector<XTransition> tr; // Not beautiful but remove code to fixed data in group constraint.
-    static string st, fi;
+    static string st;
+    static vector<string> fi;
 
     class XConstraintRegular : public XConstraint {
     public :
         string &start;
-        string &final;
+        vector<string> &final;
         vector<XTransition> &transitions;
 
 

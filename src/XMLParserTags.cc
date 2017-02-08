@@ -418,7 +418,8 @@ void XMLParser::RegularTagAction::beginTag(const AttributeList &attributes) {
 void XMLParser::RegularTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     constraint->start = this->parser->start;
-    constraint->final = this->parser->final;
+    constraint->final.clear();
+    split(this->parser->final, ' ', constraint->final);
     constraint->transitions.assign(this->parser->transitions.begin(), this->parser->transitions.end());
 
     if(this->group == NULL) {
@@ -1212,8 +1213,9 @@ void XMLParser::StringTagAction::text(const UTF8String txt, bool last) {
     tmp = trim(tmp);
     if(tmp == "")
         return;
-    if(this->tagName == "final")
+    if(this->tagName == "final") {
         this->parser->final = tmp;
+    }
     if(this->tagName == "start")
         this->parser->start = tmp;
 }
