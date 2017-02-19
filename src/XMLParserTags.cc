@@ -667,10 +667,10 @@ void XMLParser::SumTagAction::beginTag(const AttributeList &attributes) {
 
 void XMLParser::SumTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
-    if(this->parser->integers.size() == 0)
-        constraint->coeffs.assign(this->parser->lists[0].size(), 1);
+    if(this->parser->values.size() == 0)
+        constraint->values.clear();
     else
-        constraint->coeffs.assign(this->parser->integers.begin(), this->parser->integers.end());
+        constraint->values.assign(this->parser->values.begin(), this->parser->values.end());
 
     constraint->condition = this->parser->condition;
 
@@ -1052,8 +1052,13 @@ void XMLParser::ObjectivesTagAction::endTag() {
 
     if(this->parser->lists[0].size() > 0)
         objective->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
-    if(this->parser->integers.size() > 0)
-        objective->coeffs.assign(this->parser->integers.begin(), this->parser->integers.end());
+    if(this->parser->values.size() > 0) {
+        int value;
+        for(XEntity *xe : this->parser->values) {
+            isInteger(xe, value);
+            objective->coeffs.push_back(value);
+        }
+    }
     else if(objective->type != EXPRESSION_O)
         objective->coeffs.assign(this->parser->lists[0].size(), 1);
 

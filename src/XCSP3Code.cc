@@ -25,7 +25,7 @@
  */
 
 // definition of different functions coming from XCSP3Constraint, XCSPVariables, XCS3Domain
-
+#include <assert.h>
 #include "XCSP3Domain.h"
 #include "XCSP3Variable.h"
 #include "XCSP3Constraint.h"
@@ -436,11 +436,9 @@ void XConstraintLexMatrix::unfoldParameters(XConstraintGroup *group, vector<XVar
 
 void XConstraintSum::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
     XConstraint::unfoldParameters(group, arguments, original);
+    XValues::unfoldParameters(group, arguments, original);
     XInitialCondition::unfoldParameters(group, arguments, original);
-    if(coeffs.size() != list.size()) {
-        coeffs.clear();
-        coeffs.assign(list.size(), 1);
-    }
+    assert(values.size() == list.size() || values.size() == 0);
 }
 
 

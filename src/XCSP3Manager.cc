@@ -235,18 +235,29 @@ void XCSP3Manager::newConstraintLexMatrix(XConstraintLexMatrix *constraint) {
 void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
     if(discardedClasses(constraint->classes))
         return;
-    bool allOne = true;
-    for(int c : constraint->coeffs)
-        if(c != 1) {
-            allOne = false;
-            break;
-        }
     XCondition xc;
     constraint->extractCondition(xc);
-    if(allOne)
+    if(constraint->values.size() == 0) {
         callback->buildConstraintSum(constraint->id, constraint->list, xc);
-    else
-        callback->buildConstraintSum(constraint->id, constraint->list, constraint->coeffs, xc);
+        return;
+    }
+
+    int v;
+    if(isInteger(constraint->values[0], v)) {
+        vector<int> values;
+        for(XEntity *xe : constraint->values) {
+            isInteger(xe, v);
+            values.push_back(v);
+        }
+        callback->buildConstraintSum(constraint->id, constraint->list, values, xc);
+        return;
+    }
+
+    std::vector < XVariable * > xvalues;
+    for(XEntity *xe : constraint->values) {
+        xvalues.push_back((XVariable *) mapping[xe->id]);
+    }
+    callback->buildConstraintSum(constraint->id, constraint->list, xvalues, xc);
 }
 
 
@@ -308,7 +319,7 @@ void XCSP3Manager::newConstraintCount(XConstraintCount *constraint) {
         }
         callback->buildConstraintCount(constraint->id, constraint->list, values, xc);
     } else {
-        std::vector<XVariable *> values;
+        std::vector < XVariable * > values;
         for(XEntity *xe : constraint->values) {
             values.push_back((XVariable *) mapping[xe->id]);
         }
@@ -356,7 +367,7 @@ void XCSP3Manager::newConstraintCardinality(XConstraintCardinality *constraint) 
     if(discardedClasses(constraint->classes))
         return;
     std::vector<int> intValues;
-    std::vector<XVariable *> varValues;
+    std::vector < XVariable * > varValues;
     int v;
     for(XEntity *xe : constraint->values) {
         if(isInteger(xe, v))
@@ -368,8 +379,8 @@ void XCSP3Manager::newConstraintCardinality(XConstraintCardinality *constraint) 
     }
 
     std::vector<int> intOccurs;
-    std::vector<XVariable *> varOccurs;
-    std::vector<XInterval> intervalOccurs;
+    std::vector < XVariable * > varOccurs;
+    std::vector <XInterval> intervalOccurs;
 
     for(XEntity *xe : constraint->occurs) {
         if(isInteger(xe, v))
@@ -507,7 +518,7 @@ void XCSP3Manager::newConstraintNoOverlap(XConstraintNoOverlap *constraint) {
 
     int v;
     vector<int> intLengths;
-    vector<XVariable *> varLengths;
+    vector < XVariable * > varLengths;
 
     for(XEntity *xe : constraint->lengths) {
         if(isInteger(xe, v))
@@ -531,9 +542,9 @@ void XCSP3Manager::newConstraintNoOverlapKDim(XConstraintNoOverlap *constraint) 
 
     int v;
     bool isInt = false;
-    vector<vector<int> > intLengths;
-    vector<vector<XVariable *> > varLengths;
-    vector<vector<XVariable *> > origins;
+    vector <vector<int>> intLengths;
+    vector <vector<XVariable *>> varLengths;
+    vector <vector<XVariable *>> origins;
     for(XEntity *xe : constraint->lengths) {
         if(xe == NULL) {
             varLengths.push_back(vector<XVariable *>());
@@ -569,7 +580,7 @@ void XCSP3Manager::newConstraintCumulative(XConstraintCumulative *constraint) {
         return;
     int v;
     vector<int> intLengths;
-    vector<XVariable *> varLengths;
+    vector < XVariable * > varLengths;
 
     for(XEntity *xe : constraint->lengths) {
         if(isInteger(xe, v))
@@ -581,7 +592,7 @@ void XCSP3Manager::newConstraintCumulative(XConstraintCumulative *constraint) {
     }
 
     vector<int> intHeights;
-    vector<XVariable *> varHeights;
+    vector < XVariable * > varHeights;
 
     for(XEntity *xe : constraint->heights) {
         if(isInteger(xe, v))
@@ -633,7 +644,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
     if(discardedClasses(group->classes))
         return;
 
-    vector<XVariable *> previousArguments; // Used to check if extension arguments have same domains
+    vector < XVariable * > previousArguments; // Used to check if extension arguments have same domains
     for(unsigned int i = 0; i < group->arguments.size(); i++) {
         if(group->type == INTENSION)
             unfoldConstraint<XConstraintIntension>(group, i, &XCSP3Manager::newConstraintIntension);
@@ -657,7 +668,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             if(i > 0 && previousArguments.size() > 0)
                 newConstraintExtensionAsLastOne(ce);
             else {
-                vector<XVariable *> list;
+                vector < XVariable * > list;
                 list.assign(group->constraint->list.begin(), group->constraint->list.end());
                 group->constraint->list.assign(ce->list.begin(), ce->list.end());
                 previousArguments.assign(ce->list.begin(), ce->list.end());

@@ -296,14 +296,14 @@ namespace XCSP3Core {
      * constraint sum
      **************************************************************************/
 
-    static vector<int> _coeffs;
+//static vector<int> _coeffs;
 
-    class XConstraintSum : public XConstraint, public XInitialCondition {
+    class XConstraintSum : public XConstraint, public XInitialCondition, public XValues {
     public :
-        vector<int> &coeffs;
+   //     vector<int> &coeffs;
 
 
-        XConstraintSum(std::string idd, std::string c) : XConstraint(idd, c), coeffs(_coeffs) { }
+        XConstraintSum(std::string idd, std::string c) : XConstraint(idd, c) { }
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 

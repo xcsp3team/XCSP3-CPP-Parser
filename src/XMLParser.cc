@@ -366,7 +366,7 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
     registerTagAction(tagList, new AllDiffEqualTagAction(this, "allEqual"));
 
     registerTagAction(tagList, new SumTagAction(this, "sum"));
-    registerTagAction(tagList, new ListOfIntegerTagAction(this, "coeffs"));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "coeffs", this->values));
     registerTagAction(tagList, new ConditionTagAction(this, "condition"));
 
     registerTagAction(tagList, new OrderedTagAction(this, "ordered"));
