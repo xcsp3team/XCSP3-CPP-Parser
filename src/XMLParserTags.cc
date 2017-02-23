@@ -1041,6 +1041,7 @@ void XMLParser::ObjectivesTagAction::beginTag(const AttributeList &attributes) {
     this->parser->lists.clear();
     this->parser->listTag->nbCallsToList = 0;
     this->parser->integers.clear();
+    this->parser->values.clear();
     this->parser->lists.push_back(vector<XVariable *>());
     this->parser->manager->beginObjectives();
 }
@@ -1058,10 +1059,9 @@ void XMLParser::ObjectivesTagAction::endTag() {
             isInteger(xe, value);
             objective->coeffs.push_back(value);
         }
+    }  else if(objective->type != EXPRESSION_O) {
+        objective->coeffs.assign(objective->list.size(), 1);
     }
-    else if(objective->type != EXPRESSION_O)
-        objective->coeffs.assign(this->parser->lists[0].size(), 1);
-
 
     this->parser->manager->addObjective(objective);
     delete objective;
