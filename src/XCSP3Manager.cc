@@ -663,6 +663,16 @@ void XCSP3Manager::newConstraintCumulative(XConstraintCumulative *constraint) {
 }
 
 //--------------------------------------------------------------------------------------
+// Instantiation  constraint
+//--------------------------------------------------------------------------------------
+
+void XCSP3Manager::newConstraintInstantiation(XConstraintInstantiation *constraint) {
+    if(discardedClasses(constraint->classes))
+        return;
+    callback->buildConstraintInstantiation(constraint->id, constraint->list, constraint->values);
+}
+
+//--------------------------------------------------------------------------------------
 // group constraints
 //--------------------------------------------------------------------------------------
 
@@ -714,6 +724,8 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             delete ce;
         }
 
+        if(group->type == INSTANTIATION)
+            unfoldConstraint<XConstraintInstantiation>(group, i, &XCSP3Manager::newConstraintInstantiation);
         if(group->type == ALLDIFF)
             unfoldConstraint<XConstraintAllDiff>(group, i, &XCSP3Manager::newConstraintAllDiff);
         if(group->type == ALLEQUAL)

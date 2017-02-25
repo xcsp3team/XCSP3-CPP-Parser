@@ -224,12 +224,7 @@ namespace XCSP3Core {
         //--------------------------------------------------------------------------------------
         // Instantiation  constraint
         //--------------------------------------------------------------------------------------
-        void addInstantiationConstraint(XConstraintInstantiation *constraint) {
-            if(discardedClasses(constraint->classes))
-                return;
-            callback->buildConstraintInstantiation(constraint->id, constraint->list, constraint->values);
-        }
-
+        void newConstraintInstantiation(XConstraintInstantiation *constraint);
 
         //--------------------------------------------------------------------------------------
         // block of  constraints
