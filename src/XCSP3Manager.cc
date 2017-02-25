@@ -238,18 +238,54 @@ void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
     XCondition xc;
     constraint->extractCondition(xc);
     if(constraint->values.size() == 0) {
-        callback->buildConstraintSum(constraint->id, constraint->list, xc);
-        return;
+        bool toModify = false;
+        if(callback->normalizeSum) {
+            // Check if a variable appears two times
+            for(int i = 0; i < constraint->list.size() - 1; i++)
+                for(int j = i + 1; j < constraint->list.size(); j++) {
+                    if(constraint->list[i]->id == constraint->list[j]->id)
+                        toModify = true;
+                }
+            if(toModify)
+                constraint->values.assign(constraint->list.size(), new XInteger("",1));
+        }
+        if(!toModify) {
+            callback->buildConstraintSum(constraint->id, constraint->list, xc);
+            return;
+        }
     }
 
     int v;
     if(isInteger(constraint->values[0], v)) {
-        vector<int> values;
+        vector<int> values, coefs;
+        vector < XVariable * > list;
         for(XEntity *xe : constraint->values) {
             isInteger(xe, v);
             values.push_back(v);
         }
-        callback->buildConstraintSum(constraint->id, constraint->list, values, xc);
+        if(callback->normalizeSum) {
+            // merge
+            for(int i = 0; i < constraint->list.size() - 1; i++) {
+                if(values[i] == 0) continue;
+                for(int j = i + 1; j < constraint->list.size(); j++) {
+                    if(values[j] != 0 && constraint->list[i]->id == constraint->list[j]->id) {
+                        values[i] += values[j];
+                        values[j] = 0;
+                    }
+                }
+            }
+            // remove coef=0
+            for(int i = 0; i < constraint->list.size(); i++) {
+                if(values[i] != 0) {
+                    list.push_back(constraint->list[i]);
+                    coefs.push_back(values[i]);
+                }
+            }
+        } else {
+            coefs.assign(values.begin(), values.end());
+            list.assign(constraint->list.begin(), constraint->list.end());
+        }
+        callback->buildConstraintSum(constraint->id, list, coefs, xc);
         return;
     }
 

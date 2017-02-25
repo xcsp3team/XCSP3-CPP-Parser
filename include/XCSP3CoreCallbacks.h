@@ -44,12 +44,13 @@ namespace XCSP3Core {
         bool recognizeSpecialIntensionCases; // x<y.. x=k,
         bool recognizeSpecialCountCases;     // atleast, atmost, exactly, among, exctalyVariable
         bool recognizeNValuesCases;          // AllEqual, NotAllEqual, AllDiff
-
+        bool normalizeSum;                   // Normalize sum : merge same variables...remove var with coef = 0,
 
         XCSP3CoreCallbacks() {
             recognizeSpecialIntensionCases = true;
             recognizeSpecialCountCases = true;
             recognizeNValuesCases = true;
+            normalizeSum = true;
         }
 
 
