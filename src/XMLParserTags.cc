@@ -1371,8 +1371,8 @@ void XMLParser::SlideTagAction::beginTag(const AttributeList &attributes) {
 
     group = new XConstraintGroup(lid, tmp);
     this->parser->lists.clear();
-    this->parser->lists.push_back(vector<XVariable *>());
-
+//    this->parser->lists.push_back(vector<XVariable *>()); // Be careful, why not ?? see after revision e32b7f8
+    list.clear();
     this->parser->manager->beginSlide(lid, circular);
 }
 
@@ -1397,12 +1397,13 @@ void XMLParser::SlideTagAction::endTag() {
         arity = ar;
     } else
         arity = this->parser->nbParameters;
-    vector<XVariable*> &list = this->parser->lists[0];
+
     unsigned long end = circular ? list.size() - arity + 2 : list.size() - arity + 1;
     for(unsigned int i = 0; i < end; i += offset) {
         group->arguments.push_back(vector<XVariable *>());
-        for(unsigned int j = 0; j < arity; j++)
+        for(unsigned int j = 0; j < arity; j++) {
             group->arguments.back().push_back(list[(i + j) % list.size()]);
+        }
     }
 
     this->parser->manager->newConstraintGroup(group);
