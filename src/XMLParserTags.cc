@@ -117,7 +117,7 @@ void XMLParser::VarTagAction::beginTag(const AttributeList &attributes) {
         if((similarArray = dynamic_cast<XVariableArray *>(this->parser->variablesList[as])) != NULL) {
             variableArray = new XVariableArray(id, similarArray);
         } else {
-            XVariable * similar = (XVariable * )
+            XVariable *similar = (XVariable * )
             this->parser->variablesList[as];
             variable = new XVariable(id, similar->domain);
         }
@@ -187,7 +187,7 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList &attributes) {
     if(!attributes["as"].isNull()) {
         // Create a similar Variable
         attributes["as"].to(as);
-        XVariableArray * similar = (XVariableArray * )
+        XVariableArray *similar = (XVariableArray * )
         this->parser->variablesList[as];
         varArray = new XVariableArray(id, similar);
     } else {
@@ -1190,7 +1190,7 @@ void XMLParser::ArgsTagAction::text(const UTF8String txt, bool last) {
 
 
 void XMLParser::ArgsTagAction::endTag() {
-    XConstraintGroup * group = ((GroupTagAction * )
+    XConstraintGroup *group = ((GroupTagAction * )
     this->parser->getParentTagAction())->group;
     group->arguments.push_back(vector<XVariable *>(this->parser->args.begin(), this->parser->args.end()));
 }
@@ -1270,7 +1270,6 @@ void XMLParser::ListTagAction::beginTag(const AttributeList &attributes) {
         if(!attributes["startIndex"].isNull())
             attributes["startIndex"].to(this->parser->startIndex);
     }
-
     if(!attributes["offset"].isNull()) {
         SlideTagAction *slide = ((XMLParser::SlideTagAction *) this->parser->getParentTagAction());
         attributes["offset"].to(slide->offset);
@@ -1286,6 +1285,7 @@ void XMLParser::ListTagAction::text(const UTF8String txt, bool last) {
 void XMLParser::ListTagAction::endTag() {
     if(this->parser->getParentTagAction() != NULL &&
        strcmp(this->parser->getParentTagAction()->getTagName(), "slide") == 0) {
+        assert(this->parser->lists.size() == 1);
         SlideTagAction *sl = ((XMLParser::SlideTagAction *) this->parser->getParentTagAction());
         sl->list.insert(sl->list.begin(), this->parser->lists[0].begin(), this->parser->lists[0].end());
         nbCallsToList = 0;
@@ -1371,7 +1371,8 @@ void XMLParser::SlideTagAction::beginTag(const AttributeList &attributes) {
 
     group = new XConstraintGroup(lid, tmp);
     this->parser->lists.clear();
-//    this->parser->lists.push_back(vector<XVariable *>()); // Be careful, why not ?? see after revision e32b7f8
+    this->parser->listTag->nbCallsToList = 0;
+    this->parser->lists.push_back(vector<XVariable *>()); // Be careful, why not ?? see after revision e32b7f8
     list.clear();
     this->parser->manager->beginSlide(lid, circular);
 }
@@ -1495,7 +1496,7 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool last) {
         compactForm = txt2.substr(pos);
         if(this->parser->variablesList[name] == NULL)
             runtime_error("Matrix variable " + name + "does not exist");
-        XVariableArray * varArray = ((XVariableArray * )
+        XVariableArray *varArray = ((XVariableArray * )
         this->parser->variablesList[name]);
         int nbV = 0;
         string tmp;
