@@ -232,6 +232,34 @@ void XCSP3Manager::newConstraintLexMatrix(XConstraintLexMatrix *constraint) {
 //--------------------------------------------------------------------------------------
 // Summin and Counting constraints
 //--------------------------------------------------------------------------------------
+
+void XCSP3Manager::normalizeSum(vector < XVariable * > &list, vector < int > &coefs) {
+    // merge
+    for(int i = 0; i < list.size() - 1; i++) {
+        if(coefs[i] == 0) continue;
+        for(int j = i + 1; j < list.size(); j++) {
+            if(coefs[j] != 0 && list[i]->id == list[j]->id) {
+                coefs[i] += coefs[j];
+                coefs[j] = 0;
+            }
+        }
+    }
+    vector<int> tmpc;
+    vector < XVariable * > tmpv;
+    // remove coef=0
+    for(int i = 0; i < list.size(); i++)
+        if(coefs[i] != 0) {
+            tmpv.push_back(list[i]);
+            tmpc.push_back(coefs[i]);
+        }
+
+    list.clear();
+    list.assign(tmpv.begin(), tmpv.end());
+    coefs.clear();
+    coefs.assign(tmpc.begin(), tmpc.end());
+}
+
+
 void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
     if(discardedClasses(constraint->classes))
         return;
@@ -247,7 +275,7 @@ void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
                         toModify = true;
                 }
             if(toModify)
-                constraint->values.assign(constraint->list.size(), new XInteger("",1));
+                constraint->values.assign(constraint->list.size(), new XInteger("", 1));
         }
         if(!toModify) {
             callback->buildConstraintSum(constraint->id, constraint->list, xc);
@@ -257,34 +285,17 @@ void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
 
     int v;
     if(isInteger(constraint->values[0], v)) {
-        vector<int> values, coefs;
+        vector<int> coefs;
         vector < XVariable * > list;
         for(XEntity *xe : constraint->values) {
             isInteger(xe, v);
-            values.push_back(v);
+            coefs.push_back(v);
         }
-        if(callback->normalizeSum) {
-            // merge
-            for(int i = 0; i < constraint->list.size() - 1; i++) {
-                if(values[i] == 0) continue;
-                for(int j = i + 1; j < constraint->list.size(); j++) {
-                    if(values[j] != 0 && constraint->list[i]->id == constraint->list[j]->id) {
-                        values[i] += values[j];
-                        values[j] = 0;
-                    }
-                }
-            }
-            // remove coef=0
-            for(int i = 0; i < constraint->list.size(); i++) {
-                if(values[i] != 0) {
-                    list.push_back(constraint->list[i]);
-                    coefs.push_back(values[i]);
-                }
-            }
-        } else {
-            coefs.assign(values.begin(), values.end());
-            list.assign(constraint->list.begin(), constraint->list.end());
-        }
+        list.assign(constraint->list.begin(), constraint->list.end());
+
+        if(callback->normalizeSum)
+            normalizeSum(list, coefs);
+
         callback->buildConstraintSum(constraint->id, list, coefs, xc);
         return;
     }
@@ -784,19 +795,35 @@ void XCSP3Manager::addObjective(XObjective *objective) {
             callback->buildObjectiveMaximizeExpression(objective->expression);
         return;
     }
-    if(objective->coeffs.size() == 0) {
-        if(objective->goal == MINIMIZE)
-            callback->buildObjectiveMinimize(objective->type, objective->list);
-        else
-            callback->buildObjectiveMaximize(objective->type, objective->list);
-        return;
+    if(objective->type == SUM_O && callback->normalizeSum) {
+        if(objective->coeffs.size() == 0) {
+            bool toModify = false;
+            // Check if a variable appears two times
+            for(int i = 0; i < objective->list.size() - 1; i++)
+                for(int j = i + 1; j < objective->list.size(); j++) {
+                    if(objective->list[i]->id == objective->list[j]->id)
+                        toModify = true;
+                }
+            if(toModify)
+                objective->coeffs.assign(objective->list.size(), 1);
+        }
+        if(objective->coeffs.size()>0)
+            normalizeSum(objective->list,objective->coeffs);
     }
-    if(objective->goal == MINIMIZE)
-        callback->buildObjectiveMinimize(objective->type, objective->list, objective->coeffs);
-    else
-        callback->buildObjectiveMaximize(objective->type, objective->list, objective->coeffs);
 
-}
+        if(objective->coeffs.size() == 0) {
+            if(objective->goal == MINIMIZE)
+                callback->buildObjectiveMinimize(objective->type, objective->list);
+            else
+                callback->buildObjectiveMaximize(objective->type, objective->list);
+            return;
+        }
+        if(objective->goal == MINIMIZE)
+            callback->buildObjectiveMinimize(objective->type, objective->list, objective->coeffs);
+        else
+            callback->buildObjectiveMaximize(objective->type, objective->list, objective->coeffs);
+
+    }
 
 
 

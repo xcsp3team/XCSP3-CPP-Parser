@@ -177,6 +177,10 @@ namespace XCSP3Core {
         //--------------------------------------------------------------------------------------
         // Summin and Counting constraints
         //--------------------------------------------------------------------------------------
+    protected :
+        void normalizeSum(vector < XVariable * > &list, vector<int> & coefs);
+
+    public :
         void newConstraintSum(XConstraintSum *constraint);
 
 
