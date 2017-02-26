@@ -1379,10 +1379,12 @@ void XMLParser::SlideTagAction::beginTag(const AttributeList &attributes) {
 
 void XMLParser::SlideTagAction::endTag() {
     if(group->constraint == NULL)
-        throw runtime_error("<group> constraint is not linked to a classical constraint");
+        throw runtime_error("<slide> constraint is not linked to a classical constraint");
 
     // Create list of arguments
-    assert(list.size() > 0);
+    if(this->parser->lists.size() != 1)
+        throw runtime_error("Multiple lists in slide constraint is not yet supported");
+
 
     unsigned long arity;
     if(this->parser->nbParameters == 0) {
@@ -1395,8 +1397,7 @@ void XMLParser::SlideTagAction::endTag() {
         arity = ar;
     } else
         arity = this->parser->nbParameters;
-    if(this->parser->lists.size() > 0)
-        throw runtime_error("Multiple lists in slide constraint is not yet supported");
+    vector<XVariable*> &list = this->parser->lists[0];
     unsigned long end = circular ? list.size() - arity + 2 : list.size() - arity + 1;
     for(unsigned int i = 0; i < end; i += offset) {
         group->arguments.push_back(vector<XVariable *>());
