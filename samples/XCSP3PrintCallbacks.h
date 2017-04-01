@@ -343,7 +343,7 @@ void XCSP3PrintCallbacks::beginBlock(string classes) {
 
 
 void XCSP3PrintCallbacks::endBlock() {
-    cout << "   end group of constraint" << endl;
+    cout << "   end block of constraint" << endl;
 }
 
 
@@ -382,7 +382,7 @@ void XCSP3PrintCallbacks::buildVariableInteger(string id, vector<int> &values) {
 
 void XCSP3PrintCallbacks::buildConstraintExtension(string id, vector<XVariable *> list, vector <vector<int>> &tuples, bool support, bool hasStar) {
     cout << "\n    extension constraint : " << id << endl;
-    cout << "        " << (support ? "support" : "conflict") << " arity:" << list.size() << " nb tuples: " << tuples.size() << " star: " << hasStar << endl;
+    cout << "        " << (support ? "support" : "conflict") << " arity: " << list.size() << " nb tuples: " << tuples.size() << " star: " << hasStar << endl;
     cout << "        ";
     displayList(list);
 }
