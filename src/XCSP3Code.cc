@@ -331,6 +331,9 @@ void XInitialCondition::extractCondition(XCondition &xc) { // Create the op and 
     std::smatch match;
     std::regex_match(condition, match, rglt);
 
+    if(match.size() != 3)
+        throw runtime_error("condition is malformed\n");
+
     xc.val = xc.min = xc.max = 0;
     xc.var = "";
     string tmp0 = match[1].str();
