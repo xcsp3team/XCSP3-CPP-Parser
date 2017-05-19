@@ -293,7 +293,7 @@ void XConstraintGroup::unfoldVector(vector<XVariable *> &toUnfold, vector<XVaria
 
 
 void XConstraintGroup::unfoldString(string &toUnfold, vector<XVariable *> &args) {
-    for(unsigned int i = 0; i < args.size(); i++) {
+    for(int i = args.size()-1; i >=0 ; i--) {
         string param = "%" + std::to_string(i);
         ReplaceStringInPlace(toUnfold, param, args[i]->id);
     }
