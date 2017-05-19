@@ -152,14 +152,14 @@ x[2]   x[3] </list>
 
 
 <cardinality>
-  <list> x[1] x[2]        x[3] 
-x[4] </list>
+  <list> x[1] x[2]        x[3]  x[4] </list>
   <values> 2 5 10 </values>
   <occurs> 0..1 1..3 2..3 </occurs>
 </cardinality>
+
 <cardinality>
   <list>x[1..5] </list>
-  <values closed="false">x[] </values>
+  <values closed="false">x[3..5] </values>
   <occurs>1 2 5 </occurs>
 </cardinality>
 
