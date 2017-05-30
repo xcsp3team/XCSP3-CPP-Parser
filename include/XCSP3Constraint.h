@@ -420,7 +420,7 @@ namespace XCSP3Core {
     class XConstraintCumulative : public XConstraint, public XLengths, public XInitialCondition {
     public :
         // Be careful origin is the vector list!!!
-        vector<XVariable *> origins;
+        vector<XVariable *> &origins;
         vector<XVariable *> ends;
         vector<XVariable *> heights;
 
