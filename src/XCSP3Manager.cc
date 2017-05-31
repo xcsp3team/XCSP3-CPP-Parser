@@ -215,7 +215,6 @@ void XCSP3Manager::newConstraintOrdered(XConstraintOrdered *constraint) {
 
 
 void XCSP3Manager::newConstraintLex(XConstraintLex *constraint) {
-    cout << "AA" << constraint->classes << endl;
     if(discardedClasses(constraint->classes))
         return;
     callback->buildConstraintLex(constraint->id, constraint->lists, constraint->op);

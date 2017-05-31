@@ -1558,11 +1558,12 @@ void XMLParser::TransitionsTagAction::beginTag(const AttributeList &attributes) 
 
 
 void XMLParser::TransitionsTagAction::text(const UTF8String txt, bool last) {
+    if(txt.isWhiteSpace())
+        return;
     UTF8String::Tokenizer tokenizer(txt);
     tokenizer.addSeparator(')');
     tokenizer.addSeparator(',');
     tokenizer.addSeparator('(');
-    int val;
     // nb = 0 : from nb=1 : val nb=2 to
     while(tokenizer.hasMoreTokens()) {
         UTF8String token = tokenizer.nextToken();
