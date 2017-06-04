@@ -1,7 +1,7 @@
 /*=============================================================================
  * parser for CSP instances represented in XCSP3 Format
  *
- * Copyright (c) 2015 xcp3.org (contact <at> xcsp3.org)
+ * Copyright (c) 2015 xcsp.org (contact <at> xcsp.org)
  * Copyright (c) 2008 Olivier ROUSSEL (olivier.roussel <at> cril.univ-artois.fr)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -343,7 +343,7 @@ void XCSP3PrintCallbacks::beginBlock(string classes) {
 
 
 void XCSP3PrintCallbacks::endBlock() {
-    cout << "   end group of constraint" << endl;
+    cout << "   end block of constraint" << endl;
 }
 
 
@@ -382,7 +382,7 @@ void XCSP3PrintCallbacks::buildVariableInteger(string id, vector<int> &values) {
 
 void XCSP3PrintCallbacks::buildConstraintExtension(string id, vector<XVariable *> list, vector <vector<int>> &tuples, bool support, bool hasStar) {
     cout << "\n    extension constraint : " << id << endl;
-    cout << "        " << (support ? "support" : "conflict") << " arity:" << list.size() << " nb tuples: " << tuples.size() << " star: " << hasStar << endl;
+    cout << "        " << (support ? "support" : "conflict") << " arity: " << list.size() << " nb tuples: " << tuples.size() << " star: " << hasStar << endl;
     cout << "        ";
     displayList(list);
 }
