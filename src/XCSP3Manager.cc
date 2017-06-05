@@ -233,7 +233,7 @@ void XCSP3Manager::newConstraintLexMatrix(XConstraintLexMatrix *constraint) {
 // Summin and Counting constraints
 //--------------------------------------------------------------------------------------
 
-void XCSP3Manager::normalizeSum(vector < XVariable * > &list, vector < int > &coefs) {
+void XCSP3Manager::normalizeSum(vector<XVariable *> &list, vector<int> &coefs) {
     // merge
     for(int i = 0; i < list.size() - 1; i++) {
         if(coefs[i] == 0) continue;
@@ -245,7 +245,7 @@ void XCSP3Manager::normalizeSum(vector < XVariable * > &list, vector < int > &co
         }
     }
     vector<int> tmpc;
-    vector < XVariable * > tmpv;
+    vector<XVariable *> tmpv;
     // remove coef=0
     for(int i = 0; i < list.size(); i++)
         if(coefs[i] != 0) {
@@ -286,7 +286,7 @@ void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
     int v;
     if(isInteger(constraint->values[0], v)) {
         vector<int> coefs;
-        vector < XVariable * > list;
+        vector<XVariable *> list;
         for(XEntity *xe : constraint->values) {
             isInteger(xe, v);
             coefs.push_back(v);
@@ -300,7 +300,7 @@ void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
         return;
     }
 
-    std::vector < XVariable * > xvalues;
+    std::vector<XVariable *> xvalues;
     for(XEntity *xe : constraint->values) {
         xvalues.push_back((XVariable *) mapping[xe->id]);
     }
@@ -366,7 +366,7 @@ void XCSP3Manager::newConstraintCount(XConstraintCount *constraint) {
         }
         callback->buildConstraintCount(constraint->id, constraint->list, values, xc);
     } else {
-        std::vector < XVariable * > values;
+        std::vector<XVariable *> values;
         for(XEntity *xe : constraint->values) {
             values.push_back((XVariable *) mapping[xe->id]);
         }
@@ -414,7 +414,7 @@ void XCSP3Manager::newConstraintCardinality(XConstraintCardinality *constraint) 
     if(discardedClasses(constraint->classes))
         return;
     std::vector<int> intValues;
-    std::vector < XVariable * > varValues;
+    std::vector<XVariable *> varValues;
     int v;
     for(XEntity *xe : constraint->values) {
         if(isInteger(xe, v))
@@ -426,8 +426,8 @@ void XCSP3Manager::newConstraintCardinality(XConstraintCardinality *constraint) 
     }
 
     std::vector<int> intOccurs;
-    std::vector < XVariable * > varOccurs;
-    std::vector <XInterval> intervalOccurs;
+    std::vector<XVariable *> varOccurs;
+    std::vector<XInterval> intervalOccurs;
 
     for(XEntity *xe : constraint->occurs) {
         if(isInteger(xe, v))
@@ -507,20 +507,42 @@ void XCSP3Manager::newConstraintElement(XConstraintElement *constraint) {
     if(discardedClasses(constraint->classes))
         return;
     int v;
+    vector<int> listOfIntegers;
+    if(isInteger(constraint->list[0], v)) {
+        for(XEntity *xe : constraint->list) {
+            isInteger(xe, v);
+            listOfIntegers.push_back(v);
+        }
+    }
+
 
     if(isInteger(constraint->value, v)) {
-        if(constraint->index == NULL)
-            callback->buildConstraintElement(constraint->id, constraint->list, v);
-        else
-            callback->buildConstraintElement(constraint->id, constraint->list, constraint->startIndex, constraint->index, constraint->rank, v);
+        if(constraint->index == NULL) {
+            if(listOfIntegers.size() > 0)
+                throw runtime_error("Not yet supported");
+            else
+                callback->buildConstraintElement(constraint->id, constraint->list, v);
+        } else {
+            if(listOfIntegers.size() > 0)
+                throw runtime_error("Not yet supported");
+            else
+                callback->buildConstraintElement(constraint->id, constraint->list, constraint->startIndex, constraint->index, constraint->rank, v);
+        }
         return;
     }
     // Is variable
     XVariable *xv = (XVariable *) constraint->value;
-    if(constraint->index == NULL)
-        callback->buildConstraintElement(constraint->id, constraint->list, xv);
-    else
-        callback->buildConstraintElement(constraint->id, constraint->list, constraint->startIndex, constraint->index, constraint->rank, xv);
+    if(constraint->index == NULL) {
+        if(listOfIntegers.size() > 0)
+            throw runtime_error("Not yet supported");
+        else
+            callback->buildConstraintElement(constraint->id, constraint->list, xv);
+    } else {
+        if(listOfIntegers.size() > 0)
+            callback->buildConstraintElement(constraint->id, listOfIntegers, constraint->startIndex, constraint->index, constraint->rank, xv);
+        else
+            callback->buildConstraintElement(constraint->id, constraint->list, constraint->startIndex, constraint->index, constraint->rank, xv);
+    }
 }
 
 
@@ -565,7 +587,7 @@ void XCSP3Manager::newConstraintNoOverlap(XConstraintNoOverlap *constraint) {
 
     int v;
     vector<int> intLengths;
-    vector < XVariable * > varLengths;
+    vector<XVariable *> varLengths;
 
     for(XEntity *xe : constraint->lengths) {
         if(isInteger(xe, v))
@@ -589,9 +611,9 @@ void XCSP3Manager::newConstraintNoOverlapKDim(XConstraintNoOverlap *constraint) 
 
     int v;
     bool isInt = false;
-    vector <vector<int>> intLengths;
-    vector <vector<XVariable *>> varLengths;
-    vector <vector<XVariable *>> origins;
+    vector<vector<int>> intLengths;
+    vector<vector<XVariable *>> varLengths;
+    vector<vector<XVariable *>> origins;
     for(XEntity *xe : constraint->lengths) {
         if(xe == NULL) {
             varLengths.push_back(vector<XVariable *>());
@@ -627,7 +649,7 @@ void XCSP3Manager::newConstraintCumulative(XConstraintCumulative *constraint) {
         return;
     int v;
     vector<int> intLengths;
-    vector < XVariable * > varLengths;
+    vector<XVariable *> varLengths;
 
     for(XEntity *xe : constraint->lengths) {
         if(isInteger(xe, v))
@@ -639,7 +661,7 @@ void XCSP3Manager::newConstraintCumulative(XConstraintCumulative *constraint) {
     }
 
     vector<int> intHeights;
-    vector < XVariable * > varHeights;
+    vector<XVariable *> varHeights;
 
     for(XEntity *xe : constraint->heights) {
         if(isInteger(xe, v))
@@ -701,7 +723,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
     if(discardedClasses(group->classes))
         return;
 
-    vector < XVariable * > previousArguments; // Used to check if extension arguments have same domains
+    vector<XVariable *> previousArguments; // Used to check if extension arguments have same domains
     for(unsigned int i = 0; i < group->arguments.size(); i++) {
         if(group->type == INTENSION)
             unfoldConstraint<XConstraintIntension>(group, i, &XCSP3Manager::newConstraintIntension);
@@ -725,7 +747,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             if(i > 0 && previousArguments.size() > 0)
                 newConstraintExtensionAsLastOne(ce);
             else {
-                vector < XVariable * > list;
+                vector<XVariable *> list;
                 list.assign(group->constraint->list.begin(), group->constraint->list.end());
                 group->constraint->list.assign(ce->list.begin(), ce->list.end());
                 previousArguments.assign(ce->list.begin(), ce->list.end());
@@ -807,23 +829,23 @@ void XCSP3Manager::addObjective(XObjective *objective) {
             if(toModify)
                 objective->coeffs.assign(objective->list.size(), 1);
         }
-        if(objective->coeffs.size()>0)
-            normalizeSum(objective->list,objective->coeffs);
+        if(objective->coeffs.size() > 0)
+            normalizeSum(objective->list, objective->coeffs);
     }
 
-        if(objective->coeffs.size() == 0) {
-            if(objective->goal == MINIMIZE)
-                callback->buildObjectiveMinimize(objective->type, objective->list);
-            else
-                callback->buildObjectiveMaximize(objective->type, objective->list);
-            return;
-        }
+    if(objective->coeffs.size() == 0) {
         if(objective->goal == MINIMIZE)
-            callback->buildObjectiveMinimize(objective->type, objective->list, objective->coeffs);
+            callback->buildObjectiveMinimize(objective->type, objective->list);
         else
-            callback->buildObjectiveMaximize(objective->type, objective->list, objective->coeffs);
-
+            callback->buildObjectiveMaximize(objective->type, objective->list);
+        return;
     }
+    if(objective->goal == MINIMIZE)
+        callback->buildObjectiveMinimize(objective->type, objective->list, objective->coeffs);
+    else
+        callback->buildObjectiveMaximize(objective->type, objective->list, objective->coeffs);
+
+}
 
 
 

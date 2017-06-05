@@ -38,7 +38,7 @@ namespace XCSP3Core {
 
     class XCSP3CoreCallbacks {
     protected :
-        vector <string> classesToDiscard;
+        vector<string> classesToDiscard;
     public :
 
         bool recognizeSpecialIntensionCases; // x<y.. x=k,
@@ -130,7 +130,7 @@ namespace XCSP3Core {
         // Basic constraints
         //--------------------------------------------------------------------------------------
 
-        virtual void buildConstraintExtension(string id, vector<XVariable *> list, vector <vector<int>> &tuples, bool support, bool hasStar) {
+        virtual void buildConstraintExtension(string id, vector<XVariable *> list, vector<vector<int>> &tuples, bool support, bool hasStar) {
             std::cout << "WARNING: tuples are not cheked wrt domains" << std::endl;
             throw runtime_error("extension constraint is not yet supported");
         }
@@ -160,12 +160,12 @@ namespace XCSP3Core {
         // Language constraints
         //--------------------------------------------------------------------------------------
 
-        virtual void buildConstraintRegular(string id, vector<XVariable *> &list, string st, vector <string> &final, vector <XTransition> &transitions) {
+        virtual void buildConstraintRegular(string id, vector<XVariable *> &list, string st, vector<string> &final, vector<XTransition> &transitions) {
             throw runtime_error("regular constraint is not yet supported");
         }
 
 
-        virtual void buildConstraintMDD(string id, vector<XVariable *> &list, vector <XTransition> &transitions) {
+        virtual void buildConstraintMDD(string id, vector<XVariable *> &list, vector<XTransition> &transitions) {
             throw runtime_error("MDD constraint is not yet supported");
         }
 
@@ -184,12 +184,12 @@ namespace XCSP3Core {
         }
 
 
-        virtual void buildConstraintAlldifferentList(string id, vector <vector<XVariable *>> &lists) {
+        virtual void buildConstraintAlldifferentList(string id, vector<vector<XVariable *>> &lists) {
             throw runtime_error("AllDiff list constraint  is not yet supported");
         }
 
 
-        virtual void buildConstraintAlldifferentMatrix(string id, vector <vector<XVariable *>> &matrix) {
+        virtual void buildConstraintAlldifferentMatrix(string id, vector<vector<XVariable *>> &matrix) {
             throw runtime_error("AllDiff matrix constraint  is not yet supported");
         }
 
@@ -209,12 +209,12 @@ namespace XCSP3Core {
         }
 
 
-        virtual void buildConstraintLex(string id, vector <vector<XVariable *>> &lists, OrderType order) {
+        virtual void buildConstraintLex(string id, vector<vector<XVariable *>> &lists, OrderType order) {
             throw runtime_error("Lex constraint  is not yet supported");
         }
 
 
-        virtual void buildConstraintLexMatrix(string id, vector <vector<XVariable *>> &matrix, OrderType order) {
+        virtual void buildConstraintLexMatrix(string id, vector<vector<XVariable *>> &matrix, OrderType order) {
             throw runtime_error("Lex matrix constraint  is not yet supported");
         }
 
@@ -292,7 +292,7 @@ namespace XCSP3Core {
         }
 
 
-        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<int> values, vector <XInterval> &occurs, bool closed) {
+        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<int> values, vector<XInterval> &occurs, bool closed) {
             throw runtime_error("cardinality with int values and int occurs constraint is not yet supported");
         }
 
@@ -307,7 +307,7 @@ namespace XCSP3Core {
         }
 
 
-        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector <XInterval> &occurs, bool closed) {
+        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector<XInterval> &occurs, bool closed) {
             throw runtime_error("cardinality with int values and int occurs constraint is not yet supported");
         }
         //--------------------------------------------------------------------------------------
@@ -356,6 +356,11 @@ namespace XCSP3Core {
         }
 
 
+        virtual void buildConstraintElement(string id, vector<int> &list, int startIndex, XVariable *index, RankType rank, XVariable *value) {
+            throw runtime_error("Element value  (with list of integers)  with index constraint is not yet supported");
+        }
+
+
         virtual void buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex) {
             throw runtime_error("channel with 1 list constraint is not yet supported");
         }
@@ -374,12 +379,12 @@ namespace XCSP3Core {
         // packing and schedulling constraints
         //--------------------------------------------------------------------------------------
 
-        virtual void buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector <XInterval> &widths) {
+        virtual void buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths) {
             throw runtime_error("stretch constraint is not yet supported");
         }
 
 
-        virtual void buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector <XInterval> &widths, vector <vector<int>> &patterns) {
+        virtual void buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths, vector<vector<int>> &patterns) {
             throw runtime_error("stretch constraint is not yet supported");
         }
 
@@ -394,12 +399,12 @@ namespace XCSP3Core {
         }
 
 
-        virtual void buildConstraintNoOverlap(string id, vector <vector<XVariable *>> &origins, vector <vector<int>> &lengths, bool zeroIgnored) {
+        virtual void buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<int>> &lengths, bool zeroIgnored) {
             throw runtime_error("K dim nooverlap with int lengths constraint is not yet supported");
         }
 
 
-        virtual void buildConstraintNoOverlap(string id, vector <vector<XVariable *>> &origins, vector <vector<XVariable *>> &lengths, bool zeroIgnored) {
+        virtual void buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<XVariable *>> &lengths, bool zeroIgnored) {
             throw runtime_error("K dim nooverlap with variable lengths constraint is not yet supported");
         }
 

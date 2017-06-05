@@ -81,7 +81,7 @@ namespace XCSP3Core {
 
         virtual void buildVariableInteger(string id, vector<int> &values) override;
 
-        virtual void buildConstraintExtension(string id, vector<XVariable *> list, vector <vector<int>> &tuples, bool support, bool hasStar) override;
+        virtual void buildConstraintExtension(string id, vector<XVariable *> list, vector<vector<int>> &tuples, bool support, bool hasStar) override;
 
         virtual void buildConstraintExtension(string id, XVariable *variable, vector<int> &tuples, bool support, bool hasStar) override;
 
@@ -92,17 +92,17 @@ namespace XCSP3Core {
         virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k, XVariable *y) override;
 
 
-        virtual void buildConstraintRegular(string id, vector<XVariable *> &list, string st, vector <string> &final, vector <XTransition> &transitions) override;
+        virtual void buildConstraintRegular(string id, vector<XVariable *> &list, string st, vector<string> &final, vector<XTransition> &transitions) override;
 
-        virtual void buildConstraintMDD(string id, vector<XVariable *> &list, vector <XTransition> &transitions) override;
+        virtual void buildConstraintMDD(string id, vector<XVariable *> &list, vector<XTransition> &transitions) override;
 
         virtual void buildConstraintAlldifferent(string id, vector<XVariable *> &list) override;
 
         virtual void buildConstraintAlldifferentExcept(string id, vector<XVariable *> &list, vector<int> &except) override;
 
-        virtual void buildConstraintAlldifferentList(string id, vector <vector<XVariable *>> &lists) override;
+        virtual void buildConstraintAlldifferentList(string id, vector<vector<XVariable *>> &lists) override;
 
-        virtual void buildConstraintAlldifferentMatrix(string id, vector <vector<XVariable *>> &matrix) override;
+        virtual void buildConstraintAlldifferentMatrix(string id, vector<vector<XVariable *>> &matrix) override;
 
         virtual void buildConstraintAllEqual(string id, vector<XVariable *> &list) override;
 
@@ -110,9 +110,9 @@ namespace XCSP3Core {
 
         virtual void buildConstraintOrdered(string id, vector<XVariable *> &list, OrderType order) override;
 
-        virtual void buildConstraintLex(string id, vector <vector<XVariable *>> &lists, OrderType order) override;
+        virtual void buildConstraintLex(string id, vector<vector<XVariable *>> &lists, OrderType order) override;
 
-        virtual void buildConstraintLexMatrix(string id, vector <vector<XVariable *>> &matrix, OrderType order) override;
+        virtual void buildConstraintLexMatrix(string id, vector<vector<XVariable *>> &matrix, OrderType order) override;
 
         virtual void buildConstraintSum(string id, vector<XVariable *> &list, vector<int> &coeffs, XCondition &cond) override;
 
@@ -143,7 +143,7 @@ namespace XCSP3Core {
         virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<int> values, vector<XVariable *> &occurs,
                                                 bool closed) override;
 
-        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<int> values, vector <XInterval> &occurs,
+        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<int> values, vector<XInterval> &occurs,
                                                 bool closed) override;
 
         virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector<int> &occurs,
@@ -152,7 +152,7 @@ namespace XCSP3Core {
         virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector<XVariable *> &occurs,
                                                 bool closed) override;
 
-        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector <XInterval> &occurs,
+        virtual void buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector<XInterval> &occurs,
                                                 bool closed) override;
 
         virtual void buildConstraintMinimum(string id, vector<XVariable *> &list, XCondition &xc) override;
@@ -173,6 +173,8 @@ namespace XCSP3Core {
 
         virtual void buildConstraintElement(string id, vector<XVariable *> &list, int startIndex, XVariable *index, RankType rank, XVariable *value) override;
 
+        virtual void buildConstraintElement(string id, vector<int> &list, int startIndex, XVariable *index, RankType rank, XVariable *value) override;
+
         virtual void buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex) override;
 
         virtual void buildConstraintChannel(string id, vector<XVariable *> &list1, int startIndex1, vector<XVariable *> &list2,
@@ -180,17 +182,17 @@ namespace XCSP3Core {
 
         virtual void buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex, XVariable *value) override;
 
-        virtual void buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector <XInterval> &widths) override;
+        virtual void buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths) override;
 
-        virtual void buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector <XInterval> &widths, vector <vector<int>> &patterns) override;
+        virtual void buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths, vector<vector<int>> &patterns) override;
 
         virtual void buildConstraintNoOverlap(string id, vector<XVariable *> &origins, vector<int> &lengths, bool zeroIgnored) override;
 
         virtual void buildConstraintNoOverlap(string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, bool zeroIgnored) override;
 
-        virtual void buildConstraintNoOverlap(string id, vector <vector<XVariable *>> &origins, vector <vector<int>> &lengths, bool zeroIgnored) override;
+        virtual void buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<int>> &lengths, bool zeroIgnored) override;
 
-        virtual void buildConstraintNoOverlap(string id, vector <vector<XVariable *>> &origins, vector <vector<XVariable *>> &lengths, bool zeroIgnored) override;
+        virtual void buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<XVariable *>> &lengths, bool zeroIgnored) override;
 
         virtual void buildConstraintInstantiation(string id, vector<XVariable *> &list, vector<int> &values) override;
 
@@ -231,7 +233,7 @@ XCSP3PrintCallbacks::XCSP3PrintCallbacks() : XCSP3CoreCallbacks() {
 
 
 template<class T>
-void displayList(vector <T> &list, string separator = " ") {
+void displayList(vector<T> &list, string separator = " ") {
     if(list.size() > 8) {
         for(int i = 0; i < 3; i++)
             cout << list[i] << separator;
@@ -247,44 +249,44 @@ void displayList(vector <T> &list, string separator = " ") {
 }
 
 
-void displayList(vector < XVariable * > &list, string
+void displayList(vector<XVariable *> &list, string
 separator = " "
 ) {
-if(list.
+    if(list.
 
-size()
+            size()
 
-> 8) {
-for(
-int i = 0;
-i < 3; i++)
-cout << list[i]->id <<
-separator;
-cout << " ... ";
-for(
-unsigned int i = list.size() - 4;
-i<list.
+       > 8) {
+        for(
+                int i = 0;
+                i < 3; i++)
+            cout << list[i]->id <<
+                 separator;
+        cout << " ... ";
+        for(
+                unsigned int i = list.size() - 4;
+                i < list.
 
-size();
+                        size();
 
-i++)
-cout << list[i]->id <<
-separator;
-cout <<
-endl;
-return;
-}
-for(
-unsigned int i = 0;
-i<list.
+                i++)
+            cout << list[i]->id <<
+                 separator;
+        cout <<
+             endl;
+        return;
+    }
+    for(
+            unsigned int i = 0;
+            i < list.
 
-size();
+                    size();
 
-i++)
-cout << list[i]->id <<
-separator;
-cout <<
-endl;
+            i++)
+        cout << list[i]->id <<
+             separator;
+    cout <<
+         endl;
 }
 
 
@@ -380,7 +382,7 @@ void XCSP3PrintCallbacks::buildVariableInteger(string id, vector<int> &values) {
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintExtension(string id, vector<XVariable *> list, vector <vector<int>> &tuples, bool support, bool hasStar) {
+void XCSP3PrintCallbacks::buildConstraintExtension(string id, vector<XVariable *> list, vector<vector<int>> &tuples, bool support, bool hasStar) {
     cout << "\n    extension constraint : " << id << endl;
     cout << "        " << (support ? "support" : "conflict") << " arity:" << list.size() << " nb tuples: " << tuples.size() << " star: " << hasStar << endl;
     cout << "        ";
@@ -410,7 +412,7 @@ void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, OrderType op, XVar
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintRegular(string id, vector<XVariable *> &list, string start, vector <string> &final, vector <XTransition> &transitions) {
+void XCSP3PrintCallbacks::buildConstraintRegular(string id, vector<XVariable *> &list, string start, vector<string> &final, vector<XTransition> &transitions) {
     cout << "\n    regular constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -427,7 +429,7 @@ void XCSP3PrintCallbacks::buildConstraintRegular(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintMDD(string id, vector<XVariable *> &list, vector <XTransition> &transitions) {
+void XCSP3PrintCallbacks::buildConstraintMDD(string id, vector<XVariable *> &list, vector<XTransition> &transitions) {
     cout << "\n    mdd constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -456,7 +458,7 @@ void XCSP3PrintCallbacks::buildConstraintAlldifferentExcept(string id, vector<XV
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintAlldifferentList(string id, vector <vector<XVariable *>> &lists) {
+void XCSP3PrintCallbacks::buildConstraintAlldifferentList(string id, vector<vector<XVariable *>> &lists) {
     cout << "\n    allDiff list constraint" << id << endl;
     for(unsigned int i = 0; i < (lists.size() < 4 ? lists.size() : 3); i++) {
         cout << "        ";
@@ -466,7 +468,7 @@ void XCSP3PrintCallbacks::buildConstraintAlldifferentList(string id, vector <vec
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintAlldifferentMatrix(string id, vector <vector<XVariable *>> &matrix) {
+void XCSP3PrintCallbacks::buildConstraintAlldifferentMatrix(string id, vector<vector<XVariable *>> &matrix) {
     cout << "\n    allDiff matrix constraint" << id << endl;
     for(unsigned int i = 0; i < matrix.size(); i++) {
         cout << "        ";
@@ -501,7 +503,7 @@ void XCSP3PrintCallbacks::buildConstraintOrdered(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintLex(string id, vector <vector<XVariable *>> &lists, OrderType order) {
+void XCSP3PrintCallbacks::buildConstraintLex(string id, vector<vector<XVariable *>> &lists, OrderType order) {
     cout << "\n    lex constraint   nb lists: " << lists.size() << endl;
     string sep;
     if(order == LT) sep = " < ";
@@ -517,7 +519,7 @@ void XCSP3PrintCallbacks::buildConstraintLex(string id, vector <vector<XVariable
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintLexMatrix(string id, vector <vector<XVariable *>> &matrix, OrderType order) {
+void XCSP3PrintCallbacks::buildConstraintLexMatrix(string id, vector<vector<XVariable *>> &matrix, OrderType order) {
     cout << "\n    lex matrix constraint   matrix  " << endl;
     string sep;
     if(order == LT) sep = " < ";
@@ -675,7 +677,7 @@ void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable *> &list, vector<int> values, vector <XInterval> &occurs,
+void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable *> &list, vector<int> values, vector<XInterval> &occurs,
                                                      bool closed) {
     cout << "\n    Cardinality constraint (int values, interval occurs)  constraint closed: " << closed << endl;
     cout << "        ";
@@ -711,7 +713,7 @@ void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector <XInterval> &occurs,
+void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector<XInterval> &occurs,
                                                      bool closed) {
     cout << "\n    Cardinality constraint (var values, interval occurs)  constraint closed: " << closed << endl;
     cout << "        ";
@@ -796,6 +798,15 @@ void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<XVariable *> 
     cout << "        index : " << *index << endl;
 }
 
+void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<int> &list, int startIndex, XVariable *index, RankType rank, XVariable *value) {
+    cout << "\n    element variable with list of integers (with index) constraint" << endl;
+    cout << "        ";
+    displayList(list);
+    cout << "        value: " << *value << endl;
+    cout << "        Start index : " << startIndex << endl;
+    cout << "        index : " << *index << endl;
+}
+
 
 void XCSP3PrintCallbacks::buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex) {
     cout << "\n    channel constraint" << endl;
@@ -823,7 +834,7 @@ void XCSP3PrintCallbacks::buildConstraintChannel(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector <XInterval> &widths) {
+void XCSP3PrintCallbacks::buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths) {
     cout << "\n    stretch constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -834,7 +845,7 @@ void XCSP3PrintCallbacks::buildConstraintStretch(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector <XInterval> &widths, vector <vector<int>> &patterns) {
+void XCSP3PrintCallbacks::buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths, vector<vector<int>> &patterns) {
     cout << "\n    stretch constraint (with patterns)" << endl;
     cout << "        ";
     displayList(list);
@@ -867,7 +878,7 @@ void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<XVariable *
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector <vector<XVariable *>> &origins, vector <vector<int>> &lengths, bool zeroIgnored) {
+void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<int>> &lengths, bool zeroIgnored) {
     cout << "\n    kdim (int lengths) nooverlap constraint" << endl;
     cout << "origins: " << endl;
     for(unsigned int i = 0; i < origins.size(); i++) {
@@ -883,7 +894,7 @@ void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector <vector<XVa
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector <vector<XVariable *>> &origins, vector <vector<XVariable *>> &lengths, bool zeroIgnored) {
+void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<XVariable *>> &lengths, bool zeroIgnored) {
     cout << "\n    kdim (lenghts vars nooverlap constraint" << endl;
     cout << "origins: " << endl;
     for(unsigned int i = 0; i < origins.size(); i++) {
