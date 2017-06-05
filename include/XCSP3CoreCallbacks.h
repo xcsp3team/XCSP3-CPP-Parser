@@ -130,13 +130,8 @@ namespace XCSP3Core {
         // Basic constraints
         //--------------------------------------------------------------------------------------
 
-<<<<<<< HEAD
-        virtual void buildConstraintExtension(string id, vector<XVariable *> list, vector<vector<int>> &tuples, bool support, bool hasStar) {
-            std::cout << "WARNING: tuples are not cheked wrt domains" << std::endl;
-=======
         virtual void buildConstraintExtension(string id, vector<XVariable *> list, vector <vector<int>> &tuples, bool support, bool hasStar) {
             std::cout << "WARNING: tuples are not checked wrt domains" << std::endl;
->>>>>>> 6fe79b8a9ed63b7b43b601674d5dd148cf7d449d
             throw runtime_error("extension constraint is not yet supported");
         }
 
