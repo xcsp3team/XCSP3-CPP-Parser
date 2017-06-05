@@ -1,7 +1,7 @@
 /*=============================================================================
  * parser for CSP instances represented in XCSP3 Format
  *
- * Copyright (c) 2015 xcp3.org (contact <at> xcsp3.org)
+ * Copyright (c) 2015 xcsp.org (contact <at> xcsp.org)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -130,8 +130,13 @@ namespace XCSP3Core {
         // Basic constraints
         //--------------------------------------------------------------------------------------
 
+<<<<<<< HEAD
         virtual void buildConstraintExtension(string id, vector<XVariable *> list, vector<vector<int>> &tuples, bool support, bool hasStar) {
             std::cout << "WARNING: tuples are not cheked wrt domains" << std::endl;
+=======
+        virtual void buildConstraintExtension(string id, vector<XVariable *> list, vector <vector<int>> &tuples, bool support, bool hasStar) {
+            std::cout << "WARNING: tuples are not checked wrt domains" << std::endl;
+>>>>>>> 6fe79b8a9ed63b7b43b601674d5dd148cf7d449d
             throw runtime_error("extension constraint is not yet supported");
         }
 
@@ -147,7 +152,7 @@ namespace XCSP3Core {
 
 
         virtual void buildConstraintIntension(string id, string expr) {
-            throw runtime_error("extension constraint is not yet supported");
+            throw runtime_error("intension constraint is not yet supported");
         }
 
 
@@ -352,7 +357,7 @@ namespace XCSP3Core {
 
 
         virtual void buildConstraintElement(string id, vector<XVariable *> &list, int startIndex, XVariable *index, RankType rank, XVariable *value) {
-            throw runtime_error("Element value with index constraint is not yet supported");
+            throw runtime_error("Element variable with index constraint is not yet supported");
         }
 
 

@@ -1,7 +1,7 @@
 /*=============================================================================
  * parser for CSP instances represented in XCSP3 Format
  *
- * Copyright (c) 2015 xcp3.org (contact <at> xcsp3.org)
+ * Copyright (c) 2015 xcsp.org (contact <at> xcsp.org)
  * Copyright (c) 2008 Olivier ROUSSEL (olivier.roussel <at> cril.univ-artois.fr)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1558,11 +1558,12 @@ void XMLParser::TransitionsTagAction::beginTag(const AttributeList &attributes) 
 
 
 void XMLParser::TransitionsTagAction::text(const UTF8String txt, bool last) {
+    if(txt.isWhiteSpace())
+        return;
     UTF8String::Tokenizer tokenizer(txt);
     tokenizer.addSeparator(')');
     tokenizer.addSeparator(',');
     tokenizer.addSeparator('(');
-    int val;
     // nb = 0 : from nb=1 : val nb=2 to
     while(tokenizer.hasMoreTokens()) {
         UTF8String token = tokenizer.nextToken();

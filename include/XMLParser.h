@@ -1,7 +1,7 @@
 /*=============================================================================
  * parser for CSP instances represented in XCSP3 Format
  * 
- * Copyright (c) 2015 xcp3.org (contact <at> xcsp3.org)
+ * Copyright (c) 2015 xcsp.org (contact <at> xcsp.org)
  * Copyright (c) 2008 Olivier ROUSSEL (olivier.roussel <at> cril.univ-artois.fr)
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -894,7 +894,7 @@ namespace XCSP3Core {
 
         class TransitionsTagAction : public TagAction {
         public:
-            int nb;
+            int nb, val;
             std::string from, to;
             TransitionsTagAction(XMLParser *parser, string name) : TagAction(parser, name) { }
             void beginTag(const AttributeList &attributes) override;
