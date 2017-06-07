@@ -429,6 +429,10 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
     registerTagAction(tagList, new BlockTagAction(this, "block"));
     registerTagAction(tagList, new SlideTagAction(this, "slide"));
 
+    registerTagAction(tagList, new CircuitTagAction(this, "circuit"));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "size", this->values));
+
+
 }
 
 

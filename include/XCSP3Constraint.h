@@ -41,7 +41,7 @@ namespace XCSP3Core {
     class XConstraintIntension;
 
     /***************************************************************************
-     * A constraint 
+     * A constraint XValue
      **************************************************************************/
     class XConstraint {
     public :
@@ -50,8 +50,12 @@ namespace XCSP3Core {
         string classes;
 
 
-        XConstraint(std::string dd, std::string c) : id(dd), classes(c) { }
-        virtual ~XConstraint() { }
+        XConstraint(std::string dd, std::string c) : id(dd), classes(c) {}
+
+
+        virtual ~XConstraint() {}
+
+
         virtual void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original);
     };
 
@@ -69,8 +73,12 @@ namespace XCSP3Core {
         map<string, XVariable *> toArguments;
 
 
-        XConstraintGroup(std::string idd, std::string c) : XConstraint(idd, c), constraint(NULL), type(UNKNOWN) { }
+        XConstraintGroup(std::string idd, std::string c) : XConstraint(idd, c), constraint(NULL), type(UNKNOWN) {}
+
+
         virtual ~XConstraintGroup() { delete constraint; }
+
+
         void unfoldVector(vector<XVariable *> &toUnfold, vector<XVariable *> &args, vector<XVariable *> &initial);
         void unfoldString(string &toUnfold, vector<XVariable *> &args);
         void unfoldArgumentNumber(int, XConstraint *builtConstraint);
@@ -116,7 +124,9 @@ namespace XCSP3Core {
         XVariable *value;
 
 
-        XValue() : value(0) { }
+        XValue() : value(0) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original);
     };
 
@@ -125,7 +135,9 @@ namespace XCSP3Core {
         XVariable *index;
 
 
-        XIndex() : index(0) { }
+        XIndex() : index(0) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original);
     };
 
@@ -148,7 +160,9 @@ namespace XCSP3Core {
         bool containsStar;
 
 
-        XConstraintExtension(std::string idd, std::string c) : XConstraint(idd, c), containsStar(false) { }
+        XConstraintExtension(std::string idd, std::string c) : XConstraint(idd, c), containsStar(false) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -161,7 +175,9 @@ namespace XCSP3Core {
         string function;
 
 
-        XConstraintIntension(std::string idd, std::string c) : XConstraint(idd, c) { }
+        XConstraintIntension(std::string idd, std::string c) : XConstraint(idd, c) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -181,7 +197,7 @@ namespace XCSP3Core {
      **************************************************************************/
     class XTransition {
     public :
-        XTransition(string f, int v, string t) : from(f), val(v), to(t) { }
+        XTransition(string f, int v, string t) : from(f), val(v), to(t) {}
 
 
         string from;
@@ -200,7 +216,7 @@ namespace XCSP3Core {
         vector<XTransition> &transitions;
 
 
-        XConstraintRegular(std::string idd, std::string c) : XConstraint(idd, c), start(st), final(fi), transitions(tr) { }
+        XConstraintRegular(std::string idd, std::string c) : XConstraint(idd, c), start(st), final(fi), transitions(tr) {}
     };
 
     /***************************************************************************
@@ -212,7 +228,7 @@ namespace XCSP3Core {
         vector<XTransition> &transitions;
 
 
-        XConstraintMDD(std::string idd, std::string c) : XConstraint(idd, c), transitions(tr) {  }
+        XConstraintMDD(std::string idd, std::string c) : XConstraint(idd, c), transitions(tr) {}
     };
 
     /***************************************************************************
@@ -227,7 +243,7 @@ namespace XCSP3Core {
         vector<int> &except;
 
 
-        XConstraintAllDiff(std::string idd, std::string c) : XConstraint(idd, c), except(_except) { }
+        XConstraintAllDiff(std::string idd, std::string c) : XConstraint(idd, c), except(_except) {}
     };
 
 
@@ -236,12 +252,12 @@ namespace XCSP3Core {
         vector<vector<XVariable *> > matrix;
 
 
-        XConstraintAllDiffMatrix(std::string idd, std::string c) : XConstraint(idd, c) { }
+        XConstraintAllDiffMatrix(std::string idd, std::string c) : XConstraint(idd, c) {}
 
 
         XConstraintAllDiffMatrix(std::string idd, std::string c, vector<vector<XVariable *> > &mat) : XConstraint(idd, c) {
             matrix.resize(mat.size());
-            for(unsigned int i = 0; i < mat.size(); i++)
+            for(unsigned int i = 0 ; i < mat.size() ; i++)
                 matrix[i].assign(mat[i].begin(), mat[i].end());
         }
 
@@ -262,7 +278,9 @@ namespace XCSP3Core {
     class XConstraintOrdered : public XConstraint {
     public :
         OrderType &op;
-        XConstraintOrdered(std::string idd, std::string c) : XConstraint(idd, c), op(_op) { }
+
+
+        XConstraintOrdered(std::string idd, std::string c) : XConstraint(idd, c), op(_op) {}
     };
 
 
@@ -272,7 +290,9 @@ namespace XCSP3Core {
         vector<vector<XVariable *> > lists;
 
 
-        XConstraintLex(std::string idd, std::string c) : XConstraintOrdered(idd, c) { }
+        XConstraintLex(std::string idd, std::string c) : XConstraintOrdered(idd, c) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -281,7 +301,9 @@ namespace XCSP3Core {
         vector<vector<XVariable *> > matrix;
 
 
-        XConstraintLexMatrix(std::string idd, std::string c) : XConstraintOrdered(idd, c) { }
+        XConstraintLexMatrix(std::string idd, std::string c) : XConstraintOrdered(idd, c) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -300,10 +322,12 @@ namespace XCSP3Core {
 
     class XConstraintSum : public XConstraint, public XInitialCondition, public XValues {
     public :
-   //     vector<int> &coeffs;
+        //     vector<int> &coeffs;
 
 
-        XConstraintSum(std::string idd, std::string c) : XConstraint(idd, c) { }
+        XConstraintSum(std::string idd, std::string c) : XConstraint(idd, c) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -313,7 +337,9 @@ namespace XCSP3Core {
         vector<int> &except;
 
 
-        XConstraintNValues(std::string idd, std::string c) : XConstraint(idd, c), except(_except) { }
+        XConstraintNValues(std::string idd, std::string c) : XConstraint(idd, c), except(_except) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -324,7 +350,9 @@ namespace XCSP3Core {
         bool closed;
 
 
-        XConstraintCardinality(std::string idd, std::string c) : XConstraint(idd, c) { }
+        XConstraintCardinality(std::string idd, std::string c) : XConstraint(idd, c) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -334,7 +362,9 @@ namespace XCSP3Core {
 
     class XConstraintCount : public XConstraint, public XInitialCondition, public XValues {
     public :
-        XConstraintCount(std::string idd, std::string c) : XConstraint(idd, c) { }
+        XConstraintCount(std::string idd, std::string c) : XConstraint(idd, c) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -357,7 +387,9 @@ namespace XCSP3Core {
         RankType rank;
 
 
-        XConstraintMaximum(std::string idd, std::string c) : XConstraint(idd, c), startIndex(0), rank(ANY) { }
+        XConstraintMaximum(std::string idd, std::string c) : XConstraint(idd, c), startIndex(0), rank(ANY) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -373,7 +405,9 @@ namespace XCSP3Core {
         RankType rank;
 
 
-        XConstraintElement(std::string idd, std::string c) : XConstraint(idd, c), startIndex(0), rank(ANY) { }
+        XConstraintElement(std::string idd, std::string c) : XConstraint(idd, c), startIndex(0), rank(ANY) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -388,7 +422,9 @@ namespace XCSP3Core {
         int startIndex2;
 
 
-        XConstraintChannel(std::string idd, std::string c) : XConstraint(idd, c), startIndex1(0), startIndex2(0) { }
+        XConstraintChannel(std::string idd, std::string c) : XConstraint(idd, c), startIndex1(0), startIndex2(0) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -410,7 +446,10 @@ namespace XCSP3Core {
         vector<XVariable *> &origins;
         bool zeroIgnored;
 
-        XConstraintNoOverlap(std::string idd, std::string c) : XConstraint(idd, c), origins(list) { }
+
+        XConstraintNoOverlap(std::string idd, std::string c) : XConstraint(idd, c), origins(list) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -425,7 +464,9 @@ namespace XCSP3Core {
         vector<XVariable *> heights;
 
 
-        XConstraintCumulative(std::string idd, std::string c) : XConstraint(idd, c), origins(list) { }
+        XConstraintCumulative(std::string idd, std::string c) : XConstraint(idd, c), origins(list) {}
+
+
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
@@ -440,7 +481,9 @@ namespace XCSP3Core {
         vector<vector<int> > patterns;
 
 
-        XConstraintStretch(std::string idd, std::string c) : XConstraint(idd, c) { }
+        XConstraintStretch(std::string idd, std::string c) : XConstraint(idd, c) {}
+
+
         // Group is valied with lists only.
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
@@ -454,12 +497,28 @@ namespace XCSP3Core {
     class XConstraintInstantiation : public XConstraint {
     public :
         vector<int> &values;
-        XConstraintInstantiation(std::string idd, std::string c) : XConstraint(idd, c), values(_values) { }
+
+
+        XConstraintInstantiation(std::string idd, std::string c) : XConstraint(idd, c), values(_values) {}
     };
 
+    /***************************************************************************
+     ****************************************************************************
+    *                  COMPARISON BASED CONSTRAINTS
+    ****************************************************************************
+    ***************************************************************************/
+
+    class XConstraintCircuit : public XConstraint, public XValue { // value => size
+    public :
+        XConstraintCircuit(std::string idd, std::string c) : XConstraint(idd, c) {}
+        int startIndex;
+
+        void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
+
+    };
 
 }
 
 
-#endif	/* XCONSTRAINT_H */
+#endif    /* XCONSTRAINT_H */
 

@@ -704,6 +704,28 @@ void XCSP3Manager::newConstraintInstantiation(XConstraintInstantiation *constrai
     callback->buildConstraintInstantiation(constraint->id, constraint->list, constraint->values);
 }
 
+
+//--------------------------------------------------------------------------------------
+// Graph  constraints
+//--------------------------------------------------------------------------------------
+
+void XCSP3Manager::newConstraintCircuit(XConstraintCircuit *constraint) {
+    if(discardedClasses(constraint->classes))
+        return;
+
+    if(constraint->value== nullptr)
+        callback->buildConstraintCircuit(constraint->id, constraint->list, constraint->startIndex);
+    else {
+        int value;
+        if(isInteger(constraint->value, value))
+            callback->buildConstraintCircuit(constraint->id, constraint->list, constraint->startIndex, value);
+        else
+            callback->buildConstraintCircuit(constraint->id, constraint->list, constraint->startIndex, (XVariable *)constraint->value);
+    }
+
+}
+
+
 //--------------------------------------------------------------------------------------
 // group constraints
 //--------------------------------------------------------------------------------------
@@ -790,6 +812,9 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             unfoldConstraint<XConstraintRegular>(group, i, &XCSP3Manager::newConstraintRegular);
         if(group->type == MDD)
             unfoldConstraint<XConstraintMDD>(group, i, &XCSP3Manager::newConstraintMDD);
+        if(group->type == CIRCUIT)
+            unfoldConstraint<XConstraintCircuit>(group, i, &XCSP3Manager::newConstraintCircuit);
+
         if(group->type == CUMULATIVE) {
             throw runtime_error("Cumulative constraint is not yet supported");
         }

@@ -117,8 +117,8 @@ void XMLParser::VarTagAction::beginTag(const AttributeList &attributes) {
         if((similarArray = dynamic_cast<XVariableArray *>(this->parser->variablesList[as])) != NULL) {
             variableArray = new XVariableArray(id, similarArray);
         } else {
-            XVariable *similar = (XVariable * )
-            this->parser->variablesList[as];
+            XVariable *similar = (XVariable *)
+                    this->parser->variablesList[as];
             variable = new XVariable(id, similar->domain);
         }
     } else {
@@ -187,14 +187,14 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList &attributes) {
     if(!attributes["as"].isNull()) {
         // Create a similar Variable
         attributes["as"].to(as);
-        XVariableArray *similar = (XVariableArray * )
-        this->parser->variablesList[as];
+        XVariableArray *similar = (XVariableArray *)
+                this->parser->variablesList[as];
         varArray = new XVariableArray(id, similar);
     } else {
         if(!attributes["size"].to(size))
             throw runtime_error("expected attribute id for tag <array>");
-        vector <std::string> stringSizes = split(size, '[');
-        for(unsigned int i = 0; i < stringSizes.size(); i++) {
+        vector<std::string> stringSizes = split(size, '[');
+        for(unsigned int i = 0 ; i < stringSizes.size() ; i++) {
             if(stringSizes[i].size() == 0)
                 continue;
             sizes.push_back(std::stoi(stringSizes[i].substr(0, stringSizes[i].size() - 1)));
@@ -238,19 +238,19 @@ void XMLParser::DomainTagAction::endTag() {
         return;
 
     string name;
-    vector <string> allCompactForms;
-    vector < XVariable * > vars;
+    vector<string> allCompactForms;
+    vector<XVariable *> vars;
     XVariableArray *varArray = ((XMLParser::ArrayTagAction *) this->parser->getParentTagAction())->varArray;
 
     split(forAttr, ' ', allCompactForms);
-    for(unsigned int i = 0; i < allCompactForms.size(); i++) {
+    for(unsigned int i = 0 ; i < allCompactForms.size() ; i++) {
         int pos = allCompactForms[i].find('[');
         name = allCompactForms[i].substr(0, pos);
         string compactForm = allCompactForms[i].substr(pos);
         vector<int> flatIndexes;
         vector<int> indexes;
         varArray->getVarsFor(vars, compactForm, &flatIndexes, true);
-        for(unsigned int j = 0; j < flatIndexes.size(); j++) {
+        for(unsigned int j = 0 ; j < flatIndexes.size() ; j++) {
             varArray->indexesFor(flatIndexes[j], indexes);
             varArray->variables[flatIndexes[j]] = new XVariable(varArray->id, d, indexes);
             this->parser->toFree.push_back(varArray->variables[flatIndexes[j]]);
@@ -454,7 +454,7 @@ void XMLParser::MDDTagAction::beginTag(const AttributeList &attributes) {
 void XMLParser::MDDTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     constraint->transitions.clear();
-    for(int i = 0; i < this->parser->transitions.size(); i++) {
+    for(int i = 0 ; i < this->parser->transitions.size() ; i++) {
         XTransition &xt = this->parser->transitions[i];
         constraint->transitions.push_back(XTransition(xt.from, xt.val, xt.to));
     }
@@ -520,7 +520,7 @@ void XMLParser::AllDiffEqualTagAction::endTag() {
                     throw runtime_error("except tag not allowed with alldiff on lists");
 
                 XConstraintAllDiffList *ctl = new XConstraintAllDiffList(this->id, this->parser->classes);
-                for(unsigned int i = 0; i < this->parser->lists.size(); i++)
+                for(unsigned int i = 0 ; i < this->parser->lists.size() ; i++)
                     ctl->matrix.push_back(vector<XVariable *>(this->parser->lists[i].begin(),
                                                               this->parser->lists[i].end()));
                 this->parser->manager->newConstraintAllDiffList(ctl);
@@ -617,7 +617,7 @@ void XMLParser::LexTagAction::endTag() {
     if(this->parser->matrix.size() > 0) {
         XConstraintLexMatrix *lexM = new XConstraintLexMatrix(this->id, this->parser->classes);
         lexM->op = this->parser->op;
-        for(unsigned int i = 0; i < this->parser->matrix.size(); i++)
+        for(unsigned int i = 0 ; i < this->parser->matrix.size() ; i++)
             lexM->matrix.push_back(
                     vector<XVariable *>(this->parser->matrix[i].begin(), this->parser->matrix[i].end()));
 
@@ -628,7 +628,7 @@ void XMLParser::LexTagAction::endTag() {
         if(this->parser->lists.size() == 0)
             throw runtime_error("<lex> tag should  have many lists");
 
-        for(unsigned int i = 0; i < this->parser->lists.size(); i++)
+        for(unsigned int i = 0 ; i < this->parser->lists.size() ; i++)
             constraint->lists.push_back(
                     vector<XVariable *>(this->parser->lists[i].begin(), this->parser->lists[i].end()));
         constraint->op = this->parser->op;
@@ -937,7 +937,7 @@ void XMLParser::StretchTagAction::endTag() {
     }
 
 
-    for(unsigned int i = 0; i < this->parser->widths.size(); i++) {
+    for(unsigned int i = 0 ; i < this->parser->widths.size() ; i++) {
         XIntegerInterval *xrange = dynamic_cast<XIntegerInterval *>(this->parser->widths[i]);
         constraint->widths.push_back(XInterval(xrange->min, xrange->max));
     }
@@ -945,7 +945,7 @@ void XMLParser::StretchTagAction::endTag() {
 
     if(this->parser->patterns.size() > 0) {
         constraint->patterns.resize(this->parser->patterns.size());
-        for(unsigned int i = 0; i < this->parser->patterns.size(); i++)
+        for(unsigned int i = 0 ; i < this->parser->patterns.size() ; i++)
             constraint->patterns[i].assign(this->parser->patterns[i].begin(), this->parser->patterns[i].end());
     }
 
@@ -1023,6 +1023,45 @@ void XMLParser::CumulativeTagAction::endTag() {
 
     if(this->group == NULL) {
         this->parser->manager->newConstraintCumulative(constraint);
+        delete constraint;
+    }
+}
+
+
+/***************************************************************************
+****************************************************************************
+ *                  CONSTRAINTS DEFINED ON GRAPHS
+****************************************************************************
+***************************************************************************/
+
+void XMLParser::CircuitTagAction::beginTag(const AttributeList &attributes) {
+    BasicConstraintTagAction::beginTag(attributes);
+
+    constraint = new XConstraintCircuit(this->id, this->parser->classes);
+
+    // Link constraint to group
+    if(this->group != NULL) {
+        this->group->constraint = constraint;
+        this->group->type = CIRCUIT;
+    }
+    this->parser->values.clear();
+}
+
+
+void XMLParser::CircuitTagAction::endTag() {
+    constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
+    constraint->startIndex = this->parser->startIndex;
+    if(this->parser->values.size() == 1)
+        constraint->value = this->parser->values[0];
+    else {
+        if(this->parser->values.size() == 0)
+            constraint->value = nullptr;
+        else
+            throw runtime_error("<size> tag accepts only one value");
+    }
+
+    if(this->group == NULL) {
+        this->parser->manager->newConstraintCircuit(constraint);
         delete constraint;
     }
 }
@@ -1310,10 +1349,10 @@ void XMLParser::ConflictOrSupportTagAction::beginTag(const AttributeList &attrib
 void XMLParser::ConflictOrSupportTagAction::text(const UTF8String txt, bool last) {
     XConstraintExtension *ctr = ((XMLParser::ExtensionTagAction *) this->parser->getParentTagAction())->constraint;
     if(this->parser->lists[0].size() == 1 && this->parser->lists[0][0]->id != "%...") {
-        vector < XIntegerEntity * > tmplist;
+        vector<XIntegerEntity *> tmplist;
         this->parser->parseListOfIntegerOrInterval(txt, tmplist);
-        for(unsigned int i = 0; i < tmplist.size(); i++) {
-            for(int val = tmplist[i]->minimum(); val <= tmplist[i]->maximum(); val++) {
+        for(unsigned int i = 0 ; i < tmplist.size() ; i++) {
+            for(int val = tmplist[i]->minimum() ; val <= tmplist[i]->maximum() ; val++) {
                 ctr->tuples.push_back(vector<int>());
                 ctr->tuples.back().push_back(val);
             }
@@ -1400,9 +1439,9 @@ void XMLParser::SlideTagAction::endTag() {
         arity = this->parser->nbParameters;
 
     unsigned long end = circular ? list.size() - arity + 2 : list.size() - arity + 1;
-    for(unsigned int i = 0; i < end; i += offset) {
+    for(unsigned int i = 0 ; i < end ; i += offset) {
         group->arguments.push_back(vector<XVariable *>());
-        for(unsigned int j = 0; j < arity; j++) {
+        for(unsigned int j = 0 ; j < arity ; j++) {
             group->arguments.back().push_back(list[(i + j) % list.size()]);
         }
     }
@@ -1459,7 +1498,7 @@ void XMLParser::IndexTagAction::text(const UTF8String txt, bool last) {
         return;
     if(this->parser->index != NULL)
         throw runtime_error("<index> tag must contain only one variable");
-    vector < XVariable * > tmpList;
+    vector<XVariable *> tmpList;
     this->parser->parseSequence(txt, tmpList);
     if(tmpList.size() != 1)
         throw runtime_error("<index> tag must contain only one variable");
@@ -1496,12 +1535,12 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool last) {
         compactForm = txt2.substr(pos);
         if(this->parser->variablesList[name] == NULL)
             runtime_error("Matrix variable " + name + "does not exist");
-        XVariableArray *varArray = ((XVariableArray * )
-        this->parser->variablesList[name]);
+        XVariableArray *varArray = ((XVariableArray *)
+                this->parser->variablesList[name]);
         int nbV = 0;
         string tmp;
         // Find the first interval
-        for(unsigned int i = 0; i < varArray->sizes.size(); i++) {
+        for(unsigned int i = 0 ; i < varArray->sizes.size() ; i++) {
             int pos = compactForm.find(']');
             tmp = compactForm.substr(1, pos - 1);
             compactForm = compactForm.substr(pos + 1);
@@ -1521,9 +1560,9 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool last) {
 
         this->parser->parseSequence(txt, this->parser->lists[0]);
         int nbCol = this->parser->lists[0].size() / nbV;
-        for(int i = 0; i < nbV; i++) {
+        for(int i = 0 ; i < nbV ; i++) {
             this->parser->matrix.push_back(vector<XVariable *>());
-            for(int j = 0; j < nbCol; j++)
+            for(int j = 0 ; j < nbCol ; j++)
                 this->parser->matrix.back().push_back(this->parser->lists[0][i * nbCol + j]);
         }
 
@@ -1546,7 +1585,7 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool last) {
 
 
 void XMLParser::MatrixTagAction::endTag() {
-    for(unsigned int i = 0; i < this->parser->matrix.size() - 1; i++)
+    for(unsigned int i = 0 ; i < this->parser->matrix.size() - 1 ; i++)
         if(this->parser->matrix[i].size() != this->parser->matrix[i + 1].size())
             throw runtime_error("Matrix is not a matrix...");
 }

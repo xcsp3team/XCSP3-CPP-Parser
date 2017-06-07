@@ -521,6 +521,14 @@ void XConstraintStretch::unfoldParameters(XConstraintGroup *group, vector<XVaria
 }
 
 
+void XConstraintCircuit::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+    XConstraintCircuit *xc = dynamic_cast<XConstraintCircuit *>(original);
+    XConstraint::unfoldParameters(group, arguments, original);
+    XValue::unfoldParameters(group, arguments, original);
+    startIndex = xc->startIndex;
+}
+
+
 //------------------------------------------------------------------------------------------
 //  XCSP3Utils.h functions
 //------------------------------------------------------------------------------------------

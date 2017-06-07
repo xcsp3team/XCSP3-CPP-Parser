@@ -251,6 +251,11 @@ x[2]   x[3] </list>
 
 <intension>le(add(x[0],3),x[1])</intension>
 
+<circuit>
+  <list startIndex='1'>x[0..5]</list>
+  <size>x[0..1]</size>
+</circuit>
+
 <cumulative>
   <origins> x[0..2] </origins>
   <lengths>x[3..6] </lengths>

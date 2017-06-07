@@ -460,6 +460,24 @@ namespace XCSP3Core {
         }
 
         //--------------------------------------------------------------------------------------
+        // Graph constraints
+        //--------------------------------------------------------------------------------------
+
+        virtual void buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex) {
+            throw runtime_error("circuit constraint not yet supported");
+        }
+
+
+        virtual void buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex, int size) {
+            throw runtime_error("circuit constraint not yet supported");
+        }
+
+
+        virtual void buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex, XVariable *size) {
+            throw runtime_error("circuit constraint not yet supported");
+        }
+
+        //--------------------------------------------------------------------------------------
         // Objectives
         //--------------------------------------------------------------------------------------
 

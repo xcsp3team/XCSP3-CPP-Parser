@@ -916,6 +916,13 @@ namespace XCSP3Core {
         };
 
 
+        class CircuitTagAction : public BasicConstraintTagAction {
+            XConstraintCircuit *constraint;
+        public :
+            CircuitTagAction(XMLParser *parser, string name) : BasicConstraintTagAction(parser, name) { }
+            void beginTag(const AttributeList &attributes) override;
+            void endTag() override;
+        };
     public:
         XMLParser(XCSP3CoreCallbacks *cb);
         ~XMLParser();

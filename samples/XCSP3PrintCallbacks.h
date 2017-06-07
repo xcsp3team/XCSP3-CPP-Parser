@@ -177,8 +177,7 @@ namespace XCSP3Core {
 
         virtual void buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex) override;
 
-        virtual void buildConstraintChannel(string id, vector<XVariable *> &list1, int startIndex1, vector<XVariable *> &list2,
-                                            int startIndex2) override;
+        virtual void buildConstraintChannel(string id, vector<XVariable *> &list1, int startIndex1, vector<XVariable *> &list2,  int startIndex2) override;
 
         virtual void buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex, XVariable *value) override;
 
@@ -195,6 +194,16 @@ namespace XCSP3Core {
         virtual void buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<XVariable *>> &lengths, bool zeroIgnored) override;
 
         virtual void buildConstraintInstantiation(string id, vector<XVariable *> &list, vector<int> &values) override;
+
+
+        virtual void buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex) override;
+
+
+        virtual void buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex, int size) override;
+
+
+        virtual void buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex, XVariable *size) override;
+
 
         virtual void buildObjectiveMinimizeExpression(string expr) override;
 
@@ -919,7 +928,34 @@ void XCSP3PrintCallbacks::buildConstraintInstantiation(string id, vector<XVariab
 }
 
 
+void XCSP3PrintCallbacks::buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex) {
+    cout << "\n    circuit constraint" << endl;
+    cout << "        list:";
+    displayList(list);
+    cout << "        startIndex:" << startIndex << endl;
+}
+
+
+void XCSP3PrintCallbacks::buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex, int size) {
+    cout << "\n    circuit constraint" << endl;
+    cout << "        list:";
+    displayList(list);
+    cout << "        startIndex:" << startIndex << endl;
+    cout << "        size: " << size << endl;
+}
+
+
+void XCSP3PrintCallbacks::buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex, XVariable *size) {
+    cout << "\n    circuit constraint" << endl;
+    cout << "        list:";
+    displayList(list);
+    cout << "        startIndex:" << startIndex << endl;
+    cout << "        size: " << size->id << endl;
+}
+
+
 void XCSP3PrintCallbacks::buildObjectiveMinimizeExpression(string expr) {
+
     cout << "\n    objective: minimize" << expr << endl;
 }
 
