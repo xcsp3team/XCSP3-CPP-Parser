@@ -1047,6 +1047,9 @@ void XMLParser::CircuitTagAction::beginTag(const AttributeList &attributes) {
     this->parser->values.clear();
 }
 
+void XMLParser::CircuitTagAction::text(const UTF8String txt, bool last) {
+    this->parser->parseSequence(txt, this->parser->lists[0]);
+}
 
 void XMLParser::CircuitTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
