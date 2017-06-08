@@ -88,7 +88,8 @@ void XCSP3Manager::buildVariableArray(XVariableArray *variable) {
         return;
 
     for(XVariable *v : variable->variables)
-        buildVariable(v);
+        if(v != nullptr)
+            buildVariable(v);
 }
 
 //--------------------------------------------------------------------------------------

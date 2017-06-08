@@ -342,15 +342,9 @@ namespace XCSP3Core {
             DomainTagAction(XMLParser *parser, string name) : TagAction(parser, name) { }
 
 
-            virtual void beginTag(const AttributeList &attributes) override;
+            void beginTag(const AttributeList &attributes) override;
+            void text(const UTF8String txt, bool last)  override;
             void endTag() override;
-
-
-            void text(const UTF8String txt, bool last)  override {
-                this->parser->parseDomain(txt, d);
-            }
-
-
         };
 
 

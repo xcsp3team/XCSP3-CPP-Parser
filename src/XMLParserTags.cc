@@ -214,8 +214,11 @@ void XMLParser::ArrayTagAction::endTag() {
     if(domain->nbValues() != 0) // Possible empty variables
         varArray->buildVarsWith(domain);
     this->parser->variablesList[varArray->id] = varArray;
-    for(XVariable *x : varArray->variables)
+    for(XVariable *x : varArray->variables) {
+        if(x == nullptr) // Undefined variable
+            continue;
         this->parser->variablesList[x->id] = x;
+    }
     this->parser->manager->buildVariableArray(varArray);
     this->parser->manager->endVariableArray();
 }
@@ -230,6 +233,10 @@ void XMLParser::DomainTagAction::beginTag(const AttributeList &attributes) {
         d = new XDomainInteger();
         this->parser->allDomains.push_back(d);
     }
+}
+
+void XMLParser::DomainTagAction::text(const UTF8String txt, bool last) {
+    this->parser->parseDomain(txt, d);
 }
 
 
