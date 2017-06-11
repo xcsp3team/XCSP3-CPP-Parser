@@ -815,10 +815,9 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             unfoldConstraint<XConstraintMDD>(group, i, &XCSP3Manager::newConstraintMDD);
         if(group->type == CIRCUIT)
             unfoldConstraint<XConstraintCircuit>(group, i, &XCSP3Manager::newConstraintCircuit);
+        if(group->type == CUMULATIVE)
+            unfoldConstraint<XConstraintCumulative>(group, i, &XCSP3Manager::newConstraintCumulative);
 
-        if(group->type == CUMULATIVE) {
-            throw runtime_error("Cumulative constraint is not yet supported");
-        }
         if(group->type == UNKNOWN) {
             throw runtime_error("Group constraint is badly defined");
         }

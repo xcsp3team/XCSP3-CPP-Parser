@@ -1,4 +1,4 @@
-CFLAGS = -g -Wall -std=c++11 
+CFLAGS =  -Wall -std=c++11
 EXEC = test
 
 LIBS = `xml2-config --libs`
