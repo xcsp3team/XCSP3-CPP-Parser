@@ -262,7 +262,7 @@ namespace XCSP3Core {
 
 
             virtual void beginTag(const AttributeList &attributes) {
-                throw runtime_error("Unknonw Tag");
+                throw runtime_error("Unknown Tag");
             }
 
         };
