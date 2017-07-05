@@ -28,6 +28,7 @@
 
 #include<cmath>
 #include <vector>
+#include <map>
 #include<iostream>
 #include<assert.h>
 
@@ -41,7 +42,7 @@ namespace XCSP3Core {
         friend class Intension;
 
     public:
-        virtual int evaluate(std::vector<int> &tuple) = 0;
+        virtual int evaluate(std::map<std::string, int> &tuple) = 0;
 
         virtual void prefixe() = 0;
     };
@@ -58,7 +59,7 @@ namespace XCSP3Core {
         NodeConstant(int v) : val(v) {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             return val;
         }
 
@@ -73,14 +74,13 @@ namespace XCSP3Core {
     class NodeVariable : public Node {
     protected:
         std::string var;
-        int position;
     public:
 
-        NodeVariable(std::string v, int p) : var(v), position(p) {}
+        NodeVariable(std::string v) : var(v) {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
-            return tuple[position];
+        int evaluate(std::map<std::string, int> &tuple) override {
+            return tuple[var];
         }
 
 
@@ -190,7 +190,7 @@ namespace XCSP3Core {
         NodeNeg() : NodeUnary("-") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             return -parameter->evaluate(tuple);
         }
     };
@@ -203,7 +203,7 @@ namespace XCSP3Core {
         NodeAbs() : NodeUnary("abs") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             int v = parameter->evaluate(tuple);
             return v > 0 ? v : -v;
         }
@@ -215,7 +215,7 @@ namespace XCSP3Core {
         NodeSquare() : NodeUnary("sqr") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             int v = parameter->evaluate(tuple);
             return v * v;
         }
@@ -227,7 +227,7 @@ namespace XCSP3Core {
         NodeNot() : NodeUnary("not") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             int v = parameter->evaluate(tuple);
             return !v;//v ? 0 : v;
         }
@@ -240,7 +240,7 @@ namespace XCSP3Core {
         NodeSub() : NodeBinary("sub") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             return parameter1->evaluate(tuple) - parameter2->evaluate(tuple);
         }
     };
@@ -251,7 +251,7 @@ namespace XCSP3Core {
         NodeDiv() : NodeBinary("div") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             return parameter1->evaluate(tuple) / parameter2->evaluate(tuple);
         }
     };
@@ -262,7 +262,7 @@ namespace XCSP3Core {
         NodeMod() : NodeBinary("mod") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             return parameter1->evaluate(tuple) % parameter2->evaluate(tuple);
         }
     };
@@ -273,7 +273,7 @@ namespace XCSP3Core {
         NodePow() : NodeBinary("pow") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             return pow(parameter1->evaluate(tuple), parameter2->evaluate(tuple));
         }
     };
@@ -284,7 +284,7 @@ namespace XCSP3Core {
         NodeDist() : NodeBinary("dist") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             int v = parameter1->evaluate(tuple) - parameter2->evaluate(tuple);
             return v > 0 ? v : -v;
         }
@@ -296,7 +296,7 @@ namespace XCSP3Core {
         NodeLE() : NodeBinary("le") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             return parameter1->evaluate(tuple) <= parameter2->evaluate(tuple);
         }
     };
@@ -307,7 +307,7 @@ namespace XCSP3Core {
         NodeLT() : NodeBinary("lt") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             return parameter1->evaluate(tuple) < parameter2->evaluate(tuple);
         }
     };
@@ -318,7 +318,7 @@ namespace XCSP3Core {
         NodeGE() : NodeBinary("ge") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             return parameter1->evaluate(tuple) >= parameter2->evaluate(tuple);
         }
     };
@@ -329,7 +329,7 @@ namespace XCSP3Core {
         NodeGT() : NodeBinary("gt") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             return parameter1->evaluate(tuple) > parameter2->evaluate(tuple);
         }
     };
@@ -340,7 +340,7 @@ namespace XCSP3Core {
         NodeNE() : NodeBinary("ne") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             return parameter1->evaluate(tuple) != parameter2->evaluate(tuple);
         }
     };
@@ -351,7 +351,7 @@ namespace XCSP3Core {
         NodeImp() : NodeBinary("impl") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             return parameter1->evaluate(tuple) == 0 || parameter2->evaluate(tuple);
         }
     };
@@ -364,7 +364,7 @@ namespace XCSP3Core {
         NodeAdd() : NodeNAry("add") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             int nb = 0;
             for(int i = 0 ; i < parameters.size() ; i++)
                 nb += parameters[i]->evaluate(tuple);
@@ -378,7 +378,7 @@ namespace XCSP3Core {
         NodeMult() : NodeNAry("mult") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             int nb = 1;
             for(int i = 0 ; i < parameters.size() ; i++)
                 nb *= parameters[i]->evaluate(tuple);
@@ -392,7 +392,7 @@ namespace XCSP3Core {
         NodeMin() : NodeNAry("min") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             int nb = parameters[0]->evaluate(tuple);
             for(int i = 1 ; i < parameters.size() ; i++) {
                 int v = parameters[i]->evaluate(tuple);
@@ -408,7 +408,7 @@ namespace XCSP3Core {
         NodeMax() : NodeNAry("max") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             int nb = parameters[0]->evaluate(tuple);
             for(int i = 1 ; i < parameters.size() ; i++) {
                 int v = parameters[i]->evaluate(tuple);
@@ -424,7 +424,7 @@ namespace XCSP3Core {
         NodeEQ() : NodeNAry("eq") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             int nb = parameters[0]->evaluate(tuple);
             for(int i = 1 ; i < parameters.size() ; i++) {
                 if(nb != parameters[i]->evaluate(tuple))
@@ -440,7 +440,7 @@ namespace XCSP3Core {
         NodeAnd() : NodeNAry("and") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             for(int i = 0 ; i < parameters.size() ; i++)
                 if(!parameters[i]->evaluate(tuple))
                     return 0;
@@ -454,7 +454,7 @@ namespace XCSP3Core {
         NodeOr() : NodeNAry("or") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             for(int i = 0 ; i < parameters.size() ; i++)
                 if(parameters[i]->evaluate(tuple)) {
                     return 1;
@@ -469,7 +469,7 @@ namespace XCSP3Core {
         NodeXor() : NodeNAry("xor") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
 
             int nb = !parameters[0]->evaluate(tuple) != !parameters[1]->evaluate(tuple);
 
@@ -485,7 +485,7 @@ namespace XCSP3Core {
         NodeIf() : NodeNAry("if") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             int nb = parameters[0]->evaluate(tuple);
             if(nb) return parameters[1]->evaluate(tuple);
             return parameters[2]->evaluate(tuple);
@@ -500,7 +500,7 @@ namespace XCSP3Core {
         }
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             assert(parameters.size() == 2); // TODO if greater!!
             int nb = parameters[0]->evaluate(tuple);
             return (nb) ? parameters[1]->evaluate(tuple) : !parameters[1]->evaluate(tuple);
@@ -512,7 +512,7 @@ namespace XCSP3Core {
         NodeSet() : NodeNAry("set") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             throw std::runtime_error("can't evaluate set");
         }
     };
@@ -526,7 +526,7 @@ namespace XCSP3Core {
         NodeIn() : NodeBinary("in") {}
 
 
-        int evaluate(std::vector<int> &tuple) override {
+        int evaluate(std::map<std::string, int> &tuple) override {
             int nb = parameter1->evaluate(tuple);
             set.clear();
             NodeSet *nodeSet;

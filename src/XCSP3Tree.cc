@@ -175,6 +175,6 @@ void Tree::createBasicParameter(string currentElement, std::vector<NodeOperator*
             listOfVariables.push_back(currentElement);
             position = listOfVariables.size() - 1;
         }
-        params.push_back(new NodeVariable(currentElement, position));
+        params.push_back(new NodeVariable(currentElement));
     }
 }

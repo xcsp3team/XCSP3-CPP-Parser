@@ -28,6 +28,7 @@
 
 #include<cmath>
 #include <vector>
+#include <map>
 #include<iostream>
 #include<assert.h>
 #include "XCSP3TreeNode.h"
@@ -56,7 +57,7 @@ namespace XCSP3Core {
 
 
 
-        int evaluate(std::vector<int> &tuple) {
+        int evaluate(std::map<std::string, int> &tuple) {
             return root->evaluate(tuple);
         }
 
