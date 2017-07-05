@@ -125,7 +125,7 @@ bool XCSP3Core::isInterval(XEntity *xe, int &min, int &max) {
 }
 
 
-bool XCSP3Core::isVariable(XEntity *xe, XVariable *v) {
+bool XCSP3Core::isVariable(XEntity *xe, XVariable * & v) {
     XVariable *x;
     if((x = dynamic_cast<XVariable *>(xe)) != NULL) {
         v = x;

@@ -98,7 +98,7 @@ namespace XCSP3Core {
     bool isInterval(XEntity *xe, int &min, int &max);
 
 
-    bool isVariable(XEntity *xe, XVariable *v);
+    bool isVariable(XEntity *xe, XVariable * &v);
 
     /**
      * This is a fake variable used as parameter for group constraint

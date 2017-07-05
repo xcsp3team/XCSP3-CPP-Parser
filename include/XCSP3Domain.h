@@ -137,7 +137,7 @@ namespace XCSP3Core {
         XDomainInteger() : size(0) {}
 
 
-        const int nbValues() {
+        int nbValues() {
             return size;
         }
 
