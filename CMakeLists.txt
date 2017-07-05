@@ -48,7 +48,7 @@ set(APP_HEADERS
 set(APP_SOURCES
         samples/XCSP3PrintCallbacks.h
         samples/main.cc
-        )
+        include/XCSP3TreeNode.h)
 
 include_directories(
         ${PROJECT_SOURCE_DIR}/include
