@@ -137,7 +137,7 @@ namespace XCSP3Core {
         XDomainInteger() : size(0) {}
 
 
-        int nbValues() {
+        int nbValues() const {
             return size;
         }
 
@@ -170,7 +170,7 @@ namespace XCSP3Core {
         friend ostream &operator<<(ostream &f, const XDomainInteger &d);
 
 
-        bool equals(XDomainInteger *arg) {
+        bool equals(XDomainInteger *arg) const {
             if(nbValues() != arg->nbValues())
                 return false;
             if(values.size() != arg->values.size())

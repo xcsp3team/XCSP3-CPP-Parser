@@ -26,12 +26,13 @@
 
 using namespace XCSP3Core;
 
-
+namespace XCSP3Core {
 // From UTF8String
-ostream &XCSP3Core::operator<<(ostream &f, const UTF8String s) {
+ostream & operator<<(ostream &f, const UTF8String s) {
     // directly output UTF8
     f.write(reinterpret_cast<const char *> (s._beg), s.byteLength());
     return f;
+}
 }
 
 
@@ -57,7 +58,7 @@ int XCSP3CoreParser::parse(istream &in) {
      */
     const char *filename = NULL; // name of the input file
     xmlSAXHandler handler;
-    xmlParserCtxtPtr parserCtxt;
+    xmlParserCtxtPtr parserCtxt = nullptr;
 
     const int bufSize = 4096;
     char *buffer = new char[bufSize];
@@ -98,7 +99,10 @@ int XCSP3CoreParser::parse(istream &in) {
         }
     } catch(runtime_error &e) {
         // ???
-        cout << "Exception at line " << parserCtxt->input->line << endl;
+        if ( parserCtxt && parserCtxt->input )
+           cout << "Exception at line " << parserCtxt->input->line << endl;
+        else
+           cout << "Exception at undefined line";
         throw (e);
     }
 
@@ -108,7 +112,8 @@ int XCSP3CoreParser::parse(istream &in) {
 }
 
 
-void XCSP3CoreParser::comment(void *parser, const xmlChar *value) { }
+// void *parser, const xmlChar *value
+void XCSP3CoreParser::comment(void *, const xmlChar *) { }
 
 
 void XCSP3CoreParser::startDocument(void *parser) {

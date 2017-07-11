@@ -60,7 +60,8 @@ namespace XCSP3Core {
 
 
     public :
-        XCSP3Manager(XCSP3CoreCallbacks *c, std::map<std::string, XEntity *> &m, bool pm = true) : callback(c), mapping(m), blockClasses("") { }
+        // XCSP3CoreCallbacks *c, std::map<std::string, XEntity *> &m, bool
+        XCSP3Manager(XCSP3CoreCallbacks *c, std::map<std::string, XEntity *> &m, bool = true) : callback(c), mapping(m), blockClasses("") { }
 
 
         void beginInstance(InstanceType type) {
@@ -280,7 +281,7 @@ namespace XCSP3Core {
         void addObjective(XObjective *objective);
     };
 
-};
+}
 
 #endif //COSOCO_XMANAGER_H
 

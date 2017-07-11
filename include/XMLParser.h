@@ -120,14 +120,16 @@ namespace XCSP3Core {
             const char *getTagName() { return tagName.c_str(); }
 
 
-            virtual void beginTag(const AttributeList &attributes) { }
+            // AttributeList &attributes
+            virtual void beginTag(const AttributeList &) { }
 
 
             /**
              *
              * @parm last must be true if this is the last chunk of text
              */
-            virtual void text(const UTF8String txt, bool last) {
+            // UTF8String txt, bool last
+            virtual void text(const UTF8String txt, bool) {
                 if(!txt.isWhiteSpace())
                     throw runtime_error("<" + tagName + "> tag should not have meaningful text");
             }
@@ -327,7 +329,8 @@ namespace XCSP3Core {
             void endTag() override ;
 
 
-            void text(const UTF8String txt, bool last) override {
+            // UTF8String txt, bool last
+            void text(const UTF8String txt, bool) override {
                 this->parser->parseDomain(txt, domain);
             }
         };
@@ -358,7 +361,8 @@ namespace XCSP3Core {
             ConstraintsTagAction(XMLParser *parser, string name) : TagAction(parser, name) { }
 
 
-            virtual void beginTag(const AttributeList &attributes) {
+            // AttributeList &attributes
+            virtual void beginTag(const AttributeList &) {
                 this->checkParentTag("instance");
                 this->parser->manager->beginConstraints();
             }
@@ -710,7 +714,8 @@ namespace XCSP3Core {
             ConditionTagAction(XMLParser *parser, string name) : TagAction(parser, name) { }
 
 
-            virtual void text(const UTF8String txt, bool last) {
+            // UTF8String txt, bool last
+            virtual void text(const UTF8String txt, bool) {
                 this->parser->condition += txt.to(this->parser->condition);
             }
 

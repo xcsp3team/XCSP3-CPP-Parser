@@ -69,7 +69,8 @@ void XMLParser::InstanceTagAction::endTag() {
  * Actions performed on VARIABLES tag
  ***************************************************************************/
 
-void XMLParser::VariablesTagAction::beginTag(const AttributeList &attributes) {
+// AttributeList &attributes
+void XMLParser::VariablesTagAction::beginTag(const AttributeList &) {
     this->checkParentTag("instance");
     this->parser->manager->beginVariables();
 }
@@ -128,7 +129,8 @@ void XMLParser::VarTagAction::beginTag(const AttributeList &attributes) {
 }
 
 
-void XMLParser::VarTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::VarTagAction::text(const UTF8String txt, bool) {
 
     if((variable != NULL || variableArray != NULL) && !txt.isWhiteSpace())
         throw runtime_error("<var> with attribute 'as' must not have domain declaration");
@@ -235,7 +237,9 @@ void XMLParser::DomainTagAction::beginTag(const AttributeList &attributes) {
     }
 }
 
-void XMLParser::DomainTagAction::text(const UTF8String txt, bool last) {
+
+// UTF8String txt, bool last
+void XMLParser::DomainTagAction::text(const UTF8String txt, bool) {
     this->parser->parseDomain(txt, d);
 }
 
@@ -382,7 +386,8 @@ void XMLParser::IntensionTagAction::beginTag(const AttributeList &attributes) {
 }
 
 
-void XMLParser::IntensionTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::IntensionTagAction::text(const UTF8String txt, bool) {
     fnc.append(txt);
 }
 
@@ -461,7 +466,7 @@ void XMLParser::MDDTagAction::beginTag(const AttributeList &attributes) {
 void XMLParser::MDDTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     constraint->transitions.clear();
-    for(int i = 0 ; i < this->parser->transitions.size() ; i++) {
+    for(unsigned int i = 0 ; i < this->parser->transitions.size() ; i++) {
         XTransition &xt = this->parser->transitions[i];
         constraint->transitions.push_back(XTransition(xt.from, xt.val, xt.to));
     }
@@ -511,7 +516,8 @@ void XMLParser::AllDiffEqualTagAction::beginTag(const AttributeList &attributes)
 }
 
 
-void XMLParser::AllDiffEqualTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::AllDiffEqualTagAction::text(const UTF8String txt, bool) {
     this->parser->parseSequence(txt, this->parser->lists[0]);
 }
 
@@ -528,8 +534,7 @@ void XMLParser::AllDiffEqualTagAction::endTag() {
 
                 XConstraintAllDiffList *ctl = new XConstraintAllDiffList(this->id, this->parser->classes);
                 for(unsigned int i = 0 ; i < this->parser->lists.size() ; i++)
-                    ctl->matrix.push_back(vector<XVariable *>(this->parser->lists[i].begin(),
-                                                              this->parser->lists[i].end()));
+                    ctl->matrix.push_back(vector<XVariable *>(this->parser->lists[i].begin(), this->parser->lists[i].end()));
                 this->parser->manager->newConstraintAllDiffList(ctl);
                 delete ct;
                 ct = ctl;
@@ -586,7 +591,8 @@ void XMLParser::OrderedTagAction::beginTag(const AttributeList &attributes) {
 }
 
 
-void XMLParser::OrderedTagAction::text(const UTF8String txt, bool last) {
+// const UTF8String txt, bool last
+void XMLParser::OrderedTagAction::text(const UTF8String txt, bool) {
     this->parser->parseSequence(txt, this->parser->lists[0]);
 }
 
@@ -808,7 +814,8 @@ void XMLParser::ChannelTagAction::beginTag(const AttributeList &attributes) {
 }
 
 
-void XMLParser::ChannelTagAction::text(const UTF8String txt, bool last) {
+// const UTF8String txt, bool last
+void XMLParser::ChannelTagAction::text(const UTF8String txt, bool) {
 //                if (this->parser->list.size() == 0)
     this->parser->parseSequence(txt, this->parser->lists[0]);
 }
@@ -1054,9 +1061,12 @@ void XMLParser::CircuitTagAction::beginTag(const AttributeList &attributes) {
     this->parser->values.clear();
 }
 
-void XMLParser::CircuitTagAction::text(const UTF8String txt, bool last) {
+
+// UTF8String txt, bool last
+void XMLParser::CircuitTagAction::text(const UTF8String txt, bool) {
     this->parser->parseSequence(txt, this->parser->lists[0]);
 }
+
 
 void XMLParser::CircuitTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
@@ -1084,7 +1094,8 @@ void XMLParser::CircuitTagAction::endTag() {
   ****************************************************************************/
 
 
-void XMLParser::ObjectivesTagAction::beginTag(const AttributeList &attributes) {
+// AttributeList &attributes
+void XMLParser::ObjectivesTagAction::beginTag(const AttributeList &) {
     objective = new XObjective();
     this->parser->expr = "";
     this->checkParentTag("instance");
@@ -1138,7 +1149,8 @@ void XMLParser::MinimizeOrMaximizeTagAction::beginTag(const AttributeList &attri
 }
 
 
-void XMLParser::MinimizeOrMaximizeTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::MinimizeOrMaximizeTagAction::text(const UTF8String txt, bool) {
     string op;
     txt.to(op);
     if(trim(op) == "") return; // skip white space.
@@ -1154,7 +1166,8 @@ void XMLParser::MinimizeOrMaximizeTagAction::text(const UTF8String txt, bool las
  * Actions performed on list of variables integers... tag
  ****************************************************************************/
 
-void XMLParser::ListOfIntegerTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::ListOfIntegerTagAction::text(const UTF8String txt, bool) {
     UTF8String::Tokenizer tokenizer(txt);
     while(tokenizer.hasMoreTokens()) {
         UTF8String token = tokenizer.nextToken();
@@ -1177,29 +1190,34 @@ void XMLParser::ListOfVariablesOrIntegerTagAction::beginTag(const AttributeList 
 }
 
 
-void XMLParser::ListOfVariablesOrIntegerTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::ListOfVariablesOrIntegerTagAction::text(const UTF8String txt, bool) {
     this->parser->parseSequence(txt, listToFill);
 }
 
 
-void XMLParser::ListOfVariablesOrIntegerOrIntervalTagAction::beginTag(const AttributeList &attributes) {
+// AttributeList &attributes
+void XMLParser::ListOfVariablesOrIntegerOrIntervalTagAction::beginTag(const AttributeList &) {
     listToFill.clear();
 }
 
 
-void XMLParser::ListOfVariablesOrIntegerOrIntervalTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::ListOfVariablesOrIntegerOrIntervalTagAction::text(const UTF8String txt, bool) {
     this->parser->keepIntervals = true;
     this->parser->parseSequence(txt, listToFill);
     this->parser->keepIntervals = false;
 }
 
 
-void XMLParser::ListOfIntegerOrIntervalTagAction::beginTag(const AttributeList &attributes) {
+// AttributeList &attributes) {
+void XMLParser::ListOfIntegerOrIntervalTagAction::beginTag(const AttributeList &) {
     listToFill.clear();
 }
 
 
-void XMLParser::ListOfIntegerOrIntervalTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::ListOfIntegerOrIntervalTagAction::text(const UTF8String txt, bool) {
     this->parser->parseListOfIntegerOrInterval(txt, listToFill);
 }
 
@@ -1209,12 +1227,14 @@ void XMLParser::ListOfIntegerOrIntervalTagAction::text(const UTF8String txt, boo
  ****************************************************************************/
 
 
-void XMLParser::OriginsTagAction::beginTag(const AttributeList &attributes) {
+// AttributeList &attributes
+void XMLParser::OriginsTagAction::beginTag(const AttributeList &) {
     listToFill.clear();
 }
 
 
-void XMLParser::OriginsTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::OriginsTagAction::text(const UTF8String txt, bool) {
     vector<char> delims;
     delims.push_back('(');
     delims.push_back(')');
@@ -1228,12 +1248,14 @@ void XMLParser::OriginsTagAction::text(const UTF8String txt, bool last) {
  ****************************************************************************/
 
 
-void XMLParser::ArgsTagAction::beginTag(const AttributeList &attributes) {
+// AttributeList &attributes
+void XMLParser::ArgsTagAction::beginTag(const AttributeList &) {
     this->parser->args.clear();
 }
 
 
-void XMLParser::ArgsTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::ArgsTagAction::text(const UTF8String txt, bool) {
     this->parser->parseSequence(txt, this->parser->args);
 }
 
@@ -1250,7 +1272,8 @@ void XMLParser::ArgsTagAction::endTag() {
  ****************************************************************************/
 
 
-void XMLParser::OperatorTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::OperatorTagAction::text(const UTF8String txt, bool) {
     string op;
     txt.to(op);
     if(trim(op) == "") return; // skip white space.
@@ -1261,7 +1284,8 @@ void XMLParser::OperatorTagAction::text(const UTF8String txt, bool last) {
 }
 
 
-void XMLParser::StringTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::StringTagAction::text(const UTF8String txt, bool) {
     string tmp;
     txt.to(tmp);
     tmp = trim(tmp);
@@ -1326,7 +1350,8 @@ void XMLParser::ListTagAction::beginTag(const AttributeList &attributes) {
 }
 
 
-void XMLParser::ListTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::ListTagAction::text(const UTF8String txt, bool) {
     this->parser->parseSequence(txt, this->parser->lists.back());
 }
 
@@ -1344,7 +1369,8 @@ void XMLParser::ListTagAction::endTag() {
 }
 
 
-void XMLParser::ConflictOrSupportTagAction::beginTag(const AttributeList &attributes) {
+// AttributeList &attributes
+void XMLParser::ConflictOrSupportTagAction::beginTag(const AttributeList &) {
     bool support = true;
     this->checkParentTag("extension");
 
@@ -1356,7 +1382,8 @@ void XMLParser::ConflictOrSupportTagAction::beginTag(const AttributeList &attrib
 }
 
 
-void XMLParser::ConflictOrSupportTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::ConflictOrSupportTagAction::text(const UTF8String txt, bool) {
     XConstraintExtension *ctr = ((XMLParser::ExtensionTagAction *) this->parser->getParentTagAction())->constraint;
     if(this->parser->lists[0].size() == 1 && this->parser->lists[0][0]->id != "%...") {
         vector<XIntegerEntity *> tmplist;
@@ -1500,7 +1527,8 @@ void XMLParser::IndexTagAction::beginTag(const AttributeList &attributes) {
 }
 
 
-void XMLParser::IndexTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::IndexTagAction::text(const UTF8String txt, bool) {
     string tmp;
     txt.to(tmp);
     tmp = trim(tmp);
@@ -1520,7 +1548,8 @@ void XMLParser::IndexTagAction::text(const UTF8String txt, bool last) {
  * Actions performed on MATRIX TAG
  ****************************************************************************/
 
-void XMLParser::MatrixTagAction::beginTag(const AttributeList &attributes) {
+// AttributeList &attributes
+void XMLParser::MatrixTagAction::beginTag(const AttributeList &) {
     if(strcmp(this->parser->getParentTagAction(2)->getTagName(), "group") == 0)
         throw runtime_error("<matrix> can not be used in a <group>");
     if(strcmp(this->parser->getParentTagAction(2)->getTagName(), "slide") == 0)
@@ -1528,7 +1557,8 @@ void XMLParser::MatrixTagAction::beginTag(const AttributeList &attributes) {
 }
 
 
-void XMLParser::MatrixTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
     if(txt.isWhiteSpace())
         return;
     string txt2;
@@ -1601,12 +1631,14 @@ void XMLParser::MatrixTagAction::endTag() {
 }
 
 
-void XMLParser::TransitionsTagAction::beginTag(const AttributeList &attributes) {
+// AttributeList &attributes
+void XMLParser::TransitionsTagAction::beginTag(const AttributeList &) {
     nb = 0;
 }
 
 
-void XMLParser::TransitionsTagAction::text(const UTF8String txt, bool last) {
+// UTF8String txt, bool last
+void XMLParser::TransitionsTagAction::text(const UTF8String txt, bool) {
     if(txt.isWhiteSpace())
         return;
     UTF8String::Tokenizer tokenizer(txt);

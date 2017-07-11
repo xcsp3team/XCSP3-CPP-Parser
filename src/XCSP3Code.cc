@@ -33,19 +33,21 @@
 using namespace XCSP3Core;
 
 
+namespace XCSP3Core {
 //------------------------------------------------------------------------------------------
 //  XCSP3Domain.h functions
 //------------------------------------------------------------------------------------------
-ostream &XCSP3Core::operator<<(ostream &O, const XIntegerEntity &ie) {
-    ie.print(O);
-    return O;
-}
+    ostream &operator<<(ostream &O, const XIntegerEntity &ie) {
+        ie.print(O);
+        return O;
+    }
 
 
-ostream &XCSP3Core::operator<<(ostream &f, const XDomainInteger &d) {
-    for(XIntegerEntity *xi : d.values)
-        f << *xi;
-    return f;
+    ostream &operator<<(ostream &f, const XDomainInteger &d) {
+        for(XIntegerEntity *xi : d.values)
+            f << *xi;
+        return f;
+    }
 }
 
 //------------------------------------------------------------------------------------------
@@ -69,7 +71,7 @@ XVariable::XVariable(std::string idd, XDomainInteger *dom, std::vector<int> inde
     std::stringstream oss;
     oss << idd;
 
-    for(unsigned int i = 0; i < indexes.size(); i++)
+    for(unsigned int i = 0 ; i < indexes.size() ; i++)
         oss << "[" << indexes[i] << "]";
 
 
@@ -88,15 +90,17 @@ XParameterVariable::XParameterVariable(std::string lid) : XVariable(lid, NULL) {
 }
 
 
-ostream &XCSP3Core::operator<<(ostream &O, const XVariable &x) {
-    O << x.id;
-    return O;
-}
+namespace XCSP3Core {
+    ostream &operator<<(ostream &O, const XVariable &x) {
+        O << x.id;
+        return O;
+    }
 
 
-ostream &XCSP3Core::operator<<(ostream &O, const XInterval &it) {
-    O << "[" << it.min << "," << it.max << "]";
-    return O;
+    ostream &operator<<(ostream &O, const XInterval &it) {
+        O << "[" << it.min << "," << it.max << "]";
+        return O;
+    }
 }
 
 
@@ -125,7 +129,7 @@ bool XCSP3Core::isInterval(XEntity *xe, int &min, int &max) {
 }
 
 
-bool XCSP3Core::isVariable(XEntity *xe, XVariable * & v) {
+bool XCSP3Core::isVariable(XEntity *xe, XVariable *&v) {
     XVariable *x;
     if((x = dynamic_cast<XVariable *>(xe)) != NULL) {
         v = x;
@@ -149,9 +153,9 @@ XVariableArray::XVariableArray(std::string idd, XVariableArray *as) : sizes(as->
     indexes.assign(as->sizes.size(), 0);
     variables.assign(as->variables.size(), NULL);
     id = idd;
-    for(unsigned int i = 0; i < variables.size(); i++) {
+    for(unsigned int i = 0 ; i < variables.size() ; i++) {
         variables[i] = new XVariable(idd, as->variables[i]->domain, indexes);
-        for(int j = sizes.size() - 1; j >= 0; j--)
+        for(int j = sizes.size() - 1 ; j >= 0 ; j--)
             if(++indexes[j] == sizes[j])
                 indexes[j] = 0;
             else
@@ -165,7 +169,7 @@ XVariableArray::~XVariableArray() {}
 
 void XVariableArray::indexesFor(int flatIndex, std::vector<int> &indexes) {
     indexes.resize(sizes.size());
-    for(int i = indexes.size() - 1; i > 0; i--) {
+    for(int i = indexes.size() - 1 ; i > 0 ; i--) {
         indexes[i] = flatIndex % sizes[i];
         flatIndex = flatIndex / sizes[i];
     }
@@ -175,7 +179,7 @@ void XVariableArray::indexesFor(int flatIndex, std::vector<int> &indexes) {
 
 bool XVariableArray::incrementIndexes(vector<int> &indexes, vector<XIntegerEntity *> &ranges) {
     int j = indexes.size() - 1;
-    for(; j >= 0; j--)
+    for(; j >= 0 ; j--)
         if(ranges[j]->width() == 1)
             continue;
         else if(++indexes[j] > ranges[j]->maximum())
@@ -190,7 +194,7 @@ void XVariableArray::getVarsFor(vector<XVariable *> &list, string compactForm, v
     vector<XIntegerEntity *> ranges;
     string tmp;
     // Compute the different ranges for all dimension
-    for(unsigned int i = 0; i < sizes.size(); i++) {
+    for(unsigned int i = 0 ; i < sizes.size() ; i++) {
         int pos = compactForm.find(']');
         tmp = compactForm.substr(1, pos - 1);
         compactForm = compactForm.substr(pos + 1);
@@ -209,7 +213,7 @@ void XVariableArray::getVarsFor(vector<XVariable *> &list, string compactForm, v
     }
     // Compute the first one
     vector<int> indexes;
-    for(unsigned int i = 0; i < sizes.size(); i++)
+    for(unsigned int i = 0 ; i < sizes.size() ; i++)
         indexes.push_back(ranges[i]->minimum());
 
     // Compute all necessary variables
@@ -231,10 +235,10 @@ void XVariableArray::buildVarsWith(XDomainInteger *domain) {
     std::vector<int> indexes;
     indexes.assign(sizes.size(), 0);
 
-    for(unsigned int i = 0; i < variables.size(); i++) {
+    for(unsigned int i = 0 ; i < variables.size() ; i++) {
         if(variables[i] == NULL) // We need to create a variable
             variables[i] = new XVariable(id, domain, indexes);
-        for(int j = sizes.size() - 1; j >= 0; j--)
+        for(int j = sizes.size() - 1 ; j >= 0 ; j--)
             if(++indexes[j] == sizes[j])
                 indexes[j] = 0;
             else
@@ -245,7 +249,7 @@ void XVariableArray::buildVarsWith(XDomainInteger *domain) {
 
 int XVariableArray::flatIndexFor(vector<int> indexes) {
     int sum = 0;
-    for(int i = indexes.size() - 1, nb = 1; i >= 0; i--) {
+    for(int i = indexes.size() - 1, nb = 1 ; i >= 0 ; i--) {
         sum += indexes[i] * nb;
         nb *= sizes[i];
     }
@@ -293,34 +297,36 @@ void XConstraintGroup::unfoldVector(vector<XVariable *> &toUnfold, vector<XVaria
 
 
 void XConstraintGroup::unfoldString(string &toUnfold, vector<XVariable *> &args) {
-    for(int i = args.size()-1; i >=0 ; i--) {
+    for(int i = args.size() - 1 ; i >= 0 ; i--) {
         string param = "%" + std::to_string(i);
         ReplaceStringInPlace(toUnfold, param, args[i]->id);
     }
 }
 
 
-ostream &XCSP3Core::operator<<(ostream &O, const XCSP3Core::XCondition &xc) {
-    string sep;
-    if(xc.op == LT) sep = " < ";
-    if(xc.op == LE) sep = " <= ";
-    if(xc.op == GT) sep = " > ";
-    if(xc.op == GE) sep = " >= ";
-    if(xc.op == EQ) sep = " = ";
+namespace XCSP3Core {
+    ostream &operator<<(ostream &O, const XCondition &xc) {
+        string sep;
+        if(xc.op == LT) sep = " < ";
+        if(xc.op == LE) sep = " <= ";
+        if(xc.op == GT) sep = " > ";
+        if(xc.op == GE) sep = " >= ";
+        if(xc.op == EQ) sep = " = ";
 
-    if(xc.operandType == INTEGER)
-        O << sep << xc.val;
+        if(xc.operandType == INTEGER)
+            O << sep << xc.val;
 
-    if(xc.operandType == INTERVAL)
-        O << sep << "in [" << xc.min << "," << xc.max << "]";
+        if(xc.operandType == INTERVAL)
+            O << sep << "in [" << xc.min << "," << xc.max << "]";
 
-    if(xc.operandType == VARIABLE)
-        O << sep << xc.var;
-    return O;
+        if(xc.operandType == VARIABLE)
+            O << sep << xc.var;
+        return O;
+    }
 }
 
 
-void XInitialCondition::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+void XInitialCondition::unfoldParameters(XConstraintGroup *, vector<XVariable *> &, XConstraint *original) {
     XInitialCondition *xi = dynamic_cast<XInitialCondition *>(original);
     condition = xi->condition;
 }
@@ -372,7 +378,7 @@ void XValues::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arg
 }
 
 
-void XValue::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+void XValue::unfoldParameters(XConstraintGroup *, vector<XVariable *> &arguments, XConstraint *original) {
     XParameterVariable *xp;
     XValue *xv = dynamic_cast<XValue *>(original);
     if((xp = dynamic_cast<XParameterVariable *>(xv->value)) == NULL) {
@@ -382,7 +388,7 @@ void XValue::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &argu
 }
 
 
-void XIndex::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+void XIndex::unfoldParameters(XConstraintGroup *, vector<XVariable *> &arguments, XConstraint *original) {
     XParameterVariable *xp;
     XIndex *xi = dynamic_cast<XIndex *>(original);
     if(xi->index == NULL) return;
@@ -420,19 +426,19 @@ void XConstraintGroup::unfoldArgumentNumber(int i, XConstraint *builtConstraint)
 }
 
 
-void XConstraintAllDiffMatrix::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+void XConstraintAllDiffMatrix::unfoldParameters(XConstraintGroup *, vector<XVariable *> &, XConstraint *) {
     throw runtime_error("Group Alldiff Matrix and list is not yet supported");
 }
 
 
 void XConstraintLex::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
     XConstraintLex *xc = dynamic_cast<XConstraintLex *>(original);
-    for(unsigned int i = 0; i < lists.size(); i++)
+    for(unsigned int i = 0 ; i < lists.size() ; i++)
         group->unfoldVector(lists[i], arguments, xc->lists[i]);
 }
 
 
-void XConstraintLexMatrix::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+void XConstraintLexMatrix::unfoldParameters(XConstraintGroup *, vector<XVariable *> &, XConstraint *) {
     throw runtime_error("Group lex Matrix  is not yet supported");
 }
 
@@ -516,7 +522,7 @@ void XConstraintCumulative::unfoldParameters(XConstraintGroup *group, vector<XVa
 }
 
 
-void XConstraintStretch::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+void XConstraintStretch::unfoldParameters(XConstraintGroup *, vector<XVariable *> &, XConstraint *) {
     throw runtime_error("group is not yet allowed with stretch constraint");
 }
 

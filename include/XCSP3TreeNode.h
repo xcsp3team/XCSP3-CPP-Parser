@@ -172,7 +172,7 @@ namespace XCSP3Core {
 
         void prefixe() override {
             std::cout << op << "(";
-            for(int i = 0 ; i < parameters.size() ; i++) {
+            for(unsigned int i = 0 ; i < parameters.size() ; i++) {
                 if(i != 0) std::cout << ",";
                 parameters[i]->prefixe();
 
@@ -366,7 +366,7 @@ namespace XCSP3Core {
 
         int evaluate(std::map<std::string, int> &tuple) override {
             int nb = 0;
-            for(int i = 0 ; i < parameters.size() ; i++)
+            for(unsigned int i = 0 ; i < parameters.size() ; i++)
                 nb += parameters[i]->evaluate(tuple);
             return nb;
         }
@@ -380,7 +380,7 @@ namespace XCSP3Core {
 
         int evaluate(std::map<std::string, int> &tuple) override {
             int nb = 1;
-            for(int i = 0 ; i < parameters.size() ; i++)
+            for(unsigned int i = 0 ; i < parameters.size() ; i++)
                 nb *= parameters[i]->evaluate(tuple);
             return nb;
         }
@@ -394,7 +394,7 @@ namespace XCSP3Core {
 
         int evaluate(std::map<std::string, int> &tuple) override {
             int nb = parameters[0]->evaluate(tuple);
-            for(int i = 1 ; i < parameters.size() ; i++) {
+            for(unsigned int i = 1 ; i < parameters.size() ; i++) {
                 int v = parameters[i]->evaluate(tuple);
                 if(v < nb) nb = v;
             }
@@ -410,7 +410,7 @@ namespace XCSP3Core {
 
         int evaluate(std::map<std::string, int> &tuple) override {
             int nb = parameters[0]->evaluate(tuple);
-            for(int i = 1 ; i < parameters.size() ; i++) {
+            for(unsigned int i = 1 ; i < parameters.size() ; i++) {
                 int v = parameters[i]->evaluate(tuple);
                 if(v > nb) nb = v;
             }
@@ -426,7 +426,7 @@ namespace XCSP3Core {
 
         int evaluate(std::map<std::string, int> &tuple) override {
             int nb = parameters[0]->evaluate(tuple);
-            for(int i = 1 ; i < parameters.size() ; i++) {
+            for(unsigned int i = 1 ; i < parameters.size() ; i++) {
                 if(nb != parameters[i]->evaluate(tuple))
                     return 0;
             }
@@ -441,7 +441,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            for(int i = 0 ; i < parameters.size() ; i++)
+            for(unsigned int i = 0 ; i < parameters.size() ; i++)
                 if(!parameters[i]->evaluate(tuple))
                     return 0;
             return 1;
@@ -455,7 +455,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            for(int i = 0 ; i < parameters.size() ; i++)
+            for(unsigned int i = 0 ; i < parameters.size() ; i++)
                 if(parameters[i]->evaluate(tuple)) {
                     return 1;
                 }
@@ -473,7 +473,7 @@ namespace XCSP3Core {
 
             int nb = !parameters[0]->evaluate(tuple) != !parameters[1]->evaluate(tuple);
 
-            for(int i = 2 ; i < parameters.size() ; i++)
+            for(unsigned int i = 2 ; i < parameters.size() ; i++)
                 nb = ((!nb) != parameters[i]->evaluate(tuple));
             return nb;
         }
@@ -532,7 +532,7 @@ namespace XCSP3Core {
             NodeSet *nodeSet;
             if((nodeSet = dynamic_cast<NodeSet *>(parameter2)) == NULL)
                 throw std::runtime_error("intension constraint : in requires a set as second parameter");
-            for(int i = 0 ; i < nodeSet->parameters.size() ; i++)
+            for(unsigned int i = 0 ; i < nodeSet->parameters.size() ; i++)
                 set.push_back(nodeSet->parameters[i]->evaluate(tuple));
             return find(set.begin(), set.end(), nb) != set.end();
         }

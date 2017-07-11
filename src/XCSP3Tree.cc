@@ -150,7 +150,7 @@ void Tree::closeOperator(std::vector<NodeOperator*> &stack,std::vector<Node*> &p
         startParams--;
     startParams++;
     int nbP = 0;
-    for (int i = startParams; i < params.size(); i++, nbP++)
+    for (unsigned int i = startParams; i < params.size(); i++, nbP++)
         tmp->addParameter(params[i]);
     stack.pop_back();
     //params.shrink(nbP);

@@ -235,9 +235,9 @@ void XCSP3Manager::newConstraintLexMatrix(XConstraintLexMatrix *constraint) {
 
 void XCSP3Manager::normalizeSum(vector<XVariable *> &list, vector<int> &coefs) {
     // merge
-    for(int i = 0; i < list.size() - 1; i++) {
+    for(unsigned  int i = 0; i < list.size() - 1; i++) {
         if(coefs[i] == 0) continue;
-        for(int j = i + 1; j < list.size(); j++) {
+        for(auto j = i + 1; j < list.size(); j++) {
             if(coefs[j] != 0 && list[i]->id == list[j]->id) {
                 coefs[i] += coefs[j];
                 coefs[j] = 0;
@@ -247,7 +247,7 @@ void XCSP3Manager::normalizeSum(vector<XVariable *> &list, vector<int> &coefs) {
     vector<int> tmpc;
     vector<XVariable *> tmpv;
     // remove coef=0
-    for(int i = 0; i < list.size(); i++)
+    for(unsigned int i = 0; i < list.size(); i++)
         if(coefs[i] != 0) {
             tmpv.push_back(list[i]);
             tmpc.push_back(coefs[i]);
@@ -269,8 +269,8 @@ void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
         bool toModify = false;
         if(callback->normalizeSum) {
             // Check if a variable appears two times
-            for(int i = 0; i < constraint->list.size() - 1; i++)
-                for(int j = i + 1; j < constraint->list.size(); j++) {
+            for(unsigned  int i = 0; i < constraint->list.size() - 1; i++)
+                for(auto j = i + 1; j < constraint->list.size(); j++) {
                     if(constraint->list[i]->id == constraint->list[j]->id)
                         toModify = true;
                 }
@@ -845,8 +845,8 @@ void XCSP3Manager::addObjective(XObjective *objective) {
         if(objective->coeffs.size() == 0) {
             bool toModify = false;
             // Check if a variable appears two times
-            for(int i = 0; i < objective->list.size() - 1; i++)
-                for(int j = i + 1; j < objective->list.size(); j++) {
+            for(unsigned int i = 0; i < objective->list.size() - 1; i++)
+                for(auto j = i + 1; j < objective->list.size(); j++) {
                     if(objective->list[i]->id == objective->list[j]->id)
                         toModify = true;
                 }

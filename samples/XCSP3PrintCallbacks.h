@@ -177,13 +177,14 @@ namespace XCSP3Core {
 
         virtual void buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex) override;
 
-        virtual void buildConstraintChannel(string id, vector<XVariable *> &list1, int startIndex1, vector<XVariable *> &list2,  int startIndex2) override;
+        virtual void buildConstraintChannel(string id, vector<XVariable *> &list1, int startIndex1, vector<XVariable *> &list2, int startIndex2) override;
 
         virtual void buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex, XVariable *value) override;
 
         virtual void buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths) override;
 
-        virtual void buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths, vector<vector<int>> &patterns) override;
+        virtual void
+        buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths, vector<vector<int>> &patterns) override;
 
         virtual void buildConstraintNoOverlap(string id, vector<XVariable *> &origins, vector<int> &lengths, bool zeroIgnored) override;
 
@@ -244,58 +245,33 @@ XCSP3PrintCallbacks::XCSP3PrintCallbacks() : XCSP3CoreCallbacks() {
 template<class T>
 void displayList(vector<T> &list, string separator = " ") {
     if(list.size() > 8) {
-        for(int i = 0; i < 3; i++)
+        for(int i = 0 ; i < 3 ; i++)
             cout << list[i] << separator;
         cout << " ... ";
-        for(int i = list.size() - 4; i < list.size(); i++)
+        for(unsigned int i = list.size() - 4 ; i < list.size() ; i++)
             cout << list[i] << separator;
         cout << endl;
         return;
     }
-    for(int i = 0; i < list.size(); i++)
+    for(unsigned int i = 0 ; i < list.size() ; i++)
         cout << list[i] << separator;
     cout << endl;
 }
 
 
-void displayList(vector<XVariable *> &list, string
-separator = " "
-) {
-    if(list.
-
-            size()
-
-       > 8) {
-        for(
-                int i = 0;
-                i < 3; i++)
-            cout << list[i]->id <<
-                 separator;
+void displayList(vector<XVariable *> &list, string separator = " ") {
+    if(list.size() > 8) {
+        for(int i = 0 ; i < 3 ; i++)
+            cout << list[i]->id << separator;
         cout << " ... ";
-        for(
-                unsigned int i = list.size() - 4;
-                i < list.
-
-                        size();
-
-                i++)
-            cout << list[i]->id <<
-                 separator;
-        cout <<
-             endl;
+        for(unsigned int i = list.size() - 4 ; i < list.size() ; i++)
+            cout << list[i]->id << separator;
+        cout << endl;
         return;
     }
-    for(
-            unsigned int i = 0;
-            i < list.
-
-                    size();
-
-            i++)
-        cout << list[i]->id <<
-             separator;
-    cout <<
-         endl;
+    for(unsigned int i = 0 ; i < list.size() ; i++)
+        cout << list[i]->id << separator;
+    cout << endl;
 }
 
 
@@ -430,7 +406,7 @@ void XCSP3PrintCallbacks::buildConstraintRegular(string id, vector<XVariable *> 
     displayList(final, ",");
     cout << endl;
     cout << "        transitions: ";
-    for(unsigned int i = 0; i < (transitions.size() > 4 ? 4 : transitions.size()); i++) {
+    for(unsigned int i = 0 ; i < (transitions.size() > 4 ? 4 : transitions.size()) ; i++) {
         cout << "(" << transitions[i].from << "," << transitions[i].val << "," << transitions[i].to << ") ";
     }
     if(transitions.size() > 4) cout << "...";
@@ -443,7 +419,7 @@ void XCSP3PrintCallbacks::buildConstraintMDD(string id, vector<XVariable *> &lis
     cout << "        ";
     displayList(list);
     cout << "        transitions: ";
-    for(unsigned int i = 0; i < (transitions.size() > 4 ? 4 : transitions.size()); i++) {
+    for(unsigned int i = 0 ; i < (transitions.size() > 4 ? 4 : transitions.size()) ; i++) {
         cout << "(" << transitions[i].from << "," << transitions[i].val << "," << transitions[i].to << ") ";
     }
     if(transitions.size() > 4) cout << "...";
@@ -469,7 +445,7 @@ void XCSP3PrintCallbacks::buildConstraintAlldifferentExcept(string id, vector<XV
 
 void XCSP3PrintCallbacks::buildConstraintAlldifferentList(string id, vector<vector<XVariable *>> &lists) {
     cout << "\n    allDiff list constraint" << id << endl;
-    for(unsigned int i = 0; i < (lists.size() < 4 ? lists.size() : 3); i++) {
+    for(unsigned int i = 0 ; i < (lists.size() < 4 ? lists.size() : 3) ; i++) {
         cout << "        ";
         displayList(lists[i]);
 
@@ -479,7 +455,7 @@ void XCSP3PrintCallbacks::buildConstraintAlldifferentList(string id, vector<vect
 
 void XCSP3PrintCallbacks::buildConstraintAlldifferentMatrix(string id, vector<vector<XVariable *>> &matrix) {
     cout << "\n    allDiff matrix constraint" << id << endl;
-    for(unsigned int i = 0; i < matrix.size(); i++) {
+    for(unsigned int i = 0 ; i < matrix.size() ; i++) {
         cout << "        ";
         displayList(matrix[i]);
     }
@@ -520,7 +496,7 @@ void XCSP3PrintCallbacks::buildConstraintLex(string id, vector<vector<XVariable 
     if(order == GT) sep = " > ";
     if(order == GE) sep = " >= ";
     cout << "        operator: " << sep << endl;
-    for(unsigned int i = 0; i < lists.size(); i++) {
+    for(unsigned int i = 0 ; i < lists.size() ; i++) {
         cout << "        list " << i << ": ";
         cout << "        ";
         displayList(lists[i], " ");
@@ -536,7 +512,7 @@ void XCSP3PrintCallbacks::buildConstraintLexMatrix(string id, vector<vector<XVar
     if(order == GT) sep = " > ";
     if(order == GE) sep = " >= ";
 
-    for(unsigned int i = 0; i < (matrix.size() < 4 ? matrix.size() : 3); i++) {
+    for(unsigned int i = 0 ; i < (matrix.size() < 4 ? matrix.size() : 3) ; i++) {
         cout << "        ";
         displayList(matrix[i]);
     }
@@ -547,13 +523,13 @@ void XCSP3PrintCallbacks::buildConstraintLexMatrix(string id, vector<vector<XVar
 void XCSP3PrintCallbacks::buildConstraintSum(string id, vector<XVariable *> &list, vector<int> &coeffs, XCondition &cond) {
     cout << "\n        sum constraint:";
     if(list.size() > 8) {
-        for(int i = 0; i < 3; i++)
+        for(int i = 0 ; i < 3 ; i++)
             cout << (coeffs.size() == 0 ? 1 : coeffs[i]) << "*" << *(list[i]) << " ";
         cout << " ... ";
-        for(unsigned int i = list.size() - 4; i < list.size(); i++)
+        for(unsigned int i = list.size() - 4 ; i < list.size() ; i++)
             cout << (coeffs.size() == 0 ? 1 : coeffs[i]) << "*" << *(list[i]) << " ";
     } else {
-        for(unsigned int i = 0; i < list.size(); i++)
+        for(unsigned int i = 0 ; i < list.size() ; i++)
             cout << (coeffs.size() == 0 ? 1 : coeffs[i]) << "*" << *(list[i]) << " ";
     }
     cout << cond << endl;
@@ -572,13 +548,13 @@ void XCSP3PrintCallbacks::buildConstraintSum(string id, vector<XVariable *> &lis
 void XCSP3PrintCallbacks::buildConstraintSum(string id, vector<XVariable *> &list, vector<XVariable *> &coeffs, XCondition &cond) {
     cout << "\n        scalar sum constraint:";
     if(list.size() > 8) {
-        for(int i = 0; i < 3; i++)
+        for(int i = 0 ; i < 3 ; i++)
             cout << coeffs[i]->id << "*" << *(list[i]) << " ";
         cout << " ... ";
-        for(unsigned int i = list.size() - 4; i < list.size(); i++)
+        for(unsigned int i = list.size() - 4 ; i < list.size() ; i++)
             cout << coeffs[i]->id << "*" << *(list[i]) << " ";
     } else {
-        for(unsigned int i = 0; i < list.size(); i++)
+        for(unsigned int i = 0 ; i < list.size() ; i++)
             cout << coeffs[i]->id << "*" << *(list[i]) << " ";
     }
     cout << cond << endl;
@@ -807,6 +783,7 @@ void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<XVariable *> 
     cout << "        index : " << *index << endl;
 }
 
+
 void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<int> &list, int startIndex, XVariable *index, RankType rank, XVariable *value) {
     cout << "\n    element variable with list of integers (with index) constraint" << endl;
     cout << "        ";
@@ -825,8 +802,7 @@ void XCSP3PrintCallbacks::buildConstraintChannel(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintChannel(string id, vector<XVariable *> &list1, int startIndex1, vector<XVariable *> &list2,
-                                                 int startIndex2) {
+void XCSP3PrintCallbacks::buildConstraintChannel(string id, vector<XVariable *> &list1, int startIndex1, vector<XVariable *> &list2, int startIndex2) {
     cout << "\n    channel constraint" << endl;
     cout << "        list1 ";
     displayList(list1);
@@ -863,7 +839,7 @@ void XCSP3PrintCallbacks::buildConstraintStretch(string id, vector<XVariable *> 
     cout << "        widths:";
     displayList(widths);
     cout << "        patterns";
-    for(unsigned int i = 0; i < patterns.size(); i++)
+    for(unsigned int i = 0 ; i < patterns.size() ; i++)
         cout << "(" << patterns[i][0] << "," << patterns[i][1] << ") ";
     cout << endl;
 }
@@ -890,12 +866,12 @@ void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<XVariable *
 void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<int>> &lengths, bool zeroIgnored) {
     cout << "\n    kdim (int lengths) nooverlap constraint" << endl;
     cout << "origins: " << endl;
-    for(unsigned int i = 0; i < origins.size(); i++) {
+    for(unsigned int i = 0 ; i < origins.size() ; i++) {
         cout << "        ";
         displayList(origins[i]);
     }
     cout << "lengths: " << endl;
-    for(unsigned int i = 0; i < origins.size(); i++) {
+    for(unsigned int i = 0 ; i < origins.size() ; i++) {
         cout << "        ";
         displayList(lengths[i]);
     }
@@ -906,12 +882,12 @@ void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<vector<XVar
 void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<XVariable *>> &lengths, bool zeroIgnored) {
     cout << "\n    kdim (lenghts vars nooverlap constraint" << endl;
     cout << "origins: " << endl;
-    for(unsigned int i = 0; i < origins.size(); i++) {
+    for(unsigned int i = 0 ; i < origins.size() ; i++) {
         cout << "        ";
         displayList(origins[i]);
     }
     cout << "lengths: " << endl;
-    for(unsigned int i = 0; i < origins.size(); i++) {
+    for(unsigned int i = 0 ; i < origins.size() ; i++) {
         cout << "        ";
         displayList(lengths[i]);
     }
