@@ -263,7 +263,8 @@ namespace XCSP3Core {
             UnknownTagAction(XMLParser *parser, string name) : TagAction(parser, name) { }
 
 
-            virtual void beginTag(const AttributeList &attributes) {
+            // AttributeList &attributes
+            virtual void beginTag(const AttributeList &) {
                 throw runtime_error("Unknown Tag");
             }
 

@@ -1672,12 +1672,14 @@ void XMLParser::TransitionsTagAction::text(const UTF8String txt, bool) {
 ****************************************************************************/
 
 
-void XMLParser::PatternsTagAction::beginTag(const AttributeList &attributes) {
+// const AttributeList &attributes
+void XMLParser::PatternsTagAction::beginTag(const AttributeList &) {
     listToFill.clear();
 }
 
 
-void XMLParser::PatternsTagAction::text(const UTF8String txt, bool last) {
+// const UTF8String txt, bool last
+void XMLParser::PatternsTagAction::text(const UTF8String txt, bool) {
     vector<char> delims;
     delims.push_back('(');
     delims.push_back(')');

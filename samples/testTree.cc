@@ -28,7 +28,7 @@
 using namespace XCSP3Core;
 using namespace std;
 
-int main(int argc, char **argv) {
+int main () {
 
     // Example 1 :
     Tree t("eq(z,add(x,3))");

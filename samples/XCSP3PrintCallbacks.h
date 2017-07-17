@@ -334,7 +334,8 @@ void XCSP3PrintCallbacks::endBlock() {
 }
 
 
-void XCSP3PrintCallbacks::beginSlide(string id, bool circular) {
+// string id, bool circular
+void XCSP3PrintCallbacks::beginSlide(string id, bool) {
     cout << "   start slide " << id << endl;
 }
 
@@ -382,7 +383,8 @@ void XCSP3PrintCallbacks::buildConstraintExtension(string id, XVariable *variabl
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintExtensionAs(string id, vector<XVariable *> list, bool support, bool hasStar) {
+// string id, vector<XVariable *> list, bool support, bool hasStar
+void XCSP3PrintCallbacks::buildConstraintExtensionAs(string id, vector<XVariable *>, bool, bool) {
     cout << "\n    extension constraint similar as previous one: " << id << endl;
 }
 
@@ -392,12 +394,14 @@ void XCSP3PrintCallbacks::buildConstraintIntension(string id, string expr) {
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k, XVariable *y) {
+// string id, OrderType op, XVariable *x, int k, XVariable *y
+void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, OrderType, XVariable *x, int k, XVariable *y) {
     cout << "\n   intension constraint " << id << ": " << x->id << (k >= 0 ? "+" : "") << k << " op " << y->id << endl;
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintRegular(string id, vector<XVariable *> &list, string start, vector<string> &final, vector<XTransition> &transitions) {
+// string id, vector<XVariable *> &list, string start, vector<string> &final, vector<XTransition> &transitions
+void XCSP3PrintCallbacks::buildConstraintRegular(string, vector<XVariable *> &list, string start, vector<string> &final, vector<XTransition> &transitions) {
     cout << "\n    regular constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -414,7 +418,8 @@ void XCSP3PrintCallbacks::buildConstraintRegular(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintMDD(string id, vector<XVariable *> &list, vector<XTransition> &transitions) {
+// string id, vector<XVariable *> &list, vector<XTransition> &transitions
+void XCSP3PrintCallbacks::buildConstraintMDD(string, vector<XVariable *> &list, vector<XTransition> &transitions) {
     cout << "\n    mdd constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -476,7 +481,8 @@ void XCSP3PrintCallbacks::buildConstraintNotAllEqual(string id, vector<XVariable
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintOrdered(string id, vector<XVariable *> &list, OrderType order) {
+// string id, vector<XVariable *> &list, OrderType order
+void XCSP3PrintCallbacks::buildConstraintOrdered(string, vector<XVariable *> &list, OrderType order) {
     cout << "\n    ordered constraint" << endl;
     string sep;
     if(order == LT) sep = " < ";
@@ -488,7 +494,8 @@ void XCSP3PrintCallbacks::buildConstraintOrdered(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintLex(string id, vector<vector<XVariable *>> &lists, OrderType order) {
+// string id, vector<vector<XVariable *>> &lists, OrderType order
+void XCSP3PrintCallbacks::buildConstraintLex(string, vector<vector<XVariable *>> &lists, OrderType order) {
     cout << "\n    lex constraint   nb lists: " << lists.size() << endl;
     string sep;
     if(order == LT) sep = " < ";
@@ -504,7 +511,8 @@ void XCSP3PrintCallbacks::buildConstraintLex(string id, vector<vector<XVariable 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintLexMatrix(string id, vector<vector<XVariable *>> &matrix, OrderType order) {
+// string id, vector<vector<XVariable *>> &matrix, OrderType order
+void XCSP3PrintCallbacks::buildConstraintLexMatrix(string, vector<vector<XVariable *>> &matrix, OrderType order) {
     cout << "\n    lex matrix constraint   matrix  " << endl;
     string sep;
     if(order == LT) sep = " < ";
@@ -520,7 +528,8 @@ void XCSP3PrintCallbacks::buildConstraintLexMatrix(string id, vector<vector<XVar
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintSum(string id, vector<XVariable *> &list, vector<int> &coeffs, XCondition &cond) {
+// string id, vector<XVariable *> &list, vector<int> &coeffs, XCondition &cond
+void XCSP3PrintCallbacks::buildConstraintSum(string, vector<XVariable *> &list, vector<int> &coeffs, XCondition &cond) {
     cout << "\n        sum constraint:";
     if(list.size() > 8) {
         for(int i = 0 ; i < 3 ; i++)
@@ -536,7 +545,8 @@ void XCSP3PrintCallbacks::buildConstraintSum(string id, vector<XVariable *> &lis
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintSum(string id, vector<XVariable *> &list, XCondition &cond) {
+// string id, vector<XVariable *> &list, XCondition &cond
+void XCSP3PrintCallbacks::buildConstraintSum(string, vector<XVariable *> &list, XCondition &cond) {
     cout << "\n        unweighted sum constraint:";
     cout << "        ";
     displayList(list, "+");
@@ -545,7 +555,8 @@ void XCSP3PrintCallbacks::buildConstraintSum(string id, vector<XVariable *> &lis
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintSum(string id, vector<XVariable *> &list, vector<XVariable *> &coeffs, XCondition &cond) {
+// string id, vector<XVariable *> &list, vector<XVariable *> &coeffs, XCondition &cond
+void XCSP3PrintCallbacks::buildConstraintSum(string, vector<XVariable *> &list, vector<XVariable *> &coeffs, XCondition &cond) {
     cout << "\n        scalar sum constraint:";
     if(list.size() > 8) {
         for(int i = 0 ; i < 3 ; i++)
@@ -558,32 +569,35 @@ void XCSP3PrintCallbacks::buildConstraintSum(string id, vector<XVariable *> &lis
             cout << coeffs[i]->id << "*" << *(list[i]) << " ";
     }
     cout << cond << endl;
-
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintAtMost(string id, vector<XVariable *> &list, int value, int k) {
+// string id, vector<XVariable *> &list, int value, int k
+void XCSP3PrintCallbacks::buildConstraintAtMost(string, vector<XVariable *> &list, int value, int k) {
     cout << "\n    AtMost constraint: val=" << value << " k=" << k << endl;
     cout << "        ";
     displayList(list);
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintAtLeast(string id, vector<XVariable *> &list, int value, int k) {
+// string id, vector<XVariable *> &list, int value, int k
+void XCSP3PrintCallbacks::buildConstraintAtLeast(string, vector<XVariable *> &list, int value, int k) {
     cout << "\n    Atleast constraint: val=" << value << " k=" << k << endl;
     cout << "        ";
     displayList(list);
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintExactlyK(string id, vector<XVariable *> &list, int value, int k) {
+// string id, vector<XVariable *> &list, int value, int k
+void XCSP3PrintCallbacks::buildConstraintExactlyK(string, vector<XVariable *> &list, int value, int k) {
     cout << "\n    Exactly constraint: val=" << value << " k=" << k << endl;
     cout << "        ";
     displayList(list);
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintAmong(string id, vector<XVariable *> &list, vector<int> &values, int k) {
+// string id, vector<XVariable *> &list, vector<int> &values, int k
+void XCSP3PrintCallbacks::buildConstraintAmong(string, vector<XVariable *> &list, vector<int> &values, int k) {
     cout << "\n    Among constraint: k=" << k << endl;
     cout << "        ";
     displayList(list);
@@ -593,14 +607,16 @@ void XCSP3PrintCallbacks::buildConstraintAmong(string id, vector<XVariable *> &l
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintExactlyVariable(string id, vector<XVariable *> &list, int value, XVariable *x) {
+// string id, vector<XVariable *> &list, int value, XVariable *x
+void XCSP3PrintCallbacks::buildConstraintExactlyVariable(string, vector<XVariable *> &list, int value, XVariable *x) {
     cout << "\n    Exactly Variable constraint: val=" << value << " variable=" << *x << endl;
     cout << "        ";
     displayList(list);
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintCount(string id, vector<XVariable *> &list, vector<int> &values, XCondition &xc) {
+// string id, vector<XVariable *> &list, vector<int> &values, XCondition &xc
+void XCSP3PrintCallbacks::buildConstraintCount(string, vector<XVariable *> &list, vector<int> &values, XCondition &xc) {
     cout << "\n    count constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -611,7 +627,8 @@ void XCSP3PrintCallbacks::buildConstraintCount(string id, vector<XVariable *> &l
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintCount(string id, vector<XVariable *> &list, vector<XVariable *> &values, XCondition &xc) {
+// string id, vector<XVariable *> &list, vector<XVariable *> &values, XCondition &xc
+void XCSP3PrintCallbacks::buildConstraintCount(string, vector<XVariable *> &list, vector<XVariable *> &values, XCondition &xc) {
     cout << "\n    count constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -621,7 +638,8 @@ void XCSP3PrintCallbacks::buildConstraintCount(string id, vector<XVariable *> &l
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintNValues(string id, vector<XVariable *> &list, vector<int> &except, XCondition &xc) {
+// string id, vector<XVariable *> &list, vector<int> &except, XCondition &xc
+void XCSP3PrintCallbacks::buildConstraintNValues(string, vector<XVariable *> &list, vector<int> &except, XCondition &xc) {
     cout << "\n    NValues with exceptions constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -631,7 +649,8 @@ void XCSP3PrintCallbacks::buildConstraintNValues(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintNValues(string id, vector<XVariable *> &list, XCondition &xc) {
+// string id, vector<XVariable *> &list, XCondition &xc
+void XCSP3PrintCallbacks::buildConstraintNValues(string, vector<XVariable *> &list, XCondition &xc) {
     cout << "\n    NValues  constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -639,7 +658,8 @@ void XCSP3PrintCallbacks::buildConstraintNValues(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable *> &list, vector<int> values, vector<int> &occurs, bool closed) {
+// string id, vector<XVariable *> &list, vector<int> values, vector<int> &occurs, bool closed
+void XCSP3PrintCallbacks::buildConstraintCardinality(string, vector<XVariable *> &list, vector<int> values, vector<int> &occurs, bool closed) {
     cout << "\n    Cardinality constraint (int values, int occurs)  constraint closed: " << closed << endl;
     cout << "        ";
     displayList(list);
@@ -650,8 +670,8 @@ void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable *> &list, vector<int> values, vector<XVariable *> &occurs,
-                                                     bool closed) {
+// string id, vector<XVariable *> &list, vector<int> values, vector<XVariable *> &occurs, bool closed
+void XCSP3PrintCallbacks::buildConstraintCardinality(string, vector<XVariable *> &list, vector<int> values, vector<XVariable *> &occurs, bool closed) {
     cout << "\n    Cardinality constraint (int values, var occurs)  constraint closed: " << closed << endl;
     cout << "        ";
     displayList(list);
@@ -662,8 +682,8 @@ void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable *> &list, vector<int> values, vector<XInterval> &occurs,
-                                                     bool closed) {
+// string id, vector<XVariable *> &list, vector<int> values, vector<XInterval> &occurs, bool closed
+void XCSP3PrintCallbacks::buildConstraintCardinality(string, vector<XVariable *> &list, vector<int> values, vector<XInterval> &occurs, bool closed) {
     cout << "\n    Cardinality constraint (int values, interval occurs)  constraint closed: " << closed << endl;
     cout << "        ";
     displayList(list);
@@ -674,8 +694,8 @@ void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector<int> &occurs,
-                                                     bool closed) {
+// string id, vector<XVariable *> &list, vector<XVariable *> values, vector<int> &occurs, bool closed
+void XCSP3PrintCallbacks::buildConstraintCardinality(string, vector<XVariable *> &list, vector<XVariable *> values, vector<int> &occurs, bool closed) {
     cout << "\n    Cardinality constraint (var values, int occurs)  constraint closed: " << closed << endl;
     cout << "        ";
     displayList(list);
@@ -686,8 +706,8 @@ void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector<XVariable *> &occurs,
-                                                     bool closed) {
+// string id, vector<XVariable *> &list, vector<XVariable *> values, vector<XVariable *> &occurs, bool closed
+void XCSP3PrintCallbacks::buildConstraintCardinality(string, vector<XVariable *> &list, vector<XVariable *> values, vector<XVariable *> &occurs, bool closed) {
     cout << "\n    Cardinality constraint (var values, var occurs)  constraint closed: " << closed << endl;
     cout << "        ";
     displayList(list);
@@ -698,8 +718,8 @@ void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable *> &list, vector<XVariable *> values, vector<XInterval> &occurs,
-                                                     bool closed) {
+// string id, vector<XVariable *> &list, vector<XVariable *> values, vector<XInterval> &occurs, bool closed
+void XCSP3PrintCallbacks::buildConstraintCardinality(string, vector<XVariable *> &list, vector<XVariable *> values, vector<XInterval> &occurs, bool closed) {
     cout << "\n    Cardinality constraint (var values, interval occurs)  constraint closed: " << closed << endl;
     cout << "        ";
     displayList(list);
@@ -710,7 +730,8 @@ void XCSP3PrintCallbacks::buildConstraintCardinality(string id, vector<XVariable
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintMinimum(string id, vector<XVariable *> &list, XCondition &xc) {
+// string id, vector<XVariable *> &list, XCondition &xc
+void XCSP3PrintCallbacks::buildConstraintMinimum(string, vector<XVariable *> &list, XCondition &xc) {
     cout << "\n    minimum  constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -718,8 +739,8 @@ void XCSP3PrintCallbacks::buildConstraintMinimum(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintMinimum(string id, vector<XVariable *> &list, XVariable *index, int startIndex, RankType rank,
-                                                 XCondition &xc) {
+// string id, vector<XVariable *> &list, XVariable *index, int startIndex, RankType rank, XCondition &xc
+void XCSP3PrintCallbacks::buildConstraintMinimum(string, vector<XVariable *> &list, XVariable *index, int startIndex, RankType, XCondition &xc) {
     cout << "\n    arg_minimum  constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -730,7 +751,8 @@ void XCSP3PrintCallbacks::buildConstraintMinimum(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintMaximum(string id, vector<XVariable *> &list, XCondition &xc) {
+// string id, vector<XVariable *> &list, XCondition &xc
+void XCSP3PrintCallbacks::buildConstraintMaximum(string, vector<XVariable *> &list, XCondition &xc) {
     cout << "\n    maximum  constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -738,7 +760,8 @@ void XCSP3PrintCallbacks::buildConstraintMaximum(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintMaximum(string id, vector<XVariable *> &list, XVariable *index, int startIndex, RankType rank, XCondition &xc) {
+// string id, vector<XVariable *> &list, XVariable *index, int startIndex, RankType rank, XCondition &xc
+void XCSP3PrintCallbacks::buildConstraintMaximum(string, vector<XVariable *> &list, XVariable *index, int startIndex, RankType, XCondition &xc) {
     cout << "\n    arg_maximum  constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -748,7 +771,8 @@ void XCSP3PrintCallbacks::buildConstraintMaximum(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<XVariable *> &list, int value) {
+// string id, vector<XVariable *> &list, int value
+void XCSP3PrintCallbacks::buildConstraintElement(string, vector<XVariable *> &list, int value) {
     cout << "\n    element constant constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -756,7 +780,8 @@ void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<XVariable *> &list, XVariable *value) {
+// string id, vector<XVariable *> &list, XVariable *value
+void XCSP3PrintCallbacks::buildConstraintElement(string, vector<XVariable *> &list, XVariable *value) {
     cout << "\n    element variable constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -764,7 +789,8 @@ void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<XVariable *> &list, int startIndex, XVariable *index, RankType rank, int value) {
+// string id, vector<XVariable *> &list, int startIndex, XVariable *index, RankType rank, int value
+void XCSP3PrintCallbacks::buildConstraintElement(string, vector<XVariable *> &list, int startIndex, XVariable *index, RankType, int value) {
     cout << "\n    element constant (with index) constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -774,7 +800,8 @@ void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<XVariable *> &list, int startIndex, XVariable *index, RankType rank, XVariable *value) {
+// string id, vector<XVariable *> &list, int startIndex, XVariable *index, RankType rank, XVariable *value
+void XCSP3PrintCallbacks::buildConstraintElement(string, vector<XVariable *> &list, int startIndex, XVariable *index, RankType, XVariable *value) {
     cout << "\n    element variable (with index) constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -784,7 +811,8 @@ void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<int> &list, int startIndex, XVariable *index, RankType rank, XVariable *value) {
+// string, vector<int> &list, int startIndex, XVariable *index, RankType rank, XVariable *value
+void XCSP3PrintCallbacks::buildConstraintElement(string, vector<int> &list, int startIndex, XVariable *index, RankType, XVariable *value) {
     cout << "\n    element variable with list of integers (with index) constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -794,7 +822,8 @@ void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<int> &list, i
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex) {
+// string id, vector<XVariable *> &list, int startIndex
+void XCSP3PrintCallbacks::buildConstraintChannel(string, vector<XVariable *> &list, int startIndex) {
     cout << "\n    channel constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -802,7 +831,8 @@ void XCSP3PrintCallbacks::buildConstraintChannel(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintChannel(string id, vector<XVariable *> &list1, int startIndex1, vector<XVariable *> &list2, int startIndex2) {
+// string id, vector<XVariable *> &list1, int startIndex1, vector<XVariable *> &list2, int startIndex2
+void XCSP3PrintCallbacks::buildConstraintChannel(string, vector<XVariable *> &list1, int, vector<XVariable *> &list2, int) {
     cout << "\n    channel constraint" << endl;
     cout << "        list1 ";
     displayList(list1);
@@ -811,7 +841,8 @@ void XCSP3PrintCallbacks::buildConstraintChannel(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex, XVariable *value) {
+// string id, vector<XVariable *> &list, int startIndex, XVariable *value
+void XCSP3PrintCallbacks::buildConstraintChannel(string, vector<XVariable *> &list, int, XVariable *value) {
     cout << "\n    channel constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -819,7 +850,8 @@ void XCSP3PrintCallbacks::buildConstraintChannel(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths) {
+// string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths
+void XCSP3PrintCallbacks::buildConstraintStretch(string, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths) {
     cout << "\n    stretch constraint" << endl;
     cout << "        ";
     displayList(list);
@@ -830,7 +862,8 @@ void XCSP3PrintCallbacks::buildConstraintStretch(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths, vector<vector<int>> &patterns) {
+// string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths, vector<vector<int>> &patterns
+void XCSP3PrintCallbacks::buildConstraintStretch(string, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths, vector<vector<int>> &patterns) {
     cout << "\n    stretch constraint (with patterns)" << endl;
     cout << "        ";
     displayList(list);
@@ -845,7 +878,8 @@ void XCSP3PrintCallbacks::buildConstraintStretch(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<XVariable *> &origins, vector<int> &lengths, bool zeroIgnored) {
+// string id, vector<XVariable *> &origins, vector<int> &lengths, bool zeroIgnored
+void XCSP3PrintCallbacks::buildConstraintNoOverlap(string, vector<XVariable *> &origins, vector<int> &lengths, bool) {
     cout << "\n    nooverlap constraint" << endl;
     cout << "        origins";
     displayList(origins);
@@ -854,7 +888,8 @@ void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<XVariable *
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, bool zeroIgnored) {
+// string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, bool zeroIgnored
+void XCSP3PrintCallbacks::buildConstraintNoOverlap(string, vector<XVariable *> &origins, vector<XVariable *> &lengths, bool) {
     cout << "\n    nooverlap constraint" << endl;
     cout << "        origins:";
     displayList(origins);
@@ -863,7 +898,8 @@ void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<XVariable *
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<int>> &lengths, bool zeroIgnored) {
+// string id, vector<vector<XVariable *>> &origins, vector<vector<int>> &lengths, bool zeroIgnored
+void XCSP3PrintCallbacks::buildConstraintNoOverlap(string, vector<vector<XVariable *>> &origins, vector<vector<int>> &lengths, bool) {
     cout << "\n    kdim (int lengths) nooverlap constraint" << endl;
     cout << "origins: " << endl;
     for(unsigned int i = 0 ; i < origins.size() ; i++) {
@@ -879,7 +915,8 @@ void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<vector<XVar
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<XVariable *>> &lengths, bool zeroIgnored) {
+// string id, vector<vector<XVariable *>> &origins, vector<vector<XVariable *>> &lengths, bool zeroIgnored
+void XCSP3PrintCallbacks::buildConstraintNoOverlap(string, vector<vector<XVariable *>> &origins, vector<vector<XVariable *>> &lengths, bool) {
     cout << "\n    kdim (lenghts vars nooverlap constraint" << endl;
     cout << "origins: " << endl;
     for(unsigned int i = 0 ; i < origins.size() ; i++) {
@@ -894,7 +931,8 @@ void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<vector<XVar
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintInstantiation(string id, vector<XVariable *> &list, vector<int> &values) {
+// string id, vector<XVariable *> &list, vector<int> &values
+void XCSP3PrintCallbacks::buildConstraintInstantiation(string, vector<XVariable *> &list, vector<int> &values) {
     cout << "\n    instantiation constraint" << endl;
     cout << "        list:";
     displayList(list);
@@ -904,7 +942,8 @@ void XCSP3PrintCallbacks::buildConstraintInstantiation(string id, vector<XVariab
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex) {
+// string id, vector<XVariable *> &list, int startIndex
+void XCSP3PrintCallbacks::buildConstraintCircuit(string, vector<XVariable *> &list, int startIndex) {
     cout << "\n    circuit constraint" << endl;
     cout << "        list:";
     displayList(list);
@@ -912,7 +951,8 @@ void XCSP3PrintCallbacks::buildConstraintCircuit(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex, int size) {
+// string id, vector<XVariable *> &list, int startIndex, int size
+void XCSP3PrintCallbacks::buildConstraintCircuit(string, vector<XVariable *> &list, int startIndex, int size) {
     cout << "\n    circuit constraint" << endl;
     cout << "        list:";
     displayList(list);
@@ -921,7 +961,8 @@ void XCSP3PrintCallbacks::buildConstraintCircuit(string id, vector<XVariable *> 
 }
 
 
-void XCSP3PrintCallbacks::buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex, XVariable *size) {
+// string id, vector<XVariable *> &list, int startIndex, XVariable *size
+void XCSP3PrintCallbacks::buildConstraintCircuit(string, vector<XVariable *> &list, int startIndex, XVariable *size) {
     cout << "\n    circuit constraint" << endl;
     cout << "        list:";
     displayList(list);

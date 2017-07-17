@@ -29,6 +29,8 @@
 #include "XCSP3TreeNode.h"
 #include <sstream>
 #include <vector>
+#include <limits>
+#include <algorithm>
 using namespace XCSP3Core;
 using namespace std;
 
@@ -53,17 +55,13 @@ static inline std::string &trim(std::string &s) {
     return ltrim(rtrim(s));
 }
 
-static int min(int v1, int v2, int v3) {
-    if (v1 == -1) v1 = INT_MAX;
-    if (v2 == -1) v2 = INT_MAX;
-    if (v3 == -1) v3 = INT_MAX;
+template <typename T>
+static int min(T v1, T v2, T v3) {
+    if (v1 == -1) v1 = std::numeric_limits<T>::max();
+    if (v2 == -1) v2 = std::numeric_limits<T>::max();
+    if (v3 == -1) v3 = std::numeric_limits<T>::max();
 
-    if (v1 < v2) {
-        if (v1 < v3) return v1;
-        return v3;
-    }
-    if (v2 < v3) return v2;
-    return v3;
+    return std::min( { v1, v2, v3 } );
 }
 
 Node *Tree::fromStringToTree(std::string current) {
@@ -160,7 +158,8 @@ void Tree::closeOperator(std::vector<NodeOperator*> &stack,std::vector<Node*> &p
     params.push_back(tmp);
 }
 
-void Tree::createBasicParameter(string currentElement, std::vector<NodeOperator*> &stack,std::vector<Node*> &params) {
+// string currentElement, std::vector<NodeOperator*> &stack,std::vector<Node*> &params
+void Tree::createBasicParameter(string currentElement, std::vector<NodeOperator*> &,std::vector<Node*> &params) {
     try {
         int nb = stoi(currentElement);
         params.push_back(new NodeConstant(nb));

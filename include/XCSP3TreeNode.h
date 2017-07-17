@@ -30,7 +30,8 @@
 #include <vector>
 #include <map>
 #include<iostream>
-#include<assert.h>
+#include<algorithm>
+#include<cassert>
 
 namespace XCSP3Core {
 
@@ -59,7 +60,8 @@ namespace XCSP3Core {
         NodeConstant(int v) : val(v) {}
 
 
-        int evaluate(std::map<std::string, int> &tuple) override {
+        // std::map<std::string, int> &tuple
+        int evaluate(std::map<std::string, int> &) override {
             return val;
         }
 
@@ -512,7 +514,8 @@ namespace XCSP3Core {
         NodeSet() : NodeNAry("set") {}
 
 
-        int evaluate(std::map<std::string, int> &tuple) override {
+        // std::map<std::string, int> &tuple
+        int evaluate(std::map<std::string, int> &) override {
             throw std::runtime_error("can't evaluate set");
         }
     };
