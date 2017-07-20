@@ -106,8 +106,8 @@ void XMLParser::VarTagAction::beginTag(const AttributeList &attributes) {
 
     if(!attributes["type"].isNull()) {
         attributes["type"].to(type);
-        if(type != "Integer")
-            throw runtime_error("XCSP3Core expected type=Integer for tag <var>");
+        if(type != "integer")
+            throw runtime_error("XCSP3Core expected type=\"integer\" for tag <var>");
     }
     if(!attributes["as"].isNull()) {
         // Create a similar Variable
@@ -181,8 +181,8 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList &attributes) {
 
     if(!attributes["type"].isNull()) {
         attributes["type"].to(type);
-        if(type != "Integer")
-            throw runtime_error("XCSP3Core expected type=Integer for tag <var>");
+        if(type != "integer")
+            throw runtime_error("XCSP3Core expected type=\"integer\" for tag <var>");
     }
 
 
