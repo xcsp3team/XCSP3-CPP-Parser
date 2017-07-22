@@ -114,7 +114,7 @@ void XMLParser::VarTagAction::beginTag(const AttributeList &attributes) {
         attributes["as"].to(as);
         XVariableArray *similarArray;
         if(this->parser->variablesList[as] == NULL)
-            runtime_error("Variable as " + as + "does not exist");
+            throw runtime_error("Variable as \"" + as + "\" does not exist");
         if((similarArray = dynamic_cast<XVariableArray *>(this->parser->variablesList[as])) != NULL) {
             variableArray = new XVariableArray(id, similarArray);
         } else {
@@ -189,6 +189,8 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList &attributes) {
     if(!attributes["as"].isNull()) {
         // Create a similar Variable
         attributes["as"].to(as);
+        if(this->parser->variablesList[as] == nullptr)
+            throw runtime_error("Matric variable as \"" + as + "\" does not exist");
         XVariableArray *similar = (XVariableArray *)
                 this->parser->variablesList[as];
         varArray = new XVariableArray(id, similar);
@@ -1574,7 +1576,7 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
         name = txt2.substr(0, pos);
         compactForm = txt2.substr(pos);
         if(this->parser->variablesList[name] == NULL)
-            runtime_error("Matrix variable " + name + "does not exist");
+            throw runtime_error("Matrix variable " + name + "does not exist");
         XVariableArray *varArray = ((XVariableArray *)
                 this->parser->variablesList[name]);
         int nbV = 0;
