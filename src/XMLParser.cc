@@ -56,8 +56,7 @@ void XMLParser::startElement(UTF8String name, const AttributeList &attributes) {
         // ???
         //if (!action->isActivated())
         //  throw runtime_error("unexpected tag");
-    }
-    else {
+    } else {
         // add a handler to ignore the text and end element
         action = unknownTagHandler;
         cerr << "unknown tag " << name << endl;
@@ -132,7 +131,7 @@ void XMLParser::characters(UTF8String chars) {
         }
     }
 
-    for(it = brk ; it != chars.end() ; ++it)
+    for(it = brk; it != chars.end(); ++it)
         textLeft.append(*it);
 
     chars = chars.substr(chars.begin(), brk);
@@ -176,7 +175,7 @@ void XMLParser::handleAbridgedNotation(UTF8String chars, bool lastChunk) {
 //    or a basic entity, or a template parameter
 //------------------------------------------------------------------------------------------
 
-void XMLParser::parseSequence(const UTF8String txt, vector<XVariable *> &list, vector<char> delimiters) {
+void XMLParser::parseSequence(const UTF8String &txt, vector<XVariable *> &list, vector<char> delimiters) {
     UTF8String::Tokenizer tokenizer(txt);
 
     for(char c : delimiters)
@@ -186,7 +185,7 @@ void XMLParser::parseSequence(const UTF8String txt, vector<XVariable *> &list, v
 
         UTF8String token = tokenizer.nextToken();
         bool isSep = false;
-        for(unsigned int i = 0 ; i < delimiters.size() ; i++) {
+        for(unsigned int i = 0; i < delimiters.size(); i++) {
             string tt;
             token.to(tt);
             if(tt.size() == 1 && tt[0] == delimiters[i]) {
@@ -227,15 +226,14 @@ void XMLParser::parseSequence(const UTF8String txt, vector<XVariable *> &list, v
                     if(keepIntervals) {
                         list.push_back(new XEInterval(current, first, last));
                     } else {
-                        for(int i = first ; i <= last ; i++) {
+                        for(int i = first; i <= last; i++) {
                             XInteger *xi = new XInteger(to_string(i), i);
                             list.push_back(xi);
                             toFree.push_back(xi);
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 string name;
                 token.substr(0, pos).to(name);
                 token.substr(pos).to(compactForm);
@@ -257,7 +255,7 @@ void XMLParser::parseSequence(const UTF8String txt, vector<XVariable *> &list, v
 
 
 // Return True if START appears;
-bool XMLParser::parseTuples(const UTF8String txt, vector<vector<int> > &tuples) {
+bool XMLParser::parseTuples(const UTF8String &txt, vector<vector<int> > &tuples) {
     bool hasStar = false;
     UTF8String::Tokenizer tokenizer(txt);
     tokenizer.addSeparator(')');
@@ -278,8 +276,7 @@ bool XMLParser::parseTuples(const UTF8String txt, vector<vector<int> > &tuples) 
         if(token == UTF8String("*")) {
             hasStar = true;
             val = STAR;
-        }
-        else
+        } else
             token.to(val);
         currentTuple.push_back(val);
     }
@@ -287,7 +284,7 @@ bool XMLParser::parseTuples(const UTF8String txt, vector<vector<int> > &tuples) 
 }
 
 
-void XMLParser::parseDomain(const UTF8String txt, XDomainInteger *domain) {
+void XMLParser::parseDomain(const UTF8String &txt, XDomainInteger &domain) {
     UTF8String::Tokenizer tokenizer(txt);
     UTF8String dotdot("..");
     while(tokenizer.hasMoreTokens()) {
@@ -296,20 +293,26 @@ void XMLParser::parseDomain(const UTF8String txt, XDomainInteger *domain) {
 
         if(pos == UTF8String::npos) {
             int val;
-            token.to(val);
-            domain->addValue(val);
+            if(false == token.to(val)) {
+                std::string ds;
+                txt.to(ds);
+                throw std::runtime_error("Intger expected: " + ds);
+            }
+            domain.addValue(val);
         } else {
             int first, last;
-            token.substr(0, pos).to(first);
-            token.substr(pos + 2).to(last);
-            domain->addInterval(first, last);
+            if((false == token.substr(0, pos).to(first)) || (false == token.substr(pos + 2).to(last))) {
+                std::string ds;
+                txt.to(ds);
+                throw std::runtime_error("Intger expected: " + ds);
+            }
+            domain.addInterval(first, last);
         }
     }
-
 }
 
 
-void XMLParser::parseListOfIntegerOrInterval(const UTF8String txt, vector<XIntegerEntity *> &listToFill) {
+void XMLParser::parseListOfIntegerOrInterval(const UTF8String &txt, vector<XIntegerEntity *> &listToFill) {
     UTF8String::Tokenizer tokenizer(txt);
     UTF8String dotdot = "..";
     while(tokenizer.hasMoreTokens()) {
@@ -318,14 +321,21 @@ void XMLParser::parseListOfIntegerOrInterval(const UTF8String txt, vector<XInteg
 
         if(pos == UTF8String::npos) {
             int val;
-            token.to(val);
+            if(false == token.to(val)) {
+                std::string ds;
+                txt.to(ds);
+                throw std::runtime_error("Integer expected: " + ds);
+            }
             XIntegerValue *xv = new XIntegerValue(val);
             listToFill.push_back(xv);
             toFreeEntity.push_back(xv);
         } else {
             int first, last;
-            token.substr(0, pos).to(first);
-            token.substr(pos + 2).to(last);
+            if((false == token.substr(0, pos).to(first)) || (false == token.substr(pos + 2).to(last))) {
+                std::string ds;
+                txt.to(ds);
+                throw std::runtime_error("Integer expected: " + ds);
+            }
             XIntegerInterval *xi = new XIntegerInterval(first, last);
             listToFill.push_back(xi);
             toFreeEntity.push_back(xi);
@@ -438,8 +448,8 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
 
 XMLParser::~XMLParser() {
     delete unknownTagHandler;
-    for(TagActionList::iterator it = tagList.begin() ;
-        it != tagList.end() ; ++it)
+    for(TagActionList::iterator it = tagList.begin();
+        it != tagList.end(); ++it)
         delete (*it).second;
 }
 

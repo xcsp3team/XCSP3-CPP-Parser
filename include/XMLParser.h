@@ -243,16 +243,16 @@ namespace XCSP3Core {
          * Parse a sequence of tokens. Each token can represent a compact list of array variables, or a basic entity, or a template parameter
          */
 
-        void parseSequence(const UTF8String txt, vector<XVariable *> &list, vector<char> delimiters = vector<char>());
+        void parseSequence(const UTF8String &txt, vector<XVariable *> &list, vector<char> delimiters = vector<char>());
 
 
-        void parseDomain(const UTF8String txt, XDomainInteger *domain);
+        void parseDomain(const UTF8String &txt, XDomainInteger &domain);
 
 
-        void parseListOfIntegerOrInterval(const UTF8String txt, vector<XIntegerEntity *> &listToFill);
+        void parseListOfIntegerOrInterval(const UTF8String &txt, vector<XIntegerEntity *> &listToFill);
 
 
-        bool parseTuples(const UTF8String txt, vector<vector<int> > &tuples);
+        bool parseTuples(const UTF8String &txt, vector<vector<int> > &tuples);
 
 
             /***************************************************************************
@@ -332,7 +332,7 @@ namespace XCSP3Core {
 
             // UTF8String txt, bool last
             void text(const UTF8String txt, bool) override {
-                this->parser->parseDomain(txt, domain);
+                this->parser->parseDomain(txt, *domain);
             }
         };
 

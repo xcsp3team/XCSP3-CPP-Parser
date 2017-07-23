@@ -134,7 +134,7 @@ void XMLParser::VarTagAction::text(const UTF8String txt, bool) {
 
     if((variable != NULL || variableArray != NULL) && !txt.isWhiteSpace())
         throw runtime_error("<var> with attribute 'as' must not have domain declaration");
-    this->parser->parseDomain(txt, domain);
+    this->parser->parseDomain(txt, *domain);
 }
 
 
@@ -242,7 +242,7 @@ void XMLParser::DomainTagAction::beginTag(const AttributeList &attributes) {
 
 // UTF8String txt, bool last
 void XMLParser::DomainTagAction::text(const UTF8String txt, bool) {
-    this->parser->parseDomain(txt, d);
+    this->parser->parseDomain(txt, *d);
 }
 
 
