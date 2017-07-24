@@ -296,7 +296,7 @@ void XMLParser::parseDomain(const UTF8String &txt, XDomainInteger &domain) {
             if(false == token.to(val)) {
                 std::string ds;
                 txt.to(ds);
-                throw std::runtime_error("Intger expected: " + ds);
+                throw std::runtime_error("Integer expected: " + ds);
             }
             domain.addValue(val);
         } else {
@@ -304,7 +304,7 @@ void XMLParser::parseDomain(const UTF8String &txt, XDomainInteger &domain) {
             if((false == token.substr(0, pos).to(first)) || (false == token.substr(pos + 2).to(last))) {
                 std::string ds;
                 txt.to(ds);
-                throw std::runtime_error("Intger expected: " + ds);
+                throw std::runtime_error("Integer expected: " + ds);
             }
             domain.addInterval(first, last);
         }
