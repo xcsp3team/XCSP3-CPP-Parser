@@ -161,17 +161,15 @@ namespace XCSP3Core {
 
 
         void addValue(int v) {
-            if(v >= top)
+            if(v <= top)
                 throw std::runtime_error{"not sequence domain"};
-
             addEntity(new XIntegerValue(top = v));
         }
 
 
         void addInterval(int min, int max) {
-            if(min >= max || min >= top)
+            if(min >= max || min <= top)
                 throw std::runtime_error{"not sequence domain"};
-
             addEntity(new XIntegerInterval(min, top = max));
         }
 
