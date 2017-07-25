@@ -26,7 +26,8 @@
 #ifndef XDOMAIN_H
 #define    XDOMAIN_H
 
-#include<vector>
+#include <limits>
+#include <vector>
 #include <iostream>
 
 using namespace std;
@@ -45,6 +46,7 @@ namespace XCSP3Core {
         friend ostream &operator<<(ostream &f, const XIntegerEntity &ie);
 
         virtual bool equals(XIntegerEntity *arg) = 0;
+
 
         virtual ~XIntegerEntity() {}
 
@@ -71,7 +73,7 @@ namespace XCSP3Core {
 
 
         bool equals(XIntegerEntity *arg) override {
-            XIntegerValue * xiv;
+            XIntegerValue *xiv;
             if((xiv = dynamic_cast<XIntegerValue *>(arg)) == NULL)
                 return false;
             return value == xiv->value;
@@ -103,7 +105,7 @@ namespace XCSP3Core {
 
 
         bool equals(XIntegerEntity *arg) override {
-            XIntegerInterval * xii;
+            XIntegerInterval *xii;
             if((xii = dynamic_cast<XIntegerInterval *>(arg)) == NULL)
                 return false;
             return min == xii->min && max == xii->max;
@@ -122,6 +124,7 @@ namespace XCSP3Core {
 //        friend class XMLParser;
     protected :
         int size;
+        int top {std::numeric_limits<int>::min()};
 
 
         void addEntity(XIntegerEntity *e) {
@@ -158,12 +161,18 @@ namespace XCSP3Core {
 
 
         void addValue(int v) {
-            addEntity(new XIntegerValue(v));
+            if(v >= top)
+                throw std::runtime_error{"not sequence domain"};
+
+            addEntity(new XIntegerValue(top = v));
         }
 
 
         void addInterval(int min, int max) {
-            addEntity(new XIntegerInterval(min, max));
+            if(min >= max || min >= top)
+                throw std::runtime_error{"not sequence domain"};
+
+            addEntity(new XIntegerInterval(min, top = max));
         }
 
 
