@@ -41,10 +41,28 @@ namespace XCSP3Core {
         vector<string> classesToDiscard;
     public :
 
-        bool recognizeSpecialIntensionCases; // x<y.. x=k,
-        bool recognizeSpecialCountCases;     // atleast, atmost, exactly, among, exctalyVariable
-        bool recognizeNValuesCases;          // AllEqual, NotAllEqual, AllDiff
-        bool normalizeSum;                   // Normalize sum : merge same variables...remove var with coef = 0,
+        /**
+         * If true, the parse recognizes special intensional constraints such as x + k op y and call a specific callback.
+         */
+        bool recognizeSpecialIntensionCases;
+
+
+        /**
+         * If true, the parser recognizes special count constraints: atleast, atmost, exactly, among, exctalyVariable
+         * and call a specific callback
+         */
+        bool recognizeSpecialCountCases;
+
+        /**
+         * If true, the parser recognizes special nvalues constraints: AllEqual, NotAllEqual, AllDiff
+         * and call a specific callback
+         */
+        bool recognizeNValuesCases;
+
+        /**
+         * if true, sum are normalized: merge same variables, remove variables with coef equal to zero..
+         */
+        bool normalizeSum;
 
         XCSP3CoreCallbacks() {
             recognizeSpecialIntensionCases = true;
@@ -54,6 +72,10 @@ namespace XCSP3Core {
         }
 
 
+        /**
+         * remove specific classes such as symmetryBreaking, clues...
+         * @param cl
+         */
         void addClassToDiscard(string cl) {
             classesToDiscard.push_back(cl);
         }
@@ -272,7 +294,7 @@ namespace XCSP3Core {
          * @param list the scope of the constraint
          * @param tuples the set of tuples in the constraint
          * @param support  support or conflicts?
-         * @param hasStar is the tuples contains star values?
+         * @param hasStar is the tuples contain star values?
          */
         virtual void buildConstraintExtension(string id, vector<XVariable *> list, vector<vector<int>> &tuples, bool support, bool hasStar) {
             std::cout << "WARNING: tuples are not checked wrt domains" << std::endl;
@@ -294,7 +316,7 @@ namespace XCSP3Core {
          * @param variable the variable
          * @param tuples the set of tuple (here just set of ints)
          * @param support  support or conflicts?
-         * @param hasStar is the tuples contains star values?
+         * @param hasStar is the tuples contain star values?
          */
         virtual void buildConstraintExtension(string id, XVariable *variable, vector<int> &tuples, bool support, bool hasStar) {
             throw runtime_error("unary extension constraint is not yet supported");
@@ -310,7 +332,7 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the scope of the constraint
          * @param support  support or conflicts?
-         * @param hasStar is the tuples contains star values?
+         * @param hasStar is the tuples contain star values?
          */
         virtual void buildConstraintExtensionAs(string id, vector<XVariable *> list, bool support, bool hasStar) {
             throw runtime_error("This extension constraint contains exactly the same tuples than previous one");
