@@ -29,6 +29,7 @@
 #include <limits>
 #include <vector>
 #include <iostream>
+#include <stdexcept>
 
 using namespace std;
 namespace XCSP3Core {
