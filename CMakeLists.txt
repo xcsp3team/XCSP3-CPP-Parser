@@ -13,7 +13,7 @@ set(VERSION ${Xcsp3Parser_VERSION_MAJOR}.${Xcsp3Parser_VERSION_MINOR}.${Xcsp3Par
 #        "${PROJECT_SOURCE_DIR}/include/Xcsp3ParserConfig.h.in"
 #        "${PROJECT_BINARY_DIR}/include/Xcsp3ParserConfig.h"
 #)
-find_package(LibXML2 REQUIRED)
+find_package(LibXml2 REQUIRED)
 include_directories(${LIBXML2_INCLUDE_DIR})
 
 set(LIBRARY_NAME xcsp3parser)
