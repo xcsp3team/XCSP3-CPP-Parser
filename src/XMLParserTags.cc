@@ -190,7 +190,7 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList &attributes) {
         // Create a similar Variable
         attributes["as"].to(as);
         if(this->parser->variablesList[as] == nullptr)
-            throw runtime_error("Matric variable as \"" + as + "\" does not exist");
+            throw runtime_error("Matrix variable as \"" + as + "\" does not exist");
         XVariableArray *similar = (XVariableArray *)
                 this->parser->variablesList[as];
         varArray = new XVariableArray(id, similar);
@@ -215,7 +215,7 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList &attributes) {
 
 
 void XMLParser::ArrayTagAction::endTag() {
-    if(domain->nbValues() != 0) // Possible empty variables
+    if(domain != nullptr && domain->nbValues() != 0) // If dommain is null -> as variable // Possible empty variables
         varArray->buildVarsWith(domain);
     this->parser->variablesList[varArray->id] = varArray;
     for(XVariable *x : varArray->variables) {
