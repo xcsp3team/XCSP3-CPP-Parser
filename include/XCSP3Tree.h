@@ -42,7 +42,6 @@ namespace XCSP3Core {
         void createOperator(std::string currentElement, std::vector<NodeOperator *> &stack, std::vector<Node *> &params);
         void closeOperator(std::vector<NodeOperator *> &stack, std::vector<Node *> &params);
         void createBasicParameter(std::string currentElement, std::vector<NodeOperator *> &stack, std::vector<Node *> &params);
-
     public:
         Node *root;
         std::vector<std::string> listOfVariables;
@@ -52,6 +51,7 @@ namespace XCSP3Core {
             root = fromStringToTree(expr);
         }
 
+        Tree(Node *r) : root(r) { }
 
         Node *fromStringToTree(std::string);
 
@@ -64,6 +64,10 @@ namespace XCSP3Core {
 
         void prefixe()  {
             root->prefixe();
+        }
+
+        Tree canonize() {
+            return root.canonize();
         }
     };
 }

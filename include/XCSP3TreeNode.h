@@ -36,6 +36,46 @@
 namespace XCSP3Core {
 
 
+    NodeOperator *createNodeOperator(std::string op) {
+        NodeOperator *tmp = nullptr;
+        if (op == "neg") tmp = new NodeNeg();
+        if (op == "abs") tmp = new NodeAbs();
+
+        if (op == "add") tmp = new NodeAdd();
+        if (op == "sub") tmp = new NodeSub();
+        if (op == "mul") tmp = new NodeMult();
+        if (op == "div") tmp = new NodeDiv();
+        if (op == "mod") tmp = new NodeMod();
+
+        if (op == "sqr") tmp = new NodeSquare();
+        if (op == "pow") tmp = new NodePow();
+
+        if (op == "min") tmp = new NodeMin();
+        if (op == "max") tmp = new NodeMax();
+        if (op == "dist") tmp = new NodeDist();
+
+        if (op == "le") tmp = new NodeLE();
+        if (op == "lt") tmp = new NodeLT();
+        if (op == "ge") tmp = new NodeGE();
+        if (op == "gt") tmp = new NodeGT();
+
+        if (op == "ne") tmp = new NodeNE();
+        if (op == "eq") tmp = new NodeEQ();
+
+        if (op == "not") tmp = new NodeNot();
+        if (op == "and") tmp = new NodeAnd();
+        if (op == "or") tmp = new NodeOr();
+        if (op == "xor") tmp = new NodeXor();
+        if (op == "imp") tmp = new NodeImp();
+        if (op == "if") tmp = new NodeIf();
+        if (op == "iff") tmp = new NodeIff();
+
+        if (op == "in") tmp = new NodeIn();
+        if (op == "set") tmp = new NodeSet();
+
+        return tmp;
+    }
+
 
     //-------------------------------------
 
@@ -44,8 +84,9 @@ namespace XCSP3Core {
 
     public:
         virtual int evaluate(std::map<std::string, int> &tuple) = 0;
-
-        virtual void prefixe() = 0;
+        virtual Node *canonize() = 0;
+        virtual void prefixe()   = 0;
+        virtual Node *clone()    = 0;
     };
 
 
@@ -63,6 +104,16 @@ namespace XCSP3Core {
         // std::map<std::string, int> &tuple
         int evaluate(std::map<std::string, int> &) override {
             return val;
+        }
+
+
+        Node *clone() {
+            return new NodeConstant(val);
+        }
+
+
+        Node *canonize() override {
+            return clone();
         }
 
 
@@ -86,6 +137,16 @@ namespace XCSP3Core {
         }
 
 
+        Node *clone() {
+            return new NodeVariable(var);
+        }
+
+
+        Node *canonize() override {
+            return clone();
+        }
+
+
         void prefixe() override {
             std::cout << var;
         }
@@ -93,61 +154,148 @@ namespace XCSP3Core {
 
 
     //-------------------------------------
+    template<class T>
+    T *clone(T *tmp) { return new T(tmp); }
+
 
     class NodeOperator : public Node {
     public:
         std::string op;
+        std::vector<Node *> parameters;
+        bool isSymmetricOperator;
+        std::string logicalInversion;
+
+        NodeOperator(std::string o) : op(o), isSymmetricOperator(false), logicalInversion("") {}
 
 
-        NodeOperator(std::string o) : op(o) {}
+        NodeOperator* addParameter(Node *p) {
+            parameters.push_back(p);
+            return this;
+        }
+
+        NodeOperator* addParameters(std::vector<Node *> params) {
+            std::copy(params.begin(),params.end(), parameters);
+            return this;
+        }
 
 
-        virtual void addParameter(Node *p) = 0;
+        Node *clone() override {
+            NodeOperator *tmp = clone(this);
+            for(Node *n : parameters)
+                tmp->parameters.push_back(n->clone());
+        }
+
+
+        Node *canonize() override {
+            std::vector<Node *> newParams;
+            for(Node * n : parameters)
+                newParams.push_back(n->canonize());
+
+            if (isSymmetricOperator)
+                std::sort(newParams); // TODO
+
+            std::string newType = op;
+            // sons are potentially sorted if the type corresponds to a non-symmetric binary relational operator (in that case, we swap sons and
+            // arithmetically
+            // inverse the operator)
+            if (newParams.length == 2 && type.isNonSymmetricRelationalOperator() && (type.arithmeticInversion().ordinal() < type.ordinal()
+                                                                                   || (type.arithmeticInversion().ordinal() == type.ordinal() && newParams[0].compareTo(newParams[1]) > 0))) {
+                newType = type.arithmeticInversion();
+                Utilities.swap(newParams, 0, 1);
+            }
+            // Now, some specific reformulation rules are applied
+            NodeOperator *tmp = nullptr;
+            if (newType == "abs" && (tmp = dynamic_cast<NodeSub*>(newParams[0])) != nullptr) // abs(sub(...)) becomes dist(...)
+                return (new NodeDist())->addParameters(tmp->parameters);
+
+            if (newType == "not" && (tmp = dynamic_cast<NodeNot*>(newParams[0])) != nullptr) // not(not(...)) becomes ...
+                return tmp->parameters[0];
+
+            if (newType == "neg" && (tmp = dynamic_cast<NodeNeg*>(newParams[0])) != nullptr) // neg(neg(...)) becomes ...
+                return tmp->parameters[0];
+
+            if (newType == "not" && (tmp = dynamic_cast<NodeOperator*>(newParams[0])) != nullptr && tmp->logicalInversion != "")
+                return createNodeOperator(tmp->logicalInversion)->addParameters(tmp->parameters);// not(lt(...)) becomes ge(...), not(eq(...)) becomes ne(...), and
+                // so on.
+
+            if (newParams.size() == 1 && (newType == "add" || newType == "mul" || newType == "min" || newType == "max" || newType == "eq" || newType == "and"
+                                          || newType == "or" || newType == "xor" || newType == "iff")) // certainly can happen during the canonization process
+                return newParams[0];
+
+            if (newType == ADD) { // we merge long (similar operations possible for MUL, MIN, ...)
+                if (newParams.length >= 2 && newParams[newParams.length - 1].type == LONG && newParams[newParams.length - 2].type == LONG) {
+                    List<XNode<V>> list = IntStream.range(0, newParams.length - 2).mapToObj(j -> newParams[j]).collect(Collectors.toList());
+                    list.add(new XNodeLeaf<V>(LONG, (long) newParams[newParams.length - 1].firstVal() + newParams[newParams.length - 2].firstVal()));
+                    return new XNodeParent<V>(ADD, list).canonization();
+                }
+            }
+            // Then, we merge operators when possible; for example add(add(x,y),z) becomes add(x,y,z)
+            if (isSymmetricOperator && newType != "eq" && newType != "dist" && newType != "disjoint") {
+                for (int i = 0; i < newParams.length; i++) {
+                    if (newParams[i].type == newType) {
+                        List<XNode<V>> list = IntStream.rangeClosed(0, i - 1).mapToObj(j -> newParams[j]).collect(Collectors.toList());
+                        Stream.of(((XNodeParent<V>) newParams[i]).sons).forEach(s -> list.add(s));
+                        IntStream.range(i + 1, newParams.length).mapToObj(j -> newParams[j]).forEach(s -> list.add(s));
+                        return new XNodeParent<V>(newType, list).canonization();
+                    }
+                }
+            }
+            if (newParams.length == 2 && newType.isRelationalOperator()) {
+                // First, we replace sub by add when possible
+                if (newParams[0].type == SUB && newParams[1].type == SUB) {
+                    XNode<V> a = new XNodeParent<V>(ADD, ((XNodeParent<V>) newParams[0]).sons[0], ((XNodeParent<V>) newParams[1]).sons[1]);
+                    XNode<V> b = new XNodeParent<V>(ADD, ((XNodeParent<V>) newParams[1]).sons[0], ((XNodeParent<V>) newParams[0]).sons[1]);
+                    return new XNodeParent<V>(newType, a, b).canonization();
+                } else if (newParams[1].type == SUB) {
+                    XNode<V> a = new XNodeParent<V>(ADD, newParams[0], ((XNodeParent<V>) newParams[1]).sons[1]);
+                    XNode<V> b = ((XNodeParent<V>) newParams[1]).sons[0];
+                    return new XNodeParent<V>(newType, a, b).canonization();
+                } else if (newParams[0].type == SUB) {
+                    XNode<V> a = ((XNodeParent<V>) newParams[0]).sons[0];
+                    XNode<V> b = new XNodeParent<V>(ADD, newParams[1], ((XNodeParent<V>) newParams[0]).sons[1]);
+                    return new XNodeParent<V>(newType, a, b).canonization();
+                }
+                // next, we remove some add when possible
+                if (newParams[0].type == ADD && newParams[1].type == ADD) {
+                    XNode<V>[] ns1 = ((XNodeParent<V>) newParams[0]).sons, ns2 = ((XNodeParent<V>) newParams[1]).sons;
+                    if (ns1.length == 2 && ns2.length == 2 && ns1[1].type == LONG && ns2[1].type == LONG) {
+                        ((XNodeLeaf<?>) ns1[1]).value = (long) ns1[1].firstVal() - ns2[1].firstVal();
+                        newParams[1] = ns2[0];
+                        return new XNodeParent<V>(newType, newParams).canonization();
+                    }
+                }
+            }
+            return new XNodeParent<V>(newType, newParams);
+        }
+
     };
 
     class NodeUnary : public NodeOperator {
-    protected:
-        Node *parameter;
     public:
 
         NodeUnary(std::string o) : NodeOperator(o) {}
 
-
-        void addParameter(Node *p) override {
-            parameter = p;
-        }
-
-
         void prefixe() override {
             std::cout << op << "(";
-            parameter->prefixe();
+            parameters[0]->prefixe();
             std::cout << ")";
         }
-
     };
 
     //-------------------------------------
 
     class NodeBinary : public NodeOperator {
     public:
-        Node *parameter1, *parameter2;
 
 
-        NodeBinary(std::string o) : NodeOperator(o), parameter1(NULL), parameter2(NULL) {}
-
-
-        void addParameter(Node *p) override {
-            if(parameter1 == NULL)
-                parameter1 = p;
-            else parameter2 = p;
-        }
+        NodeBinary(std::string o) : NodeOperator(o) {}
 
 
         void prefixe() override {
             std::cout << op << "(";
-            parameter1->prefixe();
+            parameters[0]->prefixe();
             std::cout << ",";
-            parameter2->prefixe();
+            parameters[1]->prefixe();
             std::cout << ")";
         }
     };
@@ -167,11 +315,6 @@ namespace XCSP3Core {
 
     public:
 
-        void addParameter(Node *p) override {
-            parameters.push_back(p);
-        }
-
-
         void prefixe() override {
             std::cout << op << "(";
             for(unsigned int i = 0 ; i < parameters.size() ; i++) {
@@ -189,11 +332,11 @@ namespace XCSP3Core {
     class NodeNeg : public NodeUnary {
     public:
 
-        NodeNeg() : NodeUnary("-") {}
+        NodeNeg() : NodeUnary("neg") {}
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            return -parameter->evaluate(tuple);
+            return -parameters[0]->evaluate(tuple);
         }
     };
 
@@ -206,7 +349,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            int v = parameter->evaluate(tuple);
+            int v = parameters[0]->evaluate(tuple);
             return v > 0 ? v : -v;
         }
     };
@@ -218,7 +361,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            int v = parameter->evaluate(tuple);
+            int v = parameters[0]->evaluate(tuple);
             return v * v;
         }
     };
@@ -230,9 +373,10 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            int v = parameter->evaluate(tuple);
+            int v = parameters[0]->evaluate(tuple);
             return !v;//v ? 0 : v;
         }
+
     };
     // --------------------------------------------------------------------------
 
@@ -243,7 +387,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            return parameter1->evaluate(tuple) - parameter2->evaluate(tuple);
+            return parameters[0]->evaluate(tuple) - parameters[1]->evaluate(tuple);
         }
     };
 
@@ -254,7 +398,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            return parameter1->evaluate(tuple) / parameter2->evaluate(tuple);
+            return parameters[0]->evaluate(tuple) / parameters[1]->evaluate(tuple);
         }
     };
 
@@ -265,7 +409,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            return parameter1->evaluate(tuple) % parameter2->evaluate(tuple);
+            return parameters[0]->evaluate(tuple) % parameters[1]->evaluate(tuple);
         }
     };
 
@@ -276,7 +420,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            return pow(parameter1->evaluate(tuple), parameter2->evaluate(tuple));
+            return pow(parameters[0]->evaluate(tuple), parameters[1]->evaluate(tuple));
         }
     };
 
@@ -287,7 +431,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            int v = parameter1->evaluate(tuple) - parameter2->evaluate(tuple);
+            int v = parameters[0]->evaluate(tuple) - parameters[1]->evaluate(tuple);
             return v > 0 ? v : -v;
         }
     };
@@ -299,7 +443,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            return parameter1->evaluate(tuple) <= parameter2->evaluate(tuple);
+            return parameters[0]->evaluate(tuple) <= parameters[1]->evaluate(tuple);
         }
     };
 
@@ -310,7 +454,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            return parameter1->evaluate(tuple) < parameter2->evaluate(tuple);
+            return parameters[0]->evaluate(tuple) < parameters[1]->evaluate(tuple);
         }
     };
 
@@ -321,7 +465,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            return parameter1->evaluate(tuple) >= parameter2->evaluate(tuple);
+            return parameters[0]->evaluate(tuple) >= parameters[1]->evaluate(tuple);
         }
     };
 
@@ -332,7 +476,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            return parameter1->evaluate(tuple) > parameter2->evaluate(tuple);
+            return parameters[0]->evaluate(tuple) > parameters[1]->evaluate(tuple);
         }
     };
 
@@ -343,7 +487,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            return parameter1->evaluate(tuple) != parameter2->evaluate(tuple);
+            return parameters[0]->evaluate(tuple) != parameters[1]->evaluate(tuple);
         }
     };
 
@@ -354,7 +498,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            return parameter1->evaluate(tuple) == 0 || parameter2->evaluate(tuple);
+            return parameters[0]->evaluate(tuple) == 0 || parameters[1]->evaluate(tuple);
         }
     };
 
@@ -530,10 +674,10 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            int nb = parameter1->evaluate(tuple);
+            int nb = parameters[0]->evaluate(tuple);
             set.clear();
             NodeSet *nodeSet;
-            if((nodeSet = dynamic_cast<NodeSet *>(parameter2)) == NULL)
+            if((nodeSet = dynamic_cast<NodeSet *>(parameters[1])) == NULL)
                 throw std::runtime_error("intension constraint : in requires a set as second parameter");
             for(unsigned int i = 0 ; i < nodeSet->parameters.size() ; i++)
                 set.push_back(nodeSet->parameters[i]->evaluate(tuple));
