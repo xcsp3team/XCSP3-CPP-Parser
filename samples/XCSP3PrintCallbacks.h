@@ -230,6 +230,7 @@ namespace XCSP3Core {
         virtual void buildObjectiveMaximize(ExpressionObjective type, vector<XVariable *> &list) override;
 
 
+        bool canonize;
     };
 
 
@@ -238,7 +239,8 @@ namespace XCSP3Core {
 using namespace XCSP3Core;
 
 
-XCSP3PrintCallbacks::XCSP3PrintCallbacks() : XCSP3CoreCallbacks() {
+XCSP3PrintCallbacks::XCSP3PrintCallbacks() : XCSP3CoreCallbacks(), canonize(true) {
+    recognizeSpecialIntensionCases = false;
 
 }
 
@@ -393,6 +395,11 @@ void XCSP3PrintCallbacks::buildConstraintExtensionAs(string id, vector<XVariable
 void XCSP3PrintCallbacks::buildConstraintIntension(string id, string expr) {
     cout << "\n    intension constraint : " << id << " : " << expr << endl;
     Tree tree(expr);
+    if(canonize) {
+        cout << "\n        Canonization: ";
+        tree.canonize().prefixe();
+        cout << "\n%%\n";
+    }
 }
 
 

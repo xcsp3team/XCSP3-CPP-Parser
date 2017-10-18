@@ -97,8 +97,8 @@ Node *Tree::fromStringToTree(std::string current) {
     return params.back();
 }
 
-
-void Tree::createOperator(string currentElement, ::vector<NodeOperator*> &stack,std::vector<Node*> &params) {
+extern NodeOperator* createNodeOperator(std::string currentElement);
+void Tree::createOperator(string currentElement, std::vector<NodeOperator*> &stack,std::vector<Node*> &params) {
 
     NodeOperator *tmp = createNodeOperator(currentElement);
     if (tmp == nullptr)

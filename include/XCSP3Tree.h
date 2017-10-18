@@ -67,7 +67,7 @@ namespace XCSP3Core {
         }
 
         Tree canonize() {
-            return root.canonize();
+            return root->canonize();
         }
     };
 }
