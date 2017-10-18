@@ -35,24 +35,24 @@
 using namespace XCSP3Core;
 
 
-static bool isSymmetricOperator(Operator _operator) {
-    return _operator == OADD || _operator == OMUL || _operator == OMIN || _operator == OMAX || _operator == ODIST || _operator == ONE
-           || _operator == OEQ || _operator == OSET || _operator == OAND || _operator == OOR || _operator == OXOR || _operator == OIFF ||
-           _operator == OUNION || _operator == OINTER || _operator == ODJOINT;
+static bool isSymmetricOperator(ExpressionType type) {
+    return type == OADD || type == OMUL || type == OMIN || type == OMAX || type == ODIST || type == ONE
+           || type == OEQ || type == OSET || type == OAND || type == OOR || type == OXOR || type == OIFF ||
+           type == OUNION || type == OINTER || type == ODJOINT;
 }
 
 
-static bool isNonSymmetricRelationalOperator(Operator _operator) {
-    return _operator == OLT || _operator == OLE || _operator == OGE || _operator == OGT;
+static bool isNonSymmetricRelationalOperator(ExpressionType type) {
+    return type == OLT || type == OLE || type == OGE || type == OGT;
 }
 
 
-static Operator arithmeticInversion(Operator _operator) {
-    return _operator == OLT ? OGT : _operator == OLE ? OGE : _operator == OGE ? OLE : _operator == OGT ? OLT : _operator; // no change for NE and EQ
+static ExpressionType arithmeticInversion(ExpressionType type) {
+    return type == OLT ? OGT : type == OLE ? OGE : type == OGE ? OLE : type == OGT ? OLT : type; // no change for NE and EQ
 }
 
 
-static std::string operatorToString(Operator op) {
+static std::string operatorToString(ExpressionType op) {
     if(op == ONEG) return "neg";
     if(op == OABS) return "abs";
 
@@ -137,43 +137,43 @@ NodeOperator *createNodeOperator(std::string op) {
 }
 
 
-static Operator logicalInversion(Operator _operator) {
-    return _operator == OLT ? OGE
-                            : _operator == OLE ? OGT
-                                               : _operator == OGE ? OLT
-                                                                  : _operator == OGT ? OLE
-                                                                                     : _operator == ONE ? OEQ
-                                                                                                        : _operator == OEQ ? ONE
-                                                                                                                           : _operator == OIN ? ONOTIN
-                                                                                                                                              : _operator ==
+static ExpressionType logicalInversion(ExpressionType type) {
+    return type == OLT ? OGE
+                            : type == OLE ? OGT
+                                               : type == OGE ? OLT
+                                                                  : type == OGT ? OLE
+                                                                                     : type == ONE ? OEQ
+                                                                                                        : type == OEQ ? ONE
+                                                                                                                           : type == OIN ? ONOTIN
+                                                                                                                                              : type ==
                                                                                                                                                 ONOTIN ? OIN
                                                                                                                                                        :
-                                                                                                                                                _operator ==
+                                                                                                                                                type ==
                                                                                                                                                 OSUBSET
                                                                                                                                                 ? OSUPSEQ
                                                                                                                                                 :
-                                                                                                                                                _operator ==
+                                                                                                                                                type ==
                                                                                                                                                 OSUBSEQ
                                                                                                                                                 ? OSUPSET
                                                                                                                                                 :
-                                                                                                                                                _operator ==
+                                                                                                                                                type ==
                                                                                                                                                 OSUPSEQ
                                                                                                                                                 ? OSUBSET :
-                                                                                                                                                _operator ==
+                                                                                                                                                type ==
                                                                                                                                                 OSUPSET
                                                                                                                                                 ? OSUBSEQ
                                                                                                                                                 : OUNDEF;
 }
 
 
-static bool isRelationalOperator(Operator _operator) {
-    return isNonSymmetricRelationalOperator(_operator) || _operator == ONE || _operator == OEQ;
+static bool isRelationalOperator(ExpressionType type) {
+    return isNonSymmetricRelationalOperator(type) || type == ONE || type == OEQ;
 }
 
 
 bool compareNodes(Node *a, Node *b) {
-    if(a->_operator != b->_operator)
-        return static_cast<int>(a->_operator)< static_cast<int>(b->_operator);
+    if(a->type != b->type)
+        return static_cast<int>(a->type)< static_cast<int>(b->type);
 
     NodeConstant *c1 = dynamic_cast<NodeConstant *>(a), *c2 = dynamic_cast<NodeConstant *>(b);
     if(c1 != nullptr)
@@ -201,36 +201,36 @@ Node *NodeOperator::canonize() {
     for(Node *n : parameters)
         newParams.push_back(n->canonize());
 
-    if(isSymmetricOperator(_operator))
+    if(isSymmetricOperator(type))
         std::sort(newParams.begin(), newParams.end(), compareNodes);
 
 
-    Operator newType = _operator;
+    ExpressionType newType = type;
 
     // sons are potentially sorted if the type corresponds to a non-symmetric binary relational operator (in that case, we swap sons and
     // arithmetically
     // inverse the operator)
-    if(newParams.size() == 2 && isNonSymmetricRelationalOperator(_operator) &&
-       (static_cast<int>(arithmeticInversion(_operator)) < static_cast<int>(_operator)
-        || (arithmeticInversion(_operator) == _operator && compareNodes(newParams[0], newParams[1]) > 0))) {
-        newType = arithmeticInversion(_operator);
+    if(newParams.size() == 2 && isNonSymmetricRelationalOperator(type) &&
+       (static_cast<int>(arithmeticInversion(type)) < static_cast<int>(type)
+        || (arithmeticInversion(type) == type && compareNodes(newParams[0], newParams[1]) > 0))) {
+        newType = arithmeticInversion(type);
         Node *tmp = newParams[0];
         newParams[0] = newParams[1];
         newParams[1] = tmp;
     }
     // Now, some specific reformulation rules are applied
     NodeOperator *tmp = dynamic_cast<NodeOperator *>(newParams[0]);
-    if(newType == OABS && newParams[0]->_operator == OSUB)
+    if(newType == OABS && newParams[0]->type == OSUB)
         return (new NodeDist())->addParameters(tmp->parameters);
 
-    if(newType == ONOT && newParams[0]->_operator == ONOT)
+    if(newType == ONOT && newParams[0]->type == ONOT)
         return tmp->parameters[0];
 
-    if(newType == ONEG && newParams[0]->_operator == ONEG) // neg(neg(...)) becomes ...
+    if(newType == ONEG && newParams[0]->type == ONEG) // neg(neg(...)) becomes ...
         return tmp->parameters[0];
 
-    if(newType == ONOT && logicalInversion(newParams[0]->_operator) != OUNDEF) // not(lt(...)) becomes ge(...), not(eq(...)) becomes ne(...), and
-        return createNodeOperator(operatorToString(logicalInversion(newParams[0]->_operator)))->addParameters(tmp->parameters);
+    if(newType == ONOT && logicalInversion(newParams[0]->type) != OUNDEF) // not(lt(...)) becomes ge(...), not(eq(...)) becomes ne(...), and
+        return createNodeOperator(operatorToString(logicalInversion(newParams[0]->type)))->addParameters(tmp->parameters);
 
 
     if(newParams.size() == 1 && (newType == OADD || newType == OMUL || newType == OMIN || newType == OMAX || newType == OEQ || newType == OAND
@@ -249,10 +249,10 @@ Node *NodeOperator::canonize() {
         }
     }
     // Then, we merge operators when possible; for example add(add(x,y),z) becomes add(x,y,z)
-    if(isSymmetricOperator(_operator) && newType != OEQ && newType != ODIST && newType != ODJOINT) {
+    if(isSymmetricOperator(type) && newType != OEQ && newType != ODIST && newType != ODJOINT) {
         for(int i = 0 ; i < newParams.size() ; i++) {
             NodeOperator *n;
-            if((n = dynamic_cast<NodeOperator *>(newParams[i])) != nullptr && n->_operator == newType) {
+            if((n = dynamic_cast<NodeOperator *>(newParams[i])) != nullptr && n->type == newType) {
                 std::vector<Node *> list;
                 list.insert(list.end(), newParams.begin(), newParams.begin() + i - 1);
                 list.insert(list.end(), n->parameters.begin(), n->parameters.end());
@@ -266,15 +266,15 @@ Node *NodeOperator::canonize() {
             }
         }
     }
-    if(newParams.size() == 2 && isRelationalOperator(_operator)) {
+    if(newParams.size() == 2 && isRelationalOperator(type)) {
         NodeOperator *n0 = dynamic_cast<NodeOperator *>(newParams[0]);
         NodeOperator *n1 = dynamic_cast<NodeOperator *>(newParams[1]);
         // First, we replace sub by add when possible
-        if(newParams[0]->_operator == OSUB && newParams[1]->_operator == OSUB) {
+        if(newParams[0]->type == OSUB && newParams[1]->type == OSUB) {
             Node *a = (new NodeAdd())->addParameter(n0->parameters[0])->addParameter(n1->parameters[1]);
             Node *b = (new NodeAdd())->addParameter(n1->parameters[0])->addParameter(n0->parameters[1]);
             return (createNodeOperator(operatorToString(newType)))->addParameter(a)->addParameter(b)->canonize();
-        } else if(newParams[1]->_operator == OSUB) {
+        } else if(newParams[1]->type == OSUB) {
             Node *a = (new NodeAdd())->addParameter(newParams[0])->addParameter(n1->parameters[1]);
             Node *b = n1->parameters[0];
             return (createNodeOperator(operatorToString(newType)))->addParameter(a)->addParameter(b)->canonize();
@@ -285,7 +285,15 @@ Node *NodeOperator::canonize() {
         }
 
         // next, we remove some add when possible
-        if(n0 != nullptr && n1 != nullptr && n0->_operator == OADD && n1->_operator == OADD) {
+        if (newParams[0]->type == OADD && newParams[1]->type == ODECIMAL) {
+            if (n0->parameters.size() == 2 && n0->parameters[0]->type == OVAR && n0->parameters[1]->type == ODECIMAL) {
+                NodeConstant *c1 = dynamic_cast<NodeConstant*>(newParams[1]);
+                NodeConstant *c2 = dynamic_cast<NodeConstant*>(n0->parameters[1]);
+                return (createNodeOperator(operatorToString(newType)))->addParameter(n0->parameters[0])->addParameter(new NodeConstant(c1->val - c2->val))->canonize();
+            }
+        }
+
+        if(n0 != nullptr && n1 != nullptr && n0->type == OADD && n1->type == OADD) {
             NodeConstant *c1, *c2;
             if(n0->parameters.size() == 2 && n1->parameters.size() == 2 &&
                (c1 = dynamic_cast<NodeConstant *>(n0->parameters[1])) != nullptr &&

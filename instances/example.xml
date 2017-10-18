@@ -26,6 +26,8 @@
 
     </variables>
     <constraints>
+<intension>eq(add(x,3),5)</intension>
+
 <count id="c4">  <!-- atMost -->
   <list> y[][1] </list>
   <values> 0 </values>

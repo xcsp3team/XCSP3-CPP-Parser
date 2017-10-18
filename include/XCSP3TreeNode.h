@@ -40,7 +40,7 @@ namespace XCSP3Core {
 
 
 
-    enum Operator {
+    enum ExpressionType {
         OUNDEF,
         ONEG,
         OABS,
@@ -117,10 +117,10 @@ namespace XCSP3Core {
         friend class Intension;
 
     public:
-        Operator _operator;
+        ExpressionType type;
 
 
-        Node(Operator o) : _operator(o) {}
+        Node(ExpressionType o) : type(o) {}
 
 
         virtual int evaluate(std::map<std::string, int> &tuple) = 0;
@@ -195,7 +195,7 @@ namespace XCSP3Core {
         std::vector<Node *> parameters;
 
 
-        NodeOperator(std::string o, Operator _operator) : Node(_operator), op(o) {}
+        NodeOperator(std::string o, ExpressionType _operator) : Node(_operator), op(o) {}
 
 
         NodeOperator *addParameter(Node *p) {
@@ -229,7 +229,7 @@ namespace XCSP3Core {
     class NodeUnary : public NodeOperator {
     public:
 
-        NodeUnary(std::string o, Operator _operator) : NodeOperator(o, _operator) {}
+        NodeUnary(std::string o, ExpressionType _operator) : NodeOperator(o, _operator) {}
 
 
     };
@@ -240,7 +240,7 @@ namespace XCSP3Core {
     public:
 
 
-        NodeBinary(std::string o, Operator _operator) : NodeOperator(o, _operator) {}
+        NodeBinary(std::string o, ExpressionType _operator) : NodeOperator(o, _operator) {}
 
 
     };
@@ -257,7 +257,7 @@ namespace XCSP3Core {
         std::vector<Node *> parameters;
     public:
 
-        NodeNAry(std::string o, Operator _operator) : NodeOperator(o, _operator) {}
+        NodeNAry(std::string o, ExpressionType _operator) : NodeOperator(o, _operator) {}
 
 
     public:
