@@ -26,6 +26,7 @@
 #ifndef COSOCO_XCSP3PRINTCALLBACKS_H
 #define COSOCO_XCSP3PRINTCALLBACKS_H
 
+#include <XCSP3Tree.h>
 #include "XCSP3CoreCallbacks.h"
 #include "XCSP3Variable.h"
 /**
@@ -391,6 +392,7 @@ void XCSP3PrintCallbacks::buildConstraintExtensionAs(string id, vector<XVariable
 
 void XCSP3PrintCallbacks::buildConstraintIntension(string id, string expr) {
     cout << "\n    intension constraint : " << id << " : " << expr << endl;
+    Tree tree(expr);
 }
 
 

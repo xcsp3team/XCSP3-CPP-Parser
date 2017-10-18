@@ -1,5 +1,5 @@
 #-Wextra  -pedantic -Wno-unused-parameter
-CFLAGS =  -std=c++11 -Wall
+CFLAGS =  -std=c++11 -Wall -g
 EXEC = test
 
 LIBS = `xml2-config --libs`
