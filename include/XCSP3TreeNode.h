@@ -209,6 +209,7 @@ namespace XCSP3Core {
             return this;
         }
 
+
         void prefixe() override {
             std::cout << op << "(";
             for(unsigned int i = 0 ; i < parameters.size() ; i++) {
@@ -221,7 +222,6 @@ namespace XCSP3Core {
 
 
         Node *canonize() override;
-
 
 
     };
@@ -251,6 +251,7 @@ namespace XCSP3Core {
 
     class NodeNAry : public NodeOperator {
         friend class NodeIn;
+        friend class NodeNotIn;
 
     protected:
         std::vector<Node *> parameters;
@@ -621,8 +622,25 @@ namespace XCSP3Core {
         }
     };
 
+    class NodeNotIn: public NodeBinary {
+    protected :
+
+        std::vector<int> set;
+    public :
+        NodeNotIn() : NodeBinary("notin", ONOTIN) {}
 
 
+        int evaluate(std::map<std::string, int> &tuple) override {
+            int nb = parameters[0]->evaluate(tuple);
+            set.clear();
+            NodeSet *nodeSet;
+            if((nodeSet = dynamic_cast<NodeSet *>(parameters[1])) == NULL)
+                throw std::runtime_error("intension constraint : in requires a set as second parameter");
+            for(unsigned int i = 0 ; i < nodeSet->parameters.size() ; i++)
+                set.push_back(nodeSet->parameters[i]->evaluate(tuple));
+            return find(set.begin(), set.end(), nb) == set.end();
+        }
+    };
 
 }
 #endif //XCSP3PARSER_XCSP3TREENODE_H

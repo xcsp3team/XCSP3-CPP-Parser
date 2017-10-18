@@ -87,9 +87,10 @@ static std::string operatorToString(Operator op) {
     if(op == OIFF) return "iff";
 
     if(op == OIN) return "in";
+    if(op == ONOTIN) return "notin";
     if(op == OSET) return "set";
-    assert(false);
-    return "";
+    //assert(false);
+    return "oundef";
 }
 
 
@@ -128,8 +129,10 @@ NodeOperator *createNodeOperator(std::string op) {
     if(op == "iff") tmp = new NodeIff();
 
     if(op == "in") tmp = new NodeIn();
+    if(op == "notin") tmp = new NodeNotIn();
     if(op == "set") tmp = new NodeSet();
 
+    assert(tmp != nullptr);
     return tmp;
 }
 
@@ -178,18 +181,18 @@ bool compareNodes(Node *a, Node *b) {
 
     NodeVariable *v1 = dynamic_cast<NodeVariable *>(a), *v2 = dynamic_cast<NodeVariable *>(b);
     if(v1 != nullptr)
-        return v1->var.compare(v2->var);
+        return v1->var.compare(v2->var) < 0;
 
     NodeOperator *o1 = dynamic_cast<NodeOperator *>(a), *o2 = dynamic_cast<NodeOperator *>(b);
     if(o1->parameters.size() < o2->parameters.size())
         return 1;
     if(o1->parameters.size() > o2->parameters.size())
         return 0;
-    for(int i = 0 ; i < o1->parameters.size() ; i++)
-        if((compareNodes(o1->parameters[i], o2->parameters[i])) == 0)
-            return 0;
 
-    return 1;
+    for(int i = 0 ; i < o1->parameters.size() ; i++)
+        if((compareNodes(o1->parameters[i], o2->parameters[i])) == 1)
+            return 1;
+    return 0;
 }
 
 
@@ -203,10 +206,10 @@ Node *NodeOperator::canonize() {
 
 
     Operator newType = _operator;
+
     // sons are potentially sorted if the type corresponds to a non-symmetric binary relational operator (in that case, we swap sons and
     // arithmetically
     // inverse the operator)
-
     if(newParams.size() == 2 && isNonSymmetricRelationalOperator(_operator) &&
        (static_cast<int>(arithmeticInversion(_operator)) < static_cast<int>(_operator)
         || (arithmeticInversion(_operator) == _operator && compareNodes(newParams[0], newParams[1]) > 0))) {
@@ -226,8 +229,8 @@ Node *NodeOperator::canonize() {
     if(newType == ONEG && newParams[0]->_operator == ONEG) // neg(neg(...)) becomes ...
         return tmp->parameters[0];
 
-    if(newType == ONOT && logicalInversion(_operator) != OUNDEF) // not(lt(...)) becomes ge(...), not(eq(...)) becomes ne(...), and
-        return createNodeOperator(operatorToString(logicalInversion(_operator)))->addParameters(tmp->parameters);
+    if(newType == ONOT && logicalInversion(newParams[0]->_operator) != OUNDEF) // not(lt(...)) becomes ge(...), not(eq(...)) becomes ne(...), and
+        return createNodeOperator(operatorToString(logicalInversion(newParams[0]->_operator)))->addParameters(tmp->parameters);
 
 
     if(newParams.size() == 1 && (newType == OADD || newType == OMUL || newType == OMIN || newType == OMAX || newType == OEQ || newType == OAND
@@ -254,7 +257,7 @@ Node *NodeOperator::canonize() {
                 list.insert(list.end(), newParams.begin(), newParams.begin() + i - 1);
                 list.insert(list.end(), n->parameters.begin(), n->parameters.end());
                 list.insert(list.end(), newParams.begin() + i + 1, newParams.end());
-                return ((new NodeAdd())->addParameters(list))->canonize();
+                return ((createNodeOperator(operatorToString(newType)))->addParameters(list))->canonize();
 
                 /*List<XNode<V>> list = IntStream.rangeClosed(0, i - 1).mapToObj(j -> newParams[j]).collect(Collectors.toList());
                 Stream.of(((XNodeParent<V>) newParams[i]).sons).forEach(s -> list.add(s));
@@ -267,11 +270,11 @@ Node *NodeOperator::canonize() {
         NodeOperator *n0 = dynamic_cast<NodeOperator *>(newParams[0]);
         NodeOperator *n1 = dynamic_cast<NodeOperator *>(newParams[1]);
         // First, we replace sub by add when possible
-        if(n0 != nullptr && n1 != nullptr && n0->op == "sub" && n1->op == "sub") {
+        if(newParams[0]->_operator == OSUB && newParams[1]->_operator == OSUB) {
             Node *a = (new NodeAdd())->addParameter(n0->parameters[0])->addParameter(n1->parameters[1]);
             Node *b = (new NodeAdd())->addParameter(n1->parameters[0])->addParameter(n0->parameters[1]);
             return (createNodeOperator(operatorToString(newType)))->addParameter(a)->addParameter(b)->canonize();
-        } else if(n1 != nullptr && n1->op == "sub") {
+        } else if(newParams[1]->_operator == OSUB) {
             Node *a = (new NodeAdd())->addParameter(newParams[0])->addParameter(n1->parameters[1]);
             Node *b = n1->parameters[0];
             return (createNodeOperator(operatorToString(newType)))->addParameter(a)->addParameter(b)->canonize();
