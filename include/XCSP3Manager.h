@@ -57,7 +57,7 @@ namespace XCSP3Core {
 
         bool recognizeXopKopY(string expr, string &op, XVariable **x, int &k, XVariable **y);
 
-
+        bool recognizePrimitives(std::string id, Tree *tree);
 
     public :
         // XCSP3CoreCallbacks *c, std::map<std::string, XEntity *> &m, bool

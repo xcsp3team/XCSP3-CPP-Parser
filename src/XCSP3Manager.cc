@@ -27,6 +27,7 @@
 #include "XCSP3Constraint.h"
 #include "XCSP3Constants.h"
 #include "XCSP3Objective.h"
+#include "XCSP3TreeNode.h"
 #include <string>
 #include <regex>
 #include <map>
@@ -35,7 +36,7 @@
 using namespace XCSP3Core;
 
 
-bool XCSP3Manager::recognizeXopY(string expr, string &op, XVariable **x, XVariable **y) {
+/*bool XCSP3Manager::recognizeXopY(string expr, string &op, XVariable **x, XVariable **y) {
     std::regex const rggt(R"((eq|le|lt|ge|gt|ne)\(([a-zA-Z][a-zA-Z0-Z\[\]]*),([a-zA-Z][a-zA-Z0-Z\[ \]]*)\))");
     std::smatch matchgt;
     if(std::regex_match(expr, matchgt, rggt)) {
@@ -59,6 +60,34 @@ bool XCSP3Manager::recognizeXopKopY(string expr, string &op, XVariable **x, int 
         if(matchgt[2] == "sub") k = -k;
         return true;
     }
+    return false;
+}*/
+static OrderType expressionTypeToOrderType(ExpressionType e) {
+    if(e==OLE) return LE;
+    if(e==OLT) return LT;
+    if(e==OGE) return GE;
+    if(e==OGT) return GT;
+    if(e==OEQ) return EQ;
+    if(e==ONE) return NE;
+    assert(false);
+    return LE;
+}
+
+bool XCSP3Manager::recognizePrimitives(std::string id,Tree *tree) {
+    std::vector<std::string>vars;
+    NodeEQ xopy = NodeEQ();
+    NodeVariable *x = new NodeVariable("fakex");
+    NodeVariable *y = new NodeVariable("fakey");
+    ExpressionType op = OUNDEF;
+    std::vector<std::string> variables;
+    std::vector<int> constants;
+    xopy.type = OFAKEOP;
+    xopy.addParameter(x)->addParameter(y);
+    if(Node::areSimilar(tree->root, &xopy, op, constants, variables)) {
+        callback->buildConstraintPrimitive(id, expressionTypeToOrderType(op), (XVariable *)mapping[variables[0]], 0, (XVariable *)mapping[variables[0]] );
+        return true;
+    }
+
     return false;
 }
 
@@ -122,36 +151,20 @@ void XCSP3Manager::newConstraintExtensionAsLastOne(XConstraintExtension *constra
 
 
 void XCSP3Manager::newConstraintIntension(XConstraintIntension *constraint) {
-    XVariable *x = NULL, *y = NULL;
-    string op = "";
-    int k;
-    OrderType order;
     if(discardedClasses(constraint->classes))
         return;
-    if(callback->recognizeSpecialIntensionCases) {
-        if(recognizeXopY(constraint->function, op, &x, &y)) { // Recognize x op y
-            if(op == "eq") order = OrderType::EQ;
-            if(op == "ne") order = NE;
-            if(op == "le") order = LE;
-            if(op == "lt") order = LT;
-            if(op == "ge") order = GE;
-            if(op == "gt") order = GT;
-            callback->buildConstraintPrimitive(constraint->id, order, x, 0, y);
-            return;
-        }
-        if(recognizeXopKopY(constraint->function, op, &x, k, &y)) { // Recognize x +-k op y
-            if(op == "eq") order = OrderType::EQ;
-            if(op == "ne") order = NE;
-            if(op == "le") order = LE;
-            if(op == "lt") order = LT;
-            if(op == "ge") order = GE;
-            if(op == "gt") order = GT;
-
-            callback->buildConstraintPrimitive(constraint->id, order, x, k, y);
-            return;
-        }
+    if(callback->intensionUsingString) {
+        callback->buildConstraintIntension(constraint->id, constraint->function);
+        return;
     }
-    callback->buildConstraintIntension(constraint->id, constraint->function);
+
+    Tree *tree = new Tree(constraint->function);
+    tree->canonize();
+    if(callback->recognizeSpecialIntensionCases && recognizePrimitives(constraint->id, tree))
+        return;
+
+    callback->buildConstraintIntension(constraint->id, tree);
+
 }
 
 //--------------------------------------------------------------------------------------

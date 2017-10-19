@@ -103,7 +103,8 @@ namespace XCSP3Core {
         OLONG,
         ORATIONAL,
         ODECIMAL,
-        OSYMBOL
+        OSYMBOL,
+        OFAKEOP   // Used only to match primitives
     };
 
 
@@ -112,6 +113,7 @@ namespace XCSP3Core {
 
 
     //-------------------------------------
+
 
     class Node {
         friend class Intension;
@@ -128,6 +130,8 @@ namespace XCSP3Core {
         virtual Node *canonize() = 0;
 
         virtual void prefixe()   = 0;
+
+        static bool areSimilar(Node *canonized, Node *pattern, ExpressionType &fakeOp, std::vector<int> &constants, std::vector<std::string> &variables);
     };
 
 

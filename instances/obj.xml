@@ -4,6 +4,7 @@
     <array id="y" size="[5][5]"> 1..500 </array>
   </variables>
   <constraints>
+    <intension>eq(x[0],y[0])</intension>
     <group class="channeling">
       <intension> eq(%0,add(%1,%2)) </intension>
       <args> x[1] x[0] y[0][1] </args>

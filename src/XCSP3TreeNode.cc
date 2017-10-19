@@ -139,30 +139,30 @@ NodeOperator *createNodeOperator(std::string op) {
 
 static ExpressionType logicalInversion(ExpressionType type) {
     return type == OLT ? OGE
-                            : type == OLE ? OGT
-                                               : type == OGE ? OLT
-                                                                  : type == OGT ? OLE
-                                                                                     : type == ONE ? OEQ
-                                                                                                        : type == OEQ ? ONE
-                                                                                                                           : type == OIN ? ONOTIN
-                                                                                                                                              : type ==
-                                                                                                                                                ONOTIN ? OIN
-                                                                                                                                                       :
-                                                                                                                                                type ==
-                                                                                                                                                OSUBSET
-                                                                                                                                                ? OSUPSEQ
-                                                                                                                                                :
-                                                                                                                                                type ==
-                                                                                                                                                OSUBSEQ
-                                                                                                                                                ? OSUPSET
-                                                                                                                                                :
-                                                                                                                                                type ==
-                                                                                                                                                OSUPSEQ
-                                                                                                                                                ? OSUBSET :
-                                                                                                                                                type ==
-                                                                                                                                                OSUPSET
-                                                                                                                                                ? OSUBSEQ
-                                                                                                                                                : OUNDEF;
+                       : type == OLE ? OGT
+                                     : type == OGE ? OLT
+                                                   : type == OGT ? OLE
+                                                                 : type == ONE ? OEQ
+                                                                               : type == OEQ ? ONE
+                                                                                             : type == OIN ? ONOTIN
+                                                                                                           : type ==
+                                                                                                             ONOTIN ? OIN
+                                                                                                                    :
+                                                                                                             type ==
+                                                                                                             OSUBSET
+                                                                                                             ? OSUPSEQ
+                                                                                                             :
+                                                                                                             type ==
+                                                                                                             OSUBSEQ
+                                                                                                             ? OSUPSET
+                                                                                                             :
+                                                                                                             type ==
+                                                                                                             OSUPSEQ
+                                                                                                             ? OSUBSET :
+                                                                                                             type ==
+                                                                                                             OSUPSET
+                                                                                                             ? OSUBSEQ
+                                                                                                             : OUNDEF;
 }
 
 
@@ -173,7 +173,7 @@ static bool isRelationalOperator(ExpressionType type) {
 
 bool compareNodes(Node *a, Node *b) {
     if(a->type != b->type)
-        return static_cast<int>(a->type)< static_cast<int>(b->type);
+        return static_cast<int>(a->type) < static_cast<int>(b->type);
 
     NodeConstant *c1 = dynamic_cast<NodeConstant *>(a), *c2 = dynamic_cast<NodeConstant *>(b);
     if(c1 != nullptr)
@@ -189,7 +189,7 @@ bool compareNodes(Node *a, Node *b) {
     if(o1->parameters.size() > o2->parameters.size())
         return 0;
 
-    for(int i = 0 ; i < o1->parameters.size() ; i++)
+    for(int i = 0; i < o1->parameters.size(); i++)
         if((compareNodes(o1->parameters[i], o2->parameters[i])) == 1)
             return 1;
     return 0;
@@ -250,7 +250,7 @@ Node *NodeOperator::canonize() {
     }
     // Then, we merge operators when possible; for example add(add(x,y),z) becomes add(x,y,z)
     if(isSymmetricOperator(type) && newType != OEQ && newType != ODIST && newType != ODJOINT) {
-        for(int i = 0 ; i < newParams.size() ; i++) {
+        for(int i = 0; i < newParams.size(); i++) {
             NodeOperator *n;
             if((n = dynamic_cast<NodeOperator *>(newParams[i])) != nullptr && n->type == newType) {
                 std::vector<Node *> list;
@@ -285,10 +285,10 @@ Node *NodeOperator::canonize() {
         }
 
         // next, we remove some add when possible
-        if (newParams[0]->type == OADD && newParams[1]->type == ODECIMAL) {
-            if (n0->parameters.size() == 2 && n0->parameters[0]->type == OVAR && n0->parameters[1]->type == ODECIMAL) {
-                NodeConstant *c1 = dynamic_cast<NodeConstant*>(newParams[1]);
-                NodeConstant *c2 = dynamic_cast<NodeConstant*>(n0->parameters[1]);
+        if(newParams[0]->type == OADD && newParams[1]->type == ODECIMAL) {
+            if(n0->parameters.size() == 2 && n0->parameters[0]->type == OVAR && n0->parameters[1]->type == ODECIMAL) {
+                NodeConstant *c1 = dynamic_cast<NodeConstant *>(newParams[1]);
+                NodeConstant *c2 = dynamic_cast<NodeConstant *>(n0->parameters[1]);
                 return (createNodeOperator(operatorToString(newType)))->addParameter(n0->parameters[0])->addParameter(new NodeConstant(c1->val - c2->val))->canonize();
             }
         }
@@ -312,3 +312,39 @@ Node *NodeOperator::canonize() {
     return (createNodeOperator(operatorToString(newType)))->addParameters(newParams);
 }
 
+
+// -----------------------------------------
+// Compare Two trees in order to find primitives
+// -----------------------------------------
+
+bool Node::areSimilar(Node *canonized, Node *pattern, ExpressionType &fakeOp, std::vector<int> &constants, std::vector<std::string> &variables) {
+    if(pattern->type != canonized->type && !(fakeOp == OUNDEF && pattern->type == OFAKEOP && (canonized->type == OLT || canonized->type == OLE || canonized->type == OGE
+                                            || canonized->type == OGT || canonized->type == ONE || canonized->type == OEQ))) {
+        return false;
+    }
+    if(pattern->type == OFAKEOP)
+        fakeOp = canonized->type;
+
+    if(pattern->type == ODECIMAL) {
+        NodeConstant *c = dynamic_cast<NodeConstant *>(canonized);
+        constants.push_back(c->val);
+        return true;
+    }
+
+    if(pattern->type == OVAR) {
+        NodeVariable *v = dynamic_cast<NodeVariable *>(canonized);
+        variables.push_back(v->var);
+        return true;
+    }
+
+    NodeOperator *nc = dynamic_cast<NodeOperator *>(canonized);
+    NodeOperator *np = dynamic_cast<NodeOperator *>(pattern);
+    if(nc->parameters.size() != np->parameters.size())
+        return false;
+
+    for(int i = 0; i < nc->parameters.size(); i++) {
+        if(Node::areSimilar(nc->parameters[i], np->parameters[i], fakeOp, constants, variables) == false)
+            return false;
+    }
+    return true;
+}

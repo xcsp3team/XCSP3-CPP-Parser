@@ -66,8 +66,8 @@ namespace XCSP3Core {
             root->prefixe();
         }
 
-        Tree canonize() {
-            return root->canonize();
+        void canonize() {
+            root =  root->canonize();
         }
     };
 }

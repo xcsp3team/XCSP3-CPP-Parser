@@ -28,6 +28,7 @@
 #include "XCSP3Constants.h"
 #include "XCSP3Variable.h"
 #include "XCSP3Constraint.h"
+#include "XCSP3Tree.h"
 #include <vector>
 #include <string>
 
@@ -40,6 +41,13 @@ namespace XCSP3Core {
     protected :
         vector<string> classesToDiscard;
     public :
+
+        /**
+         * If true, the intension constraint are retrieved with an expression (nothing is done in order to help you)
+         * (false by default)
+         * Otherwise, the callback that take a canonized tree of the expression is given to the callback
+         */
+        bool intensionUsingString;
 
         /**
          * If true, the parse recognizes special intensional constraints such as x + k op y and call a specific callback.
@@ -65,6 +73,7 @@ namespace XCSP3Core {
         bool normalizeSum;
 
         XCSP3CoreCallbacks() {
+            intensionUsingString = false;
             recognizeSpecialIntensionCases = true;
             recognizeSpecialCountCases = true;
             recognizeNValuesCases = true;
@@ -341,11 +350,13 @@ namespace XCSP3Core {
 
         /**
          * The callback function related to a constraint in intension
+         * Only called if intensionUsingString is set to false (otherwise the next function is called
          * See http://xcsp.org/specifications/intension
          * Example:
          * <intension> eq(add(x,y),z) </intension>
          * If you need a class that is able to manage expressions you can use the class Tree (see includes/XCS3Tree.h)
          * And an example is given in samples/testTree.cc
+         * In such a case, set intensionUsingString to false and make a callback to the next function
          *
          * @param id the id (name) of the constraint
          * @param expr the expression
@@ -353,6 +364,23 @@ namespace XCSP3Core {
         virtual void buildConstraintIntension(string id, string expr) {
             throw runtime_error("intension constraint is not yet supported");
         }
+
+
+        /**
+         * The callback function related to a constraint in intension
+         * Only called if intensionUsingString is set to true (otherwise the next function is called
+         * See http://xcsp.org/specifications/intension
+         * Example:
+         * <intension> eq(add(x,y),z) </intension>
+         *
+         * @param id the id (name) of the constraint
+         * @param tree the canonized form related to the tree
+         */
+        virtual void buildConstraintIntension(string id, Tree *tree) {
+            throw runtime_error("intension constraint using a tree is not yet supported (choose the right way)");
+        }
+
+
 
 
         /**

@@ -239,10 +239,7 @@ namespace XCSP3Core {
 using namespace XCSP3Core;
 
 
-XCSP3PrintCallbacks::XCSP3PrintCallbacks() : XCSP3CoreCallbacks(), canonize(true) {
-    recognizeSpecialIntensionCases = false;
-
-}
+XCSP3PrintCallbacks::XCSP3PrintCallbacks() : XCSP3CoreCallbacks(), canonize(true) { }
 
 
 template<class T>
@@ -397,7 +394,8 @@ void XCSP3PrintCallbacks::buildConstraintIntension(string id, string expr) {
     Tree tree(expr);
     if(canonize) {
         cout << "\n        Canonization: ";
-        tree.canonize().prefixe();
+        tree.canonize();
+        tree.prefixe();
         cout << "\n%%\n";
     }
 }
