@@ -62,6 +62,45 @@ bool XCSP3Manager::recognizeXopKopY(string expr, string &op, XVariable **x, int 
     }
     return false;
 }*/
+
+
+class PrimitivePattern {
+public :
+    Tree &canonized, pattern;
+    std::vector<int>constants;
+    std::vector<std::string> variables;
+    ExpressionType op;
+
+    PrimitivePattern(Tree &c, string expr) : canonized(c), pattern(expr){
+        pattern.canonize();
+    }
+
+
+    virtual void post() = 0;
+    bool match() {
+        if(Node::areSimilar(canonized.root, pattern.root, &op, constants, variables)) {
+            post();
+            return true;
+        }
+        return false;
+    }
+};
+
+class PrimitiveXopY : public PrimitivePattern {
+public:
+    PrimitiveXopY(Tree &c) : PrimitivePattern(c, "eq(x,y)") {
+        pattern.root->type = OFAKEOP;
+    }
+
+    void post() override {
+        callback->buildConstraintPrimitive(id, expressionTypeToOrderType(op), (XVariable *)mapping[variables[0]], 0, (XVariable *)mapping[variables[0]]);
+    }
+public :
+
+
+};
+
+
 static OrderType expressionTypeToOrderType(ExpressionType e) {
     if(e==OLE) return LE;
     if(e==OLT) return LT;
@@ -74,19 +113,30 @@ static OrderType expressionTypeToOrderType(ExpressionType e) {
 }
 
 bool XCSP3Manager::recognizePrimitives(std::string id,Tree *tree) {
-    std::vector<std::string>vars;
-    NodeEQ xopy = NodeEQ();
-    NodeVariable *x = new NodeVariable("fakex");
-    NodeVariable *y = new NodeVariable("fakey");
-    ExpressionType op = OUNDEF;
     std::vector<std::string> variables;
     std::vector<int> constants;
-    xopy.type = OFAKEOP;
-    xopy.addParameter(x)->addParameter(y);
-    if(Node::areSimilar(tree->root, &xopy, op, constants, variables)) {
-        callback->buildConstraintPrimitive(id, expressionTypeToOrderType(op), (XVariable *)mapping[variables[0]], 0, (XVariable *)mapping[variables[0]] );
+    ExpressionType op = OUNDEF;
+
+    Tree xopy = Tree("eq(x,y)");
+    xopy.root->type = OFAKEOP;
+
+    if(Node::areSimilar(tree->root, xopy.root, op, constants, variables)) {
+        callback->buildConstraintPrimitive(id, expressionTypeToOrderType(op), (XVariable *)mapping[variables[0]], 0, (XVariable *)mapping[variables[0]]);
         return true;
     }
+
+    op = OUNDEF;
+    variables.clear();
+    constants.clear();
+    Tree xpkopy = Tree("lt(add(x,3),y)");
+    xpkopy.root->type = OFAKEOP;
+
+    if(Node::areSimilar(tree->root, xpkopy.root, op, constants, variables)) {
+        callback->buildConstraintPrimitive(id, expressionTypeToOrderType(op), (XVariable *)mapping[variables[0]], constants[0], (XVariable *)mapping[variables[0]]);
+        return true;
+    }
+
+
 
     return false;
 }
@@ -151,6 +201,8 @@ void XCSP3Manager::newConstraintExtensionAsLastOne(XConstraintExtension *constra
 
 
 void XCSP3Manager::newConstraintIntension(XConstraintIntension *constraint) {
+    if(callback->intensionUsingString && callback->recognizeSpecialIntensionCases)
+        throw  std::runtime_error("You have to choose: using string or be able to recognize special intension constraints");
     if(discardedClasses(constraint->classes))
         return;
     if(callback->intensionUsingString) {

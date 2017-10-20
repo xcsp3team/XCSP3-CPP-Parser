@@ -90,8 +90,9 @@ namespace XCSP3Core {
 
         virtual void buildConstraintIntension(string id, string expr) override;
 
-        virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k, XVariable *y) override;
+        virtual void buildConstraintIntension(string id, Tree *tree) override;
 
+        virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k, XVariable *y) override;
 
         virtual void buildConstraintRegular(string id, vector<XVariable *> &list, string st, vector<string> &final, vector<XTransition> &transitions) override;
 
@@ -390,14 +391,11 @@ void XCSP3PrintCallbacks::buildConstraintExtensionAs(string id, vector<XVariable
 
 
 void XCSP3PrintCallbacks::buildConstraintIntension(string id, string expr) {
-    cout << "\n    intension constraint : " << id << " : " << expr << endl;
-    Tree tree(expr);
-    if(canonize) {
-        cout << "\n        Canonization: ";
-        tree.canonize();
-        tree.prefixe();
-        cout << "\n%%\n";
-    }
+    cout << "\n    intension constraint (using string) : " << id << " : " << expr << endl;
+}
+
+void XCSP3PrintCallbacks::buildConstraintIntension(string id, Tree *tree) {
+    cout << "\n    intension constraint using canonized tree: " << id << " : " ; tree->prefixe();std::cout << "\n";
 }
 
 
