@@ -107,9 +107,17 @@ namespace XCSP3Core {
         OFAKEOP   // Used only to match primitives
     };
 
+    bool isSymmetricOperator(ExpressionType type);
 
+    bool isNonSymmetricRelationalOperator(ExpressionType type);
 
+    ExpressionType arithmeticInversion(ExpressionType type);
 
+    std::string operatorToString(ExpressionType op);
+
+    ExpressionType logicalInversion(ExpressionType type);
+
+    bool isRelationalOperator(ExpressionType type);
 
 
     //-------------------------------------
@@ -121,6 +129,9 @@ namespace XCSP3Core {
     public:
         ExpressionType type;
 
+        std::vector<Node *> parameters; // Useless for constant and variables, but avoid many casts!
+
+
 
         Node(ExpressionType o) : type(o) {}
 
@@ -131,7 +142,7 @@ namespace XCSP3Core {
 
         virtual void prefixe()   = 0;
 
-        static bool areSimilar(Node *canonized, Node *pattern, ExpressionType &fakeOp, std::vector<int> &constants, std::vector<std::string> &variables);
+        static bool areSimilar(Node *canonized, Node *pattern, std::vector<ExpressionType> &operators, std::vector<int> &constants, std::vector<std::string> &variables);
     };
 
 
@@ -196,7 +207,6 @@ namespace XCSP3Core {
     class NodeOperator : public Node {
     public:
         std::string op;
-        std::vector<Node *> parameters;
 
 
         NodeOperator(std::string o, ExpressionType _operator) : Node(_operator), op(o) {}

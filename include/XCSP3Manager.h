@@ -40,6 +40,8 @@ namespace XCSP3Core {
 
 
     class XCSP3Manager {
+
+    public :
         XCSP3CoreCallbacks *callback;
         std::map<std::string, XEntity *> &mapping;
         std::string blockClasses;

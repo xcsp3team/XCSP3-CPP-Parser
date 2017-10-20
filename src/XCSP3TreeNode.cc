@@ -35,24 +35,24 @@
 using namespace XCSP3Core;
 
 
-static bool isSymmetricOperator(ExpressionType type) {
+bool XCSP3Core::isSymmetricOperator(ExpressionType type) {
     return type == OADD || type == OMUL || type == OMIN || type == OMAX || type == ODIST || type == ONE
            || type == OEQ || type == OSET || type == OAND || type == OOR || type == OXOR || type == OIFF ||
            type == OUNION || type == OINTER || type == ODJOINT;
 }
 
 
-static bool isNonSymmetricRelationalOperator(ExpressionType type) {
+bool XCSP3Core::isNonSymmetricRelationalOperator(ExpressionType type) {
     return type == OLT || type == OLE || type == OGE || type == OGT;
 }
 
 
-static ExpressionType arithmeticInversion(ExpressionType type) {
+ExpressionType XCSP3Core::arithmeticInversion(ExpressionType type) {
     return type == OLT ? OGT : type == OLE ? OGE : type == OGE ? OLE : type == OGT ? OLT : type; // no change for NE and EQ
 }
 
 
-static std::string operatorToString(ExpressionType op) {
+std::string XCSP3Core::operatorToString(ExpressionType op) {
     if(op == ONEG) return "neg";
     if(op == OABS) return "abs";
 
@@ -137,7 +137,7 @@ NodeOperator *createNodeOperator(std::string op) {
 }
 
 
-static ExpressionType logicalInversion(ExpressionType type) {
+ExpressionType XCSP3Core::logicalInversion(ExpressionType type) {
     return type == OLT ? OGE
                        : type == OLE ? OGT
                                      : type == OGE ? OLT
@@ -166,8 +166,8 @@ static ExpressionType logicalInversion(ExpressionType type) {
 }
 
 
-static bool isRelationalOperator(ExpressionType type) {
-    return isNonSymmetricRelationalOperator(type) || type == ONE || type == OEQ;
+bool XCSP3Core::isRelationalOperator(ExpressionType type) {
+    return XCSP3Core::isNonSymmetricRelationalOperator(type) || type == ONE || type == OEQ;
 }
 
 
@@ -317,24 +317,25 @@ Node *NodeOperator::canonize() {
 // Compare Two trees in order to find primitives
 // -----------------------------------------
 
-bool Node::areSimilar(Node *canonized, Node *pattern, ExpressionType &fakeOp, std::vector<int> &constants, std::vector<std::string> &variables) {
-    if(pattern->type != canonized->type && !(fakeOp == OUNDEF && pattern->type == OFAKEOP && (canonized->type == OLT || canonized->type == OLE || canonized->type == OGE
-                                            || canonized->type == OGT || canonized->type == ONE || canonized->type == OEQ))) {
-        return false;
-    }
-    if(pattern->type == OFAKEOP)
-        fakeOp = canonized->type;
+bool Node::areSimilar(Node *canonized, Node *pattern, std::vector<ExpressionType >&operators, std::vector<int> &constants, std::vector<std::string> &variables) {
+    if(pattern->type == OFAKEOP) {
+        operators.push_back(canonized->type);
+    } else {
+        if(pattern->type != canonized->type)
+            return false;
 
-    if(pattern->type == ODECIMAL) {
-        NodeConstant *c = dynamic_cast<NodeConstant *>(canonized);
-        constants.push_back(c->val);
-        return true;
-    }
+        if(pattern->type == ODECIMAL) {
+            NodeConstant *c = dynamic_cast<NodeConstant *>(canonized);
+            constants.push_back(c->val);
+            return true;
+        }
 
-    if(pattern->type == OVAR) {
-        NodeVariable *v = dynamic_cast<NodeVariable *>(canonized);
-        variables.push_back(v->var);
-        return true;
+        if(pattern->type == OVAR) {
+            NodeVariable *v = dynamic_cast<NodeVariable *>(canonized);
+            variables.push_back(v->var);
+            return true;
+        }
+
     }
 
     NodeOperator *nc = dynamic_cast<NodeOperator *>(canonized);
@@ -343,7 +344,7 @@ bool Node::areSimilar(Node *canonized, Node *pattern, ExpressionType &fakeOp, st
         return false;
 
     for(int i = 0; i < nc->parameters.size(); i++) {
-        if(Node::areSimilar(nc->parameters[i], np->parameters[i], fakeOp, constants, variables) == false)
+        if(Node::areSimilar(nc->parameters[i], np->parameters[i], operators, constants, variables) == false)
             return false;
     }
     return true;

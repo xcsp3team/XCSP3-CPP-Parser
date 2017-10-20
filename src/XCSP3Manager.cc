@@ -64,79 +64,110 @@ bool XCSP3Manager::recognizeXopKopY(string expr, string &op, XVariable **x, int 
 }*/
 
 
+
+
+static OrderType expressionTypeToOrderType(ExpressionType e) {
+    if(e == OLE) return LE;
+    if(e == OLT) return LT;
+    if(e == OGE) return GE;
+    if(e == OGT) return GT;
+    if(e == OEQ) return EQ;
+    if(e == ONE) return NE;
+    assert(false);
+    return LE;
+}
+
+//--------------------------------------------------------------------------------------
+// Classes used to recognized expressions.
+//--------------------------------------------------------------------------------------
+
 class PrimitivePattern {
 public :
     Tree &canonized, pattern;
-    std::vector<int>constants;
+    std::vector<int> constants;
     std::vector<std::string> variables;
-    ExpressionType op;
-
-    PrimitivePattern(Tree &c, string expr) : canonized(c), pattern(expr){
-        pattern.canonize();
-    }
+    std::vector<ExpressionType> operators;
+    XCSP3Manager &manager;
+    std::string id;
 
 
-    virtual void post() = 0;
+    PrimitivePattern(XCSP3Manager &m, Tree &c, string expr, std::string _id) : canonized(c), pattern(expr), manager(m), id(_id) {}
+
+
+    virtual bool post() = 0;
+
     bool match() {
-        if(Node::areSimilar(canonized.root, pattern.root, &op, constants, variables)) {
-            post();
+        constants.clear();
+        variables.clear();
+        operators.clear();
+
+        if(Node::areSimilar(canonized.root, pattern.root, operators, constants, variables) && post())
             return true;
-        }
+
         return false;
     }
 };
 
 class PrimitiveXopY : public PrimitivePattern {
 public:
-    PrimitiveXopY(Tree &c) : PrimitivePattern(c, "eq(x,y)") {
+    PrimitiveXopY(XCSP3Manager &m, Tree &c, std::string _id) : PrimitivePattern(m, c, "eq(x,y)", _id) {
         pattern.root->type = OFAKEOP;
     }
 
-    void post() override {
-        callback->buildConstraintPrimitive(id, expressionTypeToOrderType(op), (XVariable *)mapping[variables[0]], 0, (XVariable *)mapping[variables[0]]);
-    }
-public :
 
-
-};
-
-
-static OrderType expressionTypeToOrderType(ExpressionType e) {
-    if(e==OLE) return LE;
-    if(e==OLT) return LT;
-    if(e==OGE) return GE;
-    if(e==OGT) return GT;
-    if(e==OEQ) return EQ;
-    if(e==ONE) return NE;
-    assert(false);
-    return LE;
-}
-
-bool XCSP3Manager::recognizePrimitives(std::string id,Tree *tree) {
-    std::vector<std::string> variables;
-    std::vector<int> constants;
-    ExpressionType op = OUNDEF;
-
-    Tree xopy = Tree("eq(x,y)");
-    xopy.root->type = OFAKEOP;
-
-    if(Node::areSimilar(tree->root, xopy.root, op, constants, variables)) {
-        callback->buildConstraintPrimitive(id, expressionTypeToOrderType(op), (XVariable *)mapping[variables[0]], 0, (XVariable *)mapping[variables[0]]);
+    bool post() override {
+        if(operators.size() != 1 || isRelationalOperator(operators[0]) == false)
+            return false;
+        manager.callback->buildConstraintPrimitive(id, expressionTypeToOrderType(operators[0]), (XVariable *) manager.mapping[variables[0]], 0,
+                                                   (XVariable *) manager.mapping[variables[1]]);
         return true;
     }
+};
 
-    op = OUNDEF;
+class PrimitiveXopkopY : public PrimitivePattern {
+public:
+    PrimitiveXopkopY(XCSP3Manager &m, Tree &c, std::string _id) : PrimitivePattern(m, c, "eq(add(x,3),y)", _id) {
+        pattern.root->type = OFAKEOP; // We do not care between logical operator
+        pattern.root->parameters[0]->type = OFAKEOP; // We want add or sub
+    }
+
+
+    bool post() override {
+        std::cout << operators.size() << " " <<constants.size() << " " << variables.size() << std::endl;
+        if(operators.size() != 2 || isRelationalOperator(operators[0]) == false || (operators[1] != OSUB && operators[1] != OADD))
+            return false;
+        if(operators[1] == OSUB)
+            constants[0] = -constants[0];
+        manager.callback->buildConstraintPrimitive(id, expressionTypeToOrderType(operators[0]), (XVariable *) manager.mapping[variables[0]], constants[0],
+                                           (XVariable *) manager.mapping[variables[1]]);
+
+        return false;
+    }
+};
+
+bool XCSP3Manager::recognizePrimitives(std::string id, Tree *tree) {
+
+
+    PrimitiveXopY xopy(*this,*tree, id);
+    PrimitiveXopkopY xopkopy(*this,*tree,id);
+    if(xopy.match())
+        return true;
+    if(xopkopy.match())
+        return true;
+
+
+/*    op = OUNDEF;
     variables.clear();
     constants.clear();
     Tree xpkopy = Tree("lt(add(x,3),y)");
     xpkopy.root->type = OFAKEOP;
 
     if(Node::areSimilar(tree->root, xpkopy.root, op, constants, variables)) {
-        callback->buildConstraintPrimitive(id, expressionTypeToOrderType(op), (XVariable *)mapping[variables[0]], constants[0], (XVariable *)mapping[variables[0]]);
+        callback->buildConstraintPrimitive(id, expressionTypeToOrderType(op), (XVariable *) mapping[variables[0]], constants[0],
+                                           (XVariable *) mapping[variables[0]]);
         return true;
     }
-
-
+*/
 
     return false;
 }
@@ -152,9 +183,9 @@ void XCSP3Manager::buildVariable(XVariable *variable) {
     }
     std::vector<int> values;
 
-    for(unsigned int i = 0; i < variable->domain->values.size(); i++) {
-        for(int j = variable->domain->values[i]->minimum();
-            j <= variable->domain->values[i]->maximum(); j++) {
+    for(unsigned int i = 0 ; i < variable->domain->values.size() ; i++) {
+        for(int j = variable->domain->values[i]->minimum() ;
+            j <= variable->domain->values[i]->maximum() ; j++) {
             values.push_back(j);
         }
     }
@@ -202,7 +233,7 @@ void XCSP3Manager::newConstraintExtensionAsLastOne(XConstraintExtension *constra
 
 void XCSP3Manager::newConstraintIntension(XConstraintIntension *constraint) {
     if(callback->intensionUsingString && callback->recognizeSpecialIntensionCases)
-        throw  std::runtime_error("You have to choose: using string or be able to recognize special intension constraints");
+        throw std::runtime_error("You have to choose: using string or be able to recognize special intension constraints");
     if(discardedClasses(constraint->classes))
         return;
     if(callback->intensionUsingString) {
@@ -300,9 +331,9 @@ void XCSP3Manager::newConstraintLexMatrix(XConstraintLexMatrix *constraint) {
 
 void XCSP3Manager::normalizeSum(vector<XVariable *> &list, vector<int> &coefs) {
     // merge
-    for(unsigned  int i = 0; i < list.size() - 1; i++) {
+    for(unsigned int i = 0 ; i < list.size() - 1 ; i++) {
         if(coefs[i] == 0) continue;
-        for(auto j = i + 1; j < list.size(); j++) {
+        for(auto j = i + 1 ; j < list.size() ; j++) {
             if(coefs[j] != 0 && list[i]->id == list[j]->id) {
                 coefs[i] += coefs[j];
                 coefs[j] = 0;
@@ -312,7 +343,7 @@ void XCSP3Manager::normalizeSum(vector<XVariable *> &list, vector<int> &coefs) {
     vector<int> tmpc;
     vector<XVariable *> tmpv;
     // remove coef=0
-    for(unsigned int i = 0; i < list.size(); i++)
+    for(unsigned int i = 0 ; i < list.size() ; i++)
         if(coefs[i] != 0) {
             tmpv.push_back(list[i]);
             tmpc.push_back(coefs[i]);
@@ -334,8 +365,8 @@ void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
         bool toModify = false;
         if(callback->normalizeSum) {
             // Check if a variable appears two times
-            for(unsigned  int i = 0; i < constraint->list.size() - 1; i++)
-                for(auto j = i + 1; j < constraint->list.size(); j++) {
+            for(unsigned int i = 0 ; i < constraint->list.size() - 1 ; i++)
+                for(auto j = i + 1 ; j < constraint->list.size() ; j++) {
                     if(constraint->list[i]->id == constraint->list[j]->id)
                         toModify = true;
                 }
@@ -779,14 +810,14 @@ void XCSP3Manager::newConstraintCircuit(XConstraintCircuit *constraint) {
     if(discardedClasses(constraint->classes))
         return;
 
-    if(constraint->value== nullptr)
+    if(constraint->value == nullptr)
         callback->buildConstraintCircuit(constraint->id, constraint->list, constraint->startIndex);
     else {
         int value;
         if(isInteger(constraint->value, value))
             callback->buildConstraintCircuit(constraint->id, constraint->list, constraint->startIndex, value);
         else
-            callback->buildConstraintCircuit(constraint->id, constraint->list, constraint->startIndex, (XVariable *)constraint->value);
+            callback->buildConstraintCircuit(constraint->id, constraint->list, constraint->startIndex, (XVariable *) constraint->value);
     }
 
 }
@@ -811,7 +842,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
         return;
 
     vector<XVariable *> previousArguments; // Used to check if extension arguments have same domains
-    for(unsigned int i = 0; i < group->arguments.size(); i++) {
+    for(unsigned int i = 0 ; i < group->arguments.size() ; i++) {
         if(group->type == INTENSION)
             unfoldConstraint<XConstraintIntension>(group, i, &XCSP3Manager::newConstraintIntension);
         if(group->type == EXTENSION) {
@@ -821,7 +852,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             if(i > 0) {
                 // Check previous arguments
                 bool same = true;
-                for(unsigned int j = 0; j < previousArguments.size(); j++)
+                for(unsigned int j = 0 ; j < previousArguments.size() ; j++)
                     if(previousArguments[j]->domain->equals(ce->list[j]->domain) == false) {
                         same = false;
                         break;
@@ -910,8 +941,8 @@ void XCSP3Manager::addObjective(XObjective *objective) {
         if(objective->coeffs.size() == 0) {
             bool toModify = false;
             // Check if a variable appears two times
-            for(unsigned int i = 0; i < objective->list.size() - 1; i++)
-                for(auto j = i + 1; j < objective->list.size(); j++) {
+            for(unsigned int i = 0 ; i < objective->list.size() - 1 ; i++)
+                for(auto j = i + 1 ; j < objective->list.size() ; j++) {
                     if(objective->list[i]->id == objective->list[j]->id)
                         toModify = true;
                 }
