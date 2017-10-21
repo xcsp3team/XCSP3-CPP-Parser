@@ -39,6 +39,7 @@
 namespace XCSP3Core {
 
 
+    class PrimitivePattern;
     class XCSP3Manager {
 
     public :
@@ -53,13 +54,11 @@ namespace XCSP3Core {
 
 
     private :
-
-        bool recognizeXopY(string expr, string &op, XVariable **x, XVariable **y);
-
-
-        bool recognizeXopKopY(string expr, string &op, XVariable **x, int &k, XVariable **y);
-
+        std::vector<XCSP3Core::PrimitivePattern*> patterns;
         bool recognizePrimitives(std::string id, Tree *tree);
+        void createPrimitivePatterns();
+        void destroyPrimitivePatterns();
+
 
     public :
         // XCSP3CoreCallbacks *c, std::map<std::string, XEntity *> &m, bool
@@ -103,12 +102,16 @@ namespace XCSP3Core {
 
 
         void beginConstraints() {
+            if(callback->recognizeSpecialIntensionCases)
+                createPrimitivePatterns();
             callback->beginConstraints();
         }
 
 
         void endConstraints() {
             callback->endConstraints();
+            if(callback->recognizeSpecialIntensionCases)
+                destroyPrimitivePatterns();
         }
 
 
