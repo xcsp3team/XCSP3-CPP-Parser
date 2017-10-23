@@ -395,9 +395,42 @@ namespace XCSP3Core {
          * @param y the other variable
          */
         virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k, XVariable *y) {
-            throw runtime_error("primitive constraint x +-k op y constraint is not yet supported. "
+            throw runtime_error("primitive constraint x +-k op y  is not yet supported. "
                                         "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
         }
+
+        /**
+         * If  #recognizeSpecialIntensionCases is enabled (this is the case by default)
+         * intensional constraint of the form : x op k  is recognized.
+         * If such a intensional constraint is recognized, a callback to this function is done and not to  #buildConstraintIntension
+         *
+         * @param id the id (name) of the constraint
+         * @param op the order LE (EQ and NE are performed using #buildConstrantExtension
+         * @param x the variable
+         * @param k the constant
+         */
+        virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k) {
+            throw runtime_error("primitive constraint x op y  is not yet supported. "
+                                        "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
+        }
+
+
+        /**
+         * If  #recognizeSpecialIntensionCases is enabled (this is the case by default)
+         * intensional constraint of the form : x>=min and x<=max are recognized
+         * If such a intensional constraint is recognized, a callback to this function is done and not to  #buildConstraintIntension
+         *
+         * @param id the id (name) of the constraint
+         * @param x the variable
+         * @param min the constant
+         * @param max the constant
+         *
+         */
+        virtual void buildConstraintPrimitive(string id, XVariable *x, int min, int max) {
+            throw runtime_error("primitive constraint x in [min,max]  is not yet supported. "
+                                        "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
+        }
+
 
         //--------------------------------------------------------------------------------------
         // Language constraints

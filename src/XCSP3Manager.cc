@@ -93,8 +93,11 @@ public :
 
     PrimitivePattern(XCSP3Manager &m, string expr) : pattern(expr), manager(m) {}
 
+
     virtual ~PrimitivePattern() {}
-    PrimitivePattern* setTarget(std::string _id, Tree *c) {
+
+
+    PrimitivePattern *setTarget(std::string _id, Tree *c) {
         id = _id;
         canonized = c;
         return this;
@@ -116,9 +119,81 @@ public :
     }
 };
 
-class Primitive1 : public XCSP3Core::PrimitivePattern {  // x = y
+
+class PrimitiveUnary1 : public XCSP3Core::PrimitivePattern {  // x op k
 public:
-    Primitive1(XCSP3Manager &m) : PrimitivePattern(m, "eq(x,y)") {
+    PrimitiveUnary1(XCSP3Manager &m) : PrimitivePattern(m, "eq(x,3)") {
+        pattern.root->type = OFAKEOP;
+    }
+
+
+    bool post() override {
+        if(operators.size() != 1 || isRelationalOperator(operators[0]) == false)
+            return false;
+        if(operators[0] == OEQ || operators[0] == ONE) {
+            std::vector<int> values;
+            values.push_back(constants[0]);
+            manager.callback->buildConstraintExtension(id, (XVariable *) manager.mapping[variables[0]], values, operators[0] == OEQ, false);
+            return true;
+        }
+        if(operators[0] == OLE) {
+            manager.callback->buildConstraintPrimitive(id, LE, (XVariable *) manager.mapping[variables[0]], constants[0]);
+            return true;
+        }
+        return false;
+
+    }
+};
+
+class PrimitiveUnary2 : public XCSP3Core::PrimitivePattern {  // x op k
+public:
+    PrimitiveUnary2(XCSP3Manager &m) : PrimitivePattern(m, "le(3,x)") {}
+
+
+    bool post() override {
+        manager.callback->buildConstraintPrimitive(id, GE, (XVariable *) manager.mapping[variables[0]], constants[0]);
+        return true;
+    }
+};
+
+class PrimitiveUnary3 : public XCSP3Core::PrimitivePattern {  // x in {1,3 5...}
+public:
+    PrimitiveUnary3(XCSP3Manager &m) : PrimitivePattern(m, "in(x,set(1,3,5))") {
+        pattern.root->type = OFAKEOP;
+    }
+
+
+    bool post() override {
+        if(operators.size() != 1 || (operators[0] != OIN && operators[0] != ONOTIN))
+            return false;
+
+        std::vector<int> values;
+        for(Node *n : pattern.root->parameters[1]->parameters)
+            values.push_back((dynamic_cast<NodeConstant *>(n))->val);
+        manager.callback->buildConstraintExtension(id, (XVariable *) manager.mapping[variables[0]], values, operators[0] == OIN, false);
+        return true;
+    }
+};
+
+
+class PrimitiveUnary4 : public XCSP3Core::PrimitivePattern {  // x>=1 and x<=4
+public:
+    PrimitiveUnary4(XCSP3Manager &m) : PrimitivePattern(m, "and(le(1,x),le(x,4))") {
+    }
+
+
+    bool post() override {
+        if(variables[0] != variables[1])
+            return false;
+        manager.callback->buildConstraintPrimitive(id, (XVariable *) manager.mapping[variables[0]], constants[0],constants[1]);
+        return true;
+    }
+};
+
+
+class PrimitiveBinary1 : public XCSP3Core::PrimitivePattern {  // x <op> y
+public:
+    PrimitiveBinary1(XCSP3Manager &m) : PrimitivePattern(m, "eq(x,y)") {
         pattern.root->type = OFAKEOP;
     }
 
@@ -132,9 +207,9 @@ public:
     }
 };
 
-class Primitive2 : public XCSP3Core::PrimitivePattern {   // x + 3 = y
+class PrimitiveBinary2 : public XCSP3Core::PrimitivePattern {   // x + 3 <op> y
 public:
-    Primitive2(XCSP3Manager &m) : PrimitivePattern(m, "eq(add(x,3),y)") {
+    PrimitiveBinary2(XCSP3Manager &m) : PrimitivePattern(m, "eq(add(x,3),y)") {
         pattern.root->type = OFAKEOP; // We do not care between logical operator
     }
 
@@ -150,9 +225,9 @@ public:
 };
 
 
-class Primitive3 : public XCSP3Core::PrimitivePattern { // x = y +3
+class PrimitiveBinary3 : public XCSP3Core::PrimitivePattern { // x = y <op> 3
 public:
-    Primitive3(XCSP3Manager &m) : PrimitivePattern(m,  "eq(y,add(x,3))") {
+    PrimitiveBinary3(XCSP3Manager &m) : PrimitivePattern(m, "eq(y,add(x,3))") {
         pattern.root->type = OFAKEOP; // We do not care between logical operator
     }
 
@@ -170,18 +245,23 @@ public:
 
 
 bool XCSP3Manager::recognizePrimitives(std::string id, Tree *tree) {
-    tree->prefixe(); std::cout << "\n";
+    tree->prefixe();
+    std::cout << "\n";
     for(PrimitivePattern *p : patterns)
-        if(p->setTarget(id,tree)->match())
-        return true;
+        if(p->setTarget(id, tree)->match())
+            return true;
     return false;
 }
 
 
 void XCSP3Manager::createPrimitivePatterns() {
-    patterns.push_back(new Primitive1(*this));
-    patterns.push_back(new Primitive2(*this));
-    patterns.push_back(new Primitive3(*this));
+    patterns.push_back(new PrimitiveUnary1(*this));
+    patterns.push_back(new PrimitiveUnary2(*this));
+    patterns.push_back(new PrimitiveUnary3(*this));
+    patterns.push_back(new PrimitiveUnary4(*this));
+    patterns.push_back(new PrimitiveBinary1(*this));
+    patterns.push_back(new PrimitiveBinary2(*this));
+    patterns.push_back(new PrimitiveBinary3(*this));
 }
 
 
@@ -201,9 +281,9 @@ void XCSP3Manager::buildVariable(XVariable *variable) {
     }
     std::vector<int> values;
 
-    for(unsigned int i = 0; i < variable->domain->values.size(); i++) {
-        for(int j = variable->domain->values[i]->minimum();
-            j <= variable->domain->values[i]->maximum(); j++) {
+    for(unsigned int i = 0 ; i < variable->domain->values.size() ; i++) {
+        for(int j = variable->domain->values[i]->minimum() ;
+            j <= variable->domain->values[i]->maximum() ; j++) {
             values.push_back(j);
         }
     }
@@ -349,9 +429,9 @@ void XCSP3Manager::newConstraintLexMatrix(XConstraintLexMatrix *constraint) {
 
 void XCSP3Manager::normalizeSum(vector<XVariable *> &list, vector<int> &coefs) {
     // merge
-    for(unsigned int i = 0; i < list.size() - 1; i++) {
+    for(unsigned int i = 0 ; i < list.size() - 1 ; i++) {
         if(coefs[i] == 0) continue;
-        for(auto j = i + 1; j < list.size(); j++) {
+        for(auto j = i + 1 ; j < list.size() ; j++) {
             if(coefs[j] != 0 && list[i]->id == list[j]->id) {
                 coefs[i] += coefs[j];
                 coefs[j] = 0;
@@ -361,7 +441,7 @@ void XCSP3Manager::normalizeSum(vector<XVariable *> &list, vector<int> &coefs) {
     vector<int> tmpc;
     vector<XVariable *> tmpv;
     // remove coef=0
-    for(unsigned int i = 0; i < list.size(); i++)
+    for(unsigned int i = 0 ; i < list.size() ; i++)
         if(coefs[i] != 0) {
             tmpv.push_back(list[i]);
             tmpc.push_back(coefs[i]);
@@ -383,8 +463,8 @@ void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
         bool toModify = false;
         if(callback->normalizeSum) {
             // Check if a variable appears two times
-            for(unsigned int i = 0; i < constraint->list.size() - 1; i++)
-                for(auto j = i + 1; j < constraint->list.size(); j++) {
+            for(unsigned int i = 0 ; i < constraint->list.size() - 1 ; i++)
+                for(auto j = i + 1 ; j < constraint->list.size() ; j++) {
                     if(constraint->list[i]->id == constraint->list[j]->id)
                         toModify = true;
                 }
@@ -860,7 +940,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
         return;
 
     vector<XVariable *> previousArguments; // Used to check if extension arguments have same domains
-    for(unsigned int i = 0; i < group->arguments.size(); i++) {
+    for(unsigned int i = 0 ; i < group->arguments.size() ; i++) {
         if(group->type == INTENSION)
             unfoldConstraint<XConstraintIntension>(group, i, &XCSP3Manager::newConstraintIntension);
         if(group->type == EXTENSION) {
@@ -870,7 +950,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             if(i > 0) {
                 // Check previous arguments
                 bool same = true;
-                for(unsigned int j = 0; j < previousArguments.size(); j++)
+                for(unsigned int j = 0 ; j < previousArguments.size() ; j++)
                     if(previousArguments[j]->domain->equals(ce->list[j]->domain) == false) {
                         same = false;
                         break;
@@ -959,8 +1039,8 @@ void XCSP3Manager::addObjective(XObjective *objective) {
         if(objective->coeffs.size() == 0) {
             bool toModify = false;
             // Check if a variable appears two times
-            for(unsigned int i = 0; i < objective->list.size() - 1; i++)
-                for(auto j = i + 1; j < objective->list.size(); j++) {
+            for(unsigned int i = 0 ; i < objective->list.size() - 1 ; i++)
+                for(auto j = i + 1 ; j < objective->list.size() ; j++) {
                     if(objective->list[i]->id == objective->list[j]->id)
                         toModify = true;
                 }

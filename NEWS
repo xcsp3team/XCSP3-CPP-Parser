@@ -1,0 +1,9 @@
+2017-10-20:
+ - Stop to use regex for primitive recognition
+ - canonization of intension constraints.
+ - New primitives recognition
+ - New option in the callback: intensionUsingString, false by default
+ - New callbacks:
+     void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k):  x <op> k
+     void buildConstraintPrimitive(string id, XVariable *x, int min, int max, bool negated):     negated ? x<=min or x>=max : x>=min and x<=max
+

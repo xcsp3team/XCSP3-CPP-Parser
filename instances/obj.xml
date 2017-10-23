@@ -4,10 +4,15 @@
     <array id="y" size="[5][5]"> 1..500 </array>
   </variables>
   <constraints>
-    <intension>eq(x[0],x[1])</intension>
+    <intension>eq(0,x)</intension>
+    <intension>and(le(x,5),ge(x,3))</intension>
+<!--    <intension>lt(0,x)</intension>
+    <intension>lt(x[0],4)</intension>
+    <intension>gt(x[0],4)</intension>
+    <intension>lt(4,x[0])</intension>
     <intension>gt(x[1],sub(x[0],2))</intension>
     <intension>eq(add(x[1],5),y)</intension>
-<!--    <group class="channeling">
+   <group class="channeling">
       <intension> eq(%0,add(%1,%2)) </intension>
       <args> x[1] x[0] y[0][1] </args>
       <args> x[2] x[0] y[0][2] </args>

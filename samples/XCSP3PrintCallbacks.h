@@ -94,6 +94,10 @@ namespace XCSP3Core {
 
         virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k, XVariable *y) override;
 
+        virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k) override;
+
+        virtual void buildConstraintPrimitive(string id, XVariable *x, int min, int max) override;
+
         virtual void buildConstraintRegular(string id, vector<XVariable *> &list, string st, vector<string> &final, vector<XTransition> &transitions) override;
 
         virtual void buildConstraintMDD(string id, vector<XVariable *> &list, vector<XTransition> &transitions) override;
@@ -402,6 +406,14 @@ void XCSP3PrintCallbacks::buildConstraintIntension(string id, Tree *tree) {
 // string id, OrderType op, XVariable *x, int k, XVariable *y
 void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, OrderType, XVariable *x, int k, XVariable *y) {
     cout << "\n   intension constraint " << id << ": " << x->id << (k >= 0 ? "+" : "") << k << " op " << y->id << endl;
+}
+
+void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k) {
+    cout << "\n   constraint  " << id << ":"<< x->id << "<op> "<< k <<"\n";
+}
+
+void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, XVariable *x, int min, int max) {
+        cout << "\n   constraint  " << id << ":"<< x->id << ">=" << min <<" and " << x->id << "<=" << max << "\n";
 }
 
 
