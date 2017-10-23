@@ -45,7 +45,7 @@ namespace XCSP3Core {
         /**
          * If true, the intension constraint are retrieved with an expression (nothing is done in order to help you)
          * (false by default)
-         * Otherwise, the callback that take a canonized tree of the expression is given to the callback
+         * Otherwise, the callback that take a canonized tree of the expression is called
          */
         bool intensionUsingString;
 
