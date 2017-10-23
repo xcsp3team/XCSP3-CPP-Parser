@@ -378,7 +378,7 @@ Node::areSimilar(Node *canonized, Node *pattern, std::vector<ExpressionType> &op
     if(nc->parameters.size() != np->parameters.size())
         return false;
 
-    for(int i = 0 ; i < nc->parameters.size() ; i++) {
+    for(unsigned int i = 0 ; i < nc->parameters.size() ; i++) {
         if(Node::areSimilar(nc->parameters[i], np->parameters[i], operators, constants, variables) == false)
             return false;
     }

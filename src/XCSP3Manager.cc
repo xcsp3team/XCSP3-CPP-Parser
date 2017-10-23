@@ -36,32 +36,6 @@
 using namespace XCSP3Core;
 
 
-/*bool XCSP3Manager::recognizeXopY(string expr, string &op, XVariable **x, XVariable **y) {
-    std::regex const rggt(R"((eq|le|lt|ge|gt|ne)\(([a-zA-Z][a-zA-Z0-Z\[\]]*),([a-zA-Z][a-zA-Z0-Z\[ \]]*)\))");
-    std::smatch matchgt;
-    if(std::regex_match(expr, matchgt, rggt)) {
-        op = matchgt[1];
-        *x = (XVariable *) mapping[matchgt[2]];
-        *y = (XVariable *) mapping[matchgt[3]];
-        return true;
-    }
-    return false;
-}
-
-
-bool XCSP3Manager::recognizeXopKopY(string expr, string &op, XVariable **x, int &k, XVariable **y) {
-    std::regex const rggt(R"((le|eq)\((add|sub)\(([a-zA-Z][a-zA-Z0-Z\[\]]*),([+-]*\d+)\),([a-zA-Z][a-zA-Z0-Z\[ \]]*)\))");
-    std::smatch matchgt;
-    if(std::regex_match(expr, matchgt, rggt)) {
-        op = matchgt[1];
-        *x = (XVariable *) mapping[matchgt[3]];
-        *y = (XVariable *) mapping[matchgt[5]];
-        k = std::stoi(matchgt[4]);
-        if(matchgt[2] == "sub") k = -k;
-        return true;
-    }
-    return false;
-}*/
 
 
 
