@@ -266,16 +266,8 @@ namespace XCSP3Core {
     class NodeNAry : public NodeOperator {
         friend class NodeIn;
         friend class NodeNotIn;
-
-    protected:
-        std::vector<Node *> parameters;
     public:
-
         NodeNAry(std::string o, ExpressionType _operator) : NodeOperator(o, _operator) {}
-
-
-    public:
-
     };
 
 

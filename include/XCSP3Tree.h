@@ -55,6 +55,9 @@ namespace XCSP3Core {
 
         Node *fromStringToTree(std::string);
 
+        int arity() {
+            return listOfVariables.size();
+        }
 
 
         int evaluate(std::map<std::string, int> &tuple) {

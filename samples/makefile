@@ -1,4 +1,4 @@
-#-Wextra  -pedantic -Wno-unused-parameter -Wall -Wextra -ansi -pedantic
+#-Wextra  -pedantic -Wno-unused-parameter -Wall -Wextra -ansi
 CFLAGS =  -std=c++11 -Wall -g
 EXEC = test
 

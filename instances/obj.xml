@@ -5,7 +5,7 @@
   </variables>
   <constraints>
     <intension>eq(0,x)</intension>
-    <intension>and(le(x,5),ge(x,3))</intension>
+    <intension>and(le(x,2),ge(x,1))</intension>
 <!--    <intension>lt(0,x)</intension>
     <intension>lt(x[0],4)</intension>
     <intension>gt(x[0],4)</intension>
