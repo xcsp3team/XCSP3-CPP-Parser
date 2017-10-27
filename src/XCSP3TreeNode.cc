@@ -330,7 +330,7 @@ Node *NodeOperator::canonize() {
         }
         if(newParams[0]->type == ODECIMAL && newParams[1]->type == OADD) {
             if(newParams[1]->parameters.size() == 2 && newParams[1]->parameters[0]->type == OVAR && newParams[1]->parameters[1]->type == ODECIMAL) {
-                std::cout << "hop " << std::endl;NodeConstant *c1 = dynamic_cast<NodeConstant *>(newParams[0]);
+                NodeConstant *c1 = dynamic_cast<NodeConstant *>(newParams[0]);
                 NodeConstant *c2 = dynamic_cast<NodeConstant *>(newParams[1]->parameters[1]);
                 return (createNodeOperator(operatorToString(newType)))->addParameter(newParams[0])->addParameter(new NodeConstant(c1 - c2))->canonize();
             }

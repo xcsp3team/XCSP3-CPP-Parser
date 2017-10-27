@@ -286,6 +286,32 @@ namespace XCSP3Core {
          */
 
         //--------------------------------------------------------------------------------------
+        // Universal Constraints
+        //--------------------------------------------------------------------------------------
+
+        /**
+         * The special constraint always true
+         * Nothing to do
+         * @param id
+         * @param list
+         */
+        virtual void buildConstraintTrue(string id) { }
+
+
+        /**
+         * The special constraint always false
+         * The problem is unsatisfiable
+         * @param id
+         * @param list
+         */
+        virtual void buildConstraintFalse(string id) {
+            std::cout << "c constraint " + id + " is always false (see during parsing)\n";
+            std::cout << "s UNSATISFIABLE\n";
+            exit(1);
+        }
+
+
+        //--------------------------------------------------------------------------------------
         // Basic constraints
         //--------------------------------------------------------------------------------------
 
@@ -422,12 +448,13 @@ namespace XCSP3Core {
          *
          * @param id the id (name) of the constraint
          * @param x the variable
+         * @param in true if x is in this interval
          * @param min the constant
          * @param max the constant
          *
          */
-        virtual void buildConstraintPrimitive(string id, XVariable *x, int min, int max) {
-            throw runtime_error("primitive constraint x in [min,max]  is not yet supported. "
+        virtual void buildConstraintPrimitive(string id, XVariable *x, bool in, int min, int max) {
+            throw runtime_error("primitive constraint x in/notin [min,max]  is not yet supported. "
                                         "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
         }
 

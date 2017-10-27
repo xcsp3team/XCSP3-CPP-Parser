@@ -96,7 +96,7 @@ namespace XCSP3Core {
 
         virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k) override;
 
-        virtual void buildConstraintPrimitive(string id, XVariable *x,  int min, int max) override;
+        virtual void buildConstraintPrimitive(string id, XVariable *x,  bool in, int min, int max) override;
 
         virtual void buildConstraintRegular(string id, vector<XVariable *> &list, string st, vector<string> &final, vector<XTransition> &transitions) override;
 
@@ -383,8 +383,8 @@ void XCSP3PrintCallbacks::buildConstraintExtension(string id, vector<XVariable *
 
 void XCSP3PrintCallbacks::buildConstraintExtension(string id, XVariable *variable, vector<int> &tuples, bool support, bool hasStar) {
     cout << "\n    extension constraint with one variable: " << id << endl;
-    cout << "        " << (support ? "support" : "conflict") << " nb tuples: " << tuples.size() << " star: " << hasStar << endl;
-    cout << (*variable) << endl;
+    cout << "        " <<(*variable) << " "<< (support ? "support" : "conflict") << " nb tuples: " << tuples.size() << " star: " << hasStar << endl;
+    cout << endl;
 }
 
 
@@ -416,8 +416,8 @@ void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, OrderType op, XVar
     cout << "\n   constraint  " << id << ":" << x->id << "<op> " << k << "\n";
 }
 
-void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, XVariable *x, int min, int max) {
-        cout << "\n   constraint  " << id << ":"<< x->id << ">=" << min <<" and " << x->id << "<=" << max << "\n";
+void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, XVariable *x, bool in, int min, int max) {
+        cout << "\n   constraint  " << id << ":"<< x->id << (in ? " in " : " not in ") << min << ".." << max <<"\n";
 }
 
 

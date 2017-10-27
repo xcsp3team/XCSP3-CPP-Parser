@@ -36,10 +36,6 @@
 using namespace XCSP3Core;
 
 
-
-
-
-
 static OrderType expressionTypeToOrderType(ExpressionType e) {
     if(e == OLE) return LE;
     if(e == OLT) return LT;
@@ -115,7 +111,6 @@ public:
             return true;
         }
         return false;
-
     }
 };
 
@@ -144,6 +139,13 @@ public:
         std::vector<int> values;
         for(Node *n : pattern.root->parameters[1]->parameters)
             values.push_back((dynamic_cast<NodeConstant *>(n))->val);
+        if(values.size() == 0) {
+            if(operators[0] == OIN)
+                manager.callback->buildConstraintFalse(id);
+            else
+                manager.callback->buildConstraintTrue(id);
+            return true;
+        }
         manager.callback->buildConstraintExtension(id, (XVariable *) manager.mapping[variables[0]], values, operators[0] == OIN, false);
         return true;
     }
@@ -153,13 +155,24 @@ public:
 class PrimitiveUnary4 : public XCSP3Core::PrimitivePattern {  // x>=1 and x<=4
 public:
     PrimitiveUnary4(XCSP3Manager &m) : PrimitivePattern(m, "and(le(1,x),le(x,4))") {
+        pattern.root->type = OFAKEOP;
     }
 
 
     bool post() override {
-        if(variables[0] != variables[1])
+        if(variables[0] != variables[1] || operators.size() != 1 || (operators[0] != OAND && operators[0] != OOR))
             return false;
-        manager.callback->buildConstraintPrimitive(id, (XVariable *) manager.mapping[variables[0]], constants[0],constants[1]);
+        if(operators[0] == OAND) {
+            if(constants[0] > constants[1])
+                manager.callback->buildConstraintFalse(id);
+            else
+                manager.callback->buildConstraintPrimitive(id, (XVariable *) manager.mapping[variables[0]], true, constants[0], constants[1]);
+            return true;
+        }
+        if(constants[0] < constants[1])
+            manager.callback->buildConstraintTrue(id);
+        else
+            manager.callback->buildConstraintPrimitive(id, (XVariable *) manager.mapping[variables[0]], false, constants[1], constants[0]);
         return true;
     }
 };
@@ -219,8 +232,6 @@ public:
 
 
 bool XCSP3Manager::recognizePrimitives(std::string id, Tree *tree) {
-    tree->prefixe();
-    std::cout << "\n";
     for(PrimitivePattern *p : patterns)
         if(p->setTarget(id, tree)->match())
             return true;
@@ -255,9 +266,9 @@ void XCSP3Manager::buildVariable(XVariable *variable) {
     }
     std::vector<int> values;
 
-    for(unsigned int i = 0 ; i < variable->domain->values.size() ; i++) {
-        for(int j = variable->domain->values[i]->minimum() ;
-            j <= variable->domain->values[i]->maximum() ; j++) {
+    for(unsigned int i = 0; i < variable->domain->values.size(); i++) {
+        for(int j = variable->domain->values[i]->minimum();
+            j <= variable->domain->values[i]->maximum(); j++) {
             values.push_back(j);
         }
     }
@@ -403,9 +414,9 @@ void XCSP3Manager::newConstraintLexMatrix(XConstraintLexMatrix *constraint) {
 
 void XCSP3Manager::normalizeSum(vector<XVariable *> &list, vector<int> &coefs) {
     // merge
-    for(unsigned int i = 0 ; i < list.size() - 1 ; i++) {
+    for(unsigned int i = 0; i < list.size() - 1; i++) {
         if(coefs[i] == 0) continue;
-        for(auto j = i + 1 ; j < list.size() ; j++) {
+        for(auto j = i + 1; j < list.size(); j++) {
             if(coefs[j] != 0 && list[i]->id == list[j]->id) {
                 coefs[i] += coefs[j];
                 coefs[j] = 0;
@@ -415,7 +426,7 @@ void XCSP3Manager::normalizeSum(vector<XVariable *> &list, vector<int> &coefs) {
     vector<int> tmpc;
     vector<XVariable *> tmpv;
     // remove coef=0
-    for(unsigned int i = 0 ; i < list.size() ; i++)
+    for(unsigned int i = 0; i < list.size(); i++)
         if(coefs[i] != 0) {
             tmpv.push_back(list[i]);
             tmpc.push_back(coefs[i]);
@@ -437,8 +448,8 @@ void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
         bool toModify = false;
         if(callback->normalizeSum) {
             // Check if a variable appears two times
-            for(unsigned int i = 0 ; i < constraint->list.size() - 1 ; i++)
-                for(auto j = i + 1 ; j < constraint->list.size() ; j++) {
+            for(unsigned int i = 0; i < constraint->list.size() - 1; i++)
+                for(auto j = i + 1; j < constraint->list.size(); j++) {
                     if(constraint->list[i]->id == constraint->list[j]->id)
                         toModify = true;
                 }
@@ -914,7 +925,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
         return;
 
     vector<XVariable *> previousArguments; // Used to check if extension arguments have same domains
-    for(unsigned int i = 0 ; i < group->arguments.size() ; i++) {
+    for(unsigned int i = 0; i < group->arguments.size(); i++) {
         if(group->type == INTENSION)
             unfoldConstraint<XConstraintIntension>(group, i, &XCSP3Manager::newConstraintIntension);
         if(group->type == EXTENSION) {
@@ -924,7 +935,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             if(i > 0) {
                 // Check previous arguments
                 bool same = true;
-                for(unsigned int j = 0 ; j < previousArguments.size() ; j++)
+                for(unsigned int j = 0; j < previousArguments.size(); j++)
                     if(previousArguments[j]->domain->equals(ce->list[j]->domain) == false) {
                         same = false;
                         break;
@@ -1013,8 +1024,8 @@ void XCSP3Manager::addObjective(XObjective *objective) {
         if(objective->coeffs.size() == 0) {
             bool toModify = false;
             // Check if a variable appears two times
-            for(unsigned int i = 0 ; i < objective->list.size() - 1 ; i++)
-                for(auto j = i + 1 ; j < objective->list.size() ; j++) {
+            for(unsigned int i = 0; i < objective->list.size() - 1; i++)
+                for(auto j = i + 1; j < objective->list.size(); j++) {
                     if(objective->list[i]->id == objective->list[j]->id)
                         toModify = true;
                 }
