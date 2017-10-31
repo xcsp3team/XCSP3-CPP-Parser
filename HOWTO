@@ -93,19 +93,32 @@ Now, if you want to deal with extensional constraints, your callback must overri
 
   3.3 Intensional constraint
   --------------------------
-If you want to deal with intentional constraints you have to override the following function:
+You have two possibilities to deal with intensional constraints, depending the value of XCSP3CoreCallbacks::intensionUsingString.
+If set to true (false by default), nothing is done to help you and you need to override this function:
 
-        void buildConstraintIntension(string id, string expr) {
+void buildConstraintIntension(string id, string expr) {
             // The expression is the string defined in XCSP3 format.
         }
 
-Note that the parser is able to recognize constraint with the form  x +- k op y (op \in {eq, le, lt, ge, gt, ne}. In such a case
-a call to the following function is done:
+If set to false, then a tree is constructed (see class XCSP3Tree.h) and canonized. In such a case you need to override
 
-        virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k, XVariable *y)
+void buildConstraintIntension(string id, Tree *tree) {
+      // The expression is the tree.
+}
+
+You can evaluate the tree using the function tree->evaluate(map<string,int>) where the map contains a value for each variable in the tree.
+See the file samples/testTree.cc for an example.
+
+
+Furethermore, some primitives are recognized (if XCSP3CoreCallbacks::recognizeSpecialIntensionCases
+is set to true (this is the case by default)). Then, you need to override these functions:
+  * void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k, XVariable *y);   // x + k op y
+  * void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k);                 // x <= k
+  * void buildConstraintPrimitive(string id, XVariable *x, bool in, int min, int max);           // x in/notin k
+
 
 You can disable this feature by setting the boolean XCSP3CoreCallbacks::recognizeSpecialIntensionCases to false.
-Other primitive constraints will be recognized later.
+
 
   3.4 Other constraints
   ---------------------

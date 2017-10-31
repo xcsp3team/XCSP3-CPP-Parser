@@ -376,7 +376,7 @@ namespace XCSP3Core {
 
         /**
          * The callback function related to a constraint in intension
-         * Only called if intensionUsingString is set to false (otherwise the next function is called
+         * Only called if intensionUsingString is set to true (otherwise the next function is called
          * See http://xcsp.org/specifications/intension
          * Example:
          * <intension> eq(add(x,y),z) </intension>
@@ -394,7 +394,7 @@ namespace XCSP3Core {
 
         /**
          * The callback function related to a constraint in intension
-         * Only called if intensionUsingString is set to true (otherwise the next function is called
+         * Only called if intensionUsingString is set to false (otherwise the previous function is called
          * See http://xcsp.org/specifications/intension
          * Example:
          * <intension> eq(add(x,y),z) </intension>
@@ -436,14 +436,14 @@ namespace XCSP3Core {
          * @param k the constant
          */
         virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k) {
-            throw runtime_error("primitive constraint x op y  is not yet supported. "
+            throw runtime_error("primitive constraint x op k  is not yet supported. "
                                         "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
         }
 
 
         /**
          * If  #recognizeSpecialIntensionCases is enabled (this is the case by default)
-         * intensional constraint of the form : x>=min and x<=max are recognized
+         * intensional constraint of the form : x in/notin [min max] are recognized
          * If such a intensional constraint is recognized, a callback to this function is done and not to  #buildConstraintIntension
          *
          * @param id the id (name) of the constraint
