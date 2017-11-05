@@ -135,12 +135,12 @@ Remark: If a group of constraints is called, a call to buildConstraintXXX  is do
 slide constraints).
 
 
-Remark: Note that the argument list of each function does not always provides the scope of the constraint: a variable can appears twice
+Remark: Note that the argument list of each function does not always provides the scope of the constraint: a variable can appear twice
 in the list for example or a variable can appear in the list and also elsewhere (for example in the values array).
 
   3.5 Options
   -----------
-  The class XCSP3CoreCallbacks contains some options. We already introduced recognizeSpecialIntensionCases (see section 3.3)
+  The class XCSP3CoreCallbacks contains some options. We already introduced recognizeSpecialIntensionCases and intensionUsingString (see section 3.3)
   Let us introduced the two other ones:
    - recognizeSpecialCountCases: this variable (set to true by default) enables the recognition of special count constraint:
             atleast, atmost, exactly, among, exctalyVariable
@@ -154,7 +154,6 @@ in the list for example or a variable can appear in the list and also elsewhere 
   Classes allow to define multiple models in one single file. For example, class symmetryBreaking identify all variables/constraints
   used to break symmetries.
   If you want to remove such variables/constraints, you need to call the function XCSP3CoreCallbacks::addClassToDiscard.
-  (See directory samples/main.cc to see a simple call of this function).
 
 5. TODO
 -------

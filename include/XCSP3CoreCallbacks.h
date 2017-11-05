@@ -431,7 +431,7 @@ namespace XCSP3Core {
          * If such a intensional constraint is recognized, a callback to this function is done and not to  #buildConstraintIntension
          *
          * @param id the id (name) of the constraint
-         * @param op the order LE (EQ and NE are performed using #buildConstrantExtension
+         * @param op the order LE or GE (EQ and NE are performed using #buildConstrantExtension)
          * @param x the variable
          * @param k the constant
          */

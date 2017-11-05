@@ -4,7 +4,9 @@
     <array id="y" size="[5][5]"> 1..500 </array>
   </variables>
   <constraints>
-    <intension>eq(x[0],3)</intension>
+    <intension>le(x[1],add(x[0],3))</intension>
+     <intension>ge(add(x[0],3),x[1])</intension>
+   <intension>lt(x[0],3)</intension>
     <intension>or(le(x[0],2),ge(x[0],5))</intension>
 <!--    <intension>lt(0,x)</intension>
     <intension>lt(x[0],4)</intension>

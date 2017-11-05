@@ -271,11 +271,6 @@ Node *NodeOperator::canonize() {
                 list.insert(list.end(), n->parameters.begin(), n->parameters.end());
                 list.insert(list.end(), newParams.begin() + i + 1, newParams.end());
                 return ((createNodeOperator(operatorToString(newType)))->addParameters(list))->canonize();
-
-                /*List<XNode<V>> list = IntStream.rangeClosed(0, i - 1).mapToObj(j -> newParams[j]).collect(Collectors.toList());
-                Stream.of(((XNodeParent<V>) newParams[i]).newParams).forEach(s -> list.add(s));
-                IntStream.range(i + 1, newParams.length).mapToObj(j -> newParams[j]).forEach(s -> list.add(s));
-                return new XNodeParent<V>(newType, list).canonization();*/
             }
         }
     }
@@ -315,10 +310,6 @@ Node *NodeOperator::canonize() {
                 c1->val = c1->val - c2->val;
                 newParams[1] = n1->parameters[0];
                 return (createNodeOperator(operatorToString(newType)))->addParameters(newParams)->canonize();
-                //((XNodeLeaf< ? > )
-                //ns1[1]).value = (long) ns1[1].firstVal() - ns2[1].firstVal();
-                //newParams[1] = ns2[0];
-                //return new XNodeParent<V>(newType, newParams).canonization();
             }
         }
         if(newParams[0]->type == OADD && newParams[1]->type == ODECIMAL) {

@@ -406,14 +406,13 @@ void XCSP3PrintCallbacks::buildConstraintIntension(string id, Tree *tree) {
 }
 
 
-// string id, OrderType op, XVariable *x, int k, XVariable *y
 void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, OrderType, XVariable *x, int k, XVariable *y) {
     cout << "\n   intension constraint " << id << ": " << x->id << (k >= 0 ? "+" : "") << k << " op " << y->id << endl;
 }
 
 
 void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k) {
-    cout << "\n   constraint  " << id << ":" << x->id << "<op> " << k << "\n";
+    cout << "\n   constraint  " << id << ":" << x->id << " <= " << k << "\n";
 }
 
 void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, XVariable *x, bool in, int min, int max) {
