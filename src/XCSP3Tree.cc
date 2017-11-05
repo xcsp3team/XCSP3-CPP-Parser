@@ -97,43 +97,10 @@ Node *Tree::fromStringToTree(std::string current) {
     return params.back();
 }
 
-void Tree::createOperator(string currentElement, ::vector<NodeOperator*> &stack,std::vector<Node*> &params) {
-    NodeOperator *tmp = nullptr;
-    if (currentElement == "neg") tmp = new NodeNeg();
-    if (currentElement == "abs") tmp = new NodeAbs();
+extern NodeOperator* createNodeOperator(std::string currentElement);
+void Tree::createOperator(string currentElement, std::vector<NodeOperator*> &stack,std::vector<Node*> &params) {
 
-    if (currentElement == "add") tmp = new NodeAdd();
-    if (currentElement == "sub") tmp = new NodeSub();
-    if (currentElement == "mul") tmp = new NodeMult();
-    if (currentElement == "div") tmp = new NodeDiv();
-    if (currentElement == "mod") tmp = new NodeMod();
-
-    if (currentElement == "sqr") tmp = new NodeSquare();
-    if (currentElement == "pow") tmp = new NodePow();
-
-    if (currentElement == "min") tmp = new NodeMin();
-    if (currentElement == "max") tmp = new NodeMax();
-    if (currentElement == "dist") tmp = new NodeDist();
-
-    if (currentElement == "le") tmp = new NodeLE();
-    if (currentElement == "lt") tmp = new NodeLT();
-    if (currentElement == "ge") tmp = new NodeGE();
-    if (currentElement == "gt") tmp = new NodeGT();
-
-    if (currentElement == "ne") tmp = new NodeNE();
-    if (currentElement == "eq") tmp = new NodeEQ();
-
-    if (currentElement == "not") tmp = new NodeNot();
-    if (currentElement == "and") tmp = new NodeAnd();
-    if (currentElement == "or") tmp = new NodeOr();
-    if (currentElement == "xor") tmp = new NodeXor();
-    if (currentElement == "imp") tmp = new NodeImp();
-    if (currentElement == "if") tmp = new NodeIf();
-    if (currentElement == "iff") tmp = new NodeIff();
-
-    if (currentElement == "in") tmp = new NodeIn();
-    if (currentElement == "set") tmp = new NodeSet();
-
+    NodeOperator *tmp = createNodeOperator(currentElement);
     if (tmp == nullptr)
         throw runtime_error("Intension constraint. Unknown operator: " + currentElement);
     stack.push_back(tmp);

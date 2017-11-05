@@ -67,7 +67,6 @@ for each element of the array
 8. Given a group of constraint, a call to the dedicated <code>builConstraintXXX</code> will occur for each arguments
 of the group (the same occurs for slide).
 
-<b>Note</b> This parser uses std::regex. You need clang compiler or g++ with a version >= 4.9
 
 
 

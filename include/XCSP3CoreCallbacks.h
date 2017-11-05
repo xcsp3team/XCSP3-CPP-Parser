@@ -28,6 +28,7 @@
 #include "XCSP3Constants.h"
 #include "XCSP3Variable.h"
 #include "XCSP3Constraint.h"
+#include "XCSP3Tree.h"
 #include <vector>
 #include <string>
 
@@ -40,6 +41,13 @@ namespace XCSP3Core {
     protected :
         vector<string> classesToDiscard;
     public :
+
+        /**
+         * If true, the intension constraint are retrieved with an expression (nothing is done in order to help you)
+         * (false by default)
+         * Otherwise, the callback that take a canonized tree of the expression is called
+         */
+        bool intensionUsingString;
 
         /**
          * If true, the parse recognizes special intensional constraints such as x + k op y and call a specific callback.
@@ -65,6 +73,7 @@ namespace XCSP3Core {
         bool normalizeSum;
 
         XCSP3CoreCallbacks() {
+            intensionUsingString = false;
             recognizeSpecialIntensionCases = true;
             recognizeSpecialCountCases = true;
             recognizeNValuesCases = true;
@@ -277,6 +286,32 @@ namespace XCSP3Core {
          */
 
         //--------------------------------------------------------------------------------------
+        // Universal Constraints
+        //--------------------------------------------------------------------------------------
+
+        /**
+         * The special constraint always true
+         * Nothing to do
+         * @param id
+         * @param list
+         */
+        virtual void buildConstraintTrue(string id) { }
+
+
+        /**
+         * The special constraint always false
+         * The problem is unsatisfiable
+         * @param id
+         * @param list
+         */
+        virtual void buildConstraintFalse(string id) {
+            std::cout << "c constraint " + id + " is always false (see during parsing)\n";
+            std::cout << "s UNSATISFIABLE\n";
+            exit(1);
+        }
+
+
+        //--------------------------------------------------------------------------------------
         // Basic constraints
         //--------------------------------------------------------------------------------------
 
@@ -341,11 +376,13 @@ namespace XCSP3Core {
 
         /**
          * The callback function related to a constraint in intension
+         * Only called if intensionUsingString is set to true (otherwise the next function is called
          * See http://xcsp.org/specifications/intension
          * Example:
          * <intension> eq(add(x,y),z) </intension>
          * If you need a class that is able to manage expressions you can use the class Tree (see includes/XCS3Tree.h)
          * And an example is given in samples/testTree.cc
+         * In such a case, set intensionUsingString to false and make a callback to the next function
          *
          * @param id the id (name) of the constraint
          * @param expr the expression
@@ -353,6 +390,23 @@ namespace XCSP3Core {
         virtual void buildConstraintIntension(string id, string expr) {
             throw runtime_error("intension constraint is not yet supported");
         }
+
+
+        /**
+         * The callback function related to a constraint in intension
+         * Only called if intensionUsingString is set to false (otherwise the previous function is called
+         * See http://xcsp.org/specifications/intension
+         * Example:
+         * <intension> eq(add(x,y),z) </intension>
+         *
+         * @param id the id (name) of the constraint
+         * @param tree the canonized form related to the tree
+         */
+        virtual void buildConstraintIntension(string id, Tree *tree) {
+            throw runtime_error("intension constraint using a tree is not yet supported (choose the right way)");
+        }
+
+
 
 
         /**
@@ -367,9 +421,43 @@ namespace XCSP3Core {
          * @param y the other variable
          */
         virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k, XVariable *y) {
-            throw runtime_error("primitive constraint x +-k op y constraint is not yet supported. "
+            throw runtime_error("primitive constraint x +-k op y  is not yet supported. "
                                         "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
         }
+
+        /**
+         * If  #recognizeSpecialIntensionCases is enabled (this is the case by default)
+         * intensional constraint of the form : x op k  is recognized.
+         * If such a intensional constraint is recognized, a callback to this function is done and not to  #buildConstraintIntension
+         *
+         * @param id the id (name) of the constraint
+         * @param op the order LE or GE (EQ and NE are performed using #buildConstrantExtension)
+         * @param x the variable
+         * @param k the constant
+         */
+        virtual void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k) {
+            throw runtime_error("primitive constraint x op k  is not yet supported. "
+                                        "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
+        }
+
+
+        /**
+         * If  #recognizeSpecialIntensionCases is enabled (this is the case by default)
+         * intensional constraint of the form : x in/notin [min max] are recognized
+         * If such a intensional constraint is recognized, a callback to this function is done and not to  #buildConstraintIntension
+         *
+         * @param id the id (name) of the constraint
+         * @param x the variable
+         * @param in true if x is in this interval
+         * @param min the constant
+         * @param max the constant
+         *
+         */
+        virtual void buildConstraintPrimitive(string id, XVariable *x, bool in, int min, int max) {
+            throw runtime_error("primitive constraint x in/notin [min,max]  is not yet supported. "
+                                        "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
+        }
+
 
         //--------------------------------------------------------------------------------------
         // Language constraints
