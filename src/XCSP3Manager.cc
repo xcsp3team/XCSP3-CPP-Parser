@@ -137,7 +137,7 @@ public:
             return false;
 
         std::vector<int> values;
-        for(Node *n : pattern.root->parameters[1]->parameters)
+        for(Node *n : canonized->root->parameters[1]->parameters)
             values.push_back((dynamic_cast<NodeConstant *>(n))->val);
         if(values.size() == 0) {
             if(operators[0] == OIN)

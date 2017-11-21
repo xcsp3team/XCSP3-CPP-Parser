@@ -110,10 +110,10 @@ You can evaluate the tree using the function tree->evaluate(map<string,int>) whe
 See the file samples/testTree.cc for an example.
 
 
-Furethermore, some primitives are recognized (if XCSP3CoreCallbacks::recognizeSpecialIntensionCases
+Furthermore, some primitives are recognized (if XCSP3CoreCallbacks::recognizeSpecialIntensionCases
 is set to true (this is the case by default)). Then, you need to override these functions:
   * void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k, XVariable *y);   // x + k op y
-  * void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k);                 // x <= k
+  * void buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k);                 // x op k op is <= or >=
   * void buildConstraintPrimitive(string id, XVariable *x, bool in, int min, int max);           // x in/notin k
 
 
