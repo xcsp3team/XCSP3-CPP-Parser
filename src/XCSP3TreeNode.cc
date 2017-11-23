@@ -190,7 +190,7 @@ bool compareNodes(Node *a, Node *b) {
     if(o1->parameters.size() > o2->parameters.size())
         return 0;
 
-    for(int i = 0 ; i < o1->parameters.size() ; i++)
+    for(unsigned int i = 0 ; i < o1->parameters.size() ; i++)
         if((compareNodes(o1->parameters[i], o2->parameters[i])) == 1)
             return 1;
     return 0;
@@ -262,14 +262,19 @@ Node *NodeOperator::canonize() {
         }
     }
     // Then, we merge operators when possible; for example add(add(x,y),z) becomes add(x,y,z)
-    if(isSymmetricOperator(type) && newType != OEQ && newType != ODIST && newType != ODJOINT) {
-        for(int i = 0 ; i < newParams.size() ; i++) {
+    if(isSymmetricOperator(newType) && newType != OEQ && newType != ODIST && newType != ODJOINT) {
+        for(unsigned int i = 0 ; i < newParams.size() ; i++) {
             NodeOperator *n;
             if((n = dynamic_cast<NodeOperator *>(newParams[i])) != nullptr && n->type == newType) {
                 std::vector<Node *> list;
-                list.insert(list.end(), newParams.begin(), newParams.begin() + i - 1);
+                std::cout << "I "<< i << "  "<< newParams.size() <<std::endl;
+                for(unsigned int j = 0; j < i; j++)
+                    list.push_back(newParams[j]);
+
                 list.insert(list.end(), n->parameters.begin(), n->parameters.end());
-                list.insert(list.end(), newParams.begin() + i + 1, newParams.end());
+
+                for(unsigned int j = i+1; j < newParams.size(); j++)
+                    list.push_back(newParams[j]);
                 return ((createNodeOperator(operatorToString(newType)))->addParameters(list))->canonize();
             }
         }
