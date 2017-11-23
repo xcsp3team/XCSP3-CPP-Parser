@@ -267,7 +267,6 @@ Node *NodeOperator::canonize() {
             NodeOperator *n;
             if((n = dynamic_cast<NodeOperator *>(newParams[i])) != nullptr && n->type == newType) {
                 std::vector<Node *> list;
-                std::cout << "I "<< i << "  "<< newParams.size() <<std::endl;
                 for(unsigned int j = 0; j < i; j++)
                     list.push_back(newParams[j]);
 
