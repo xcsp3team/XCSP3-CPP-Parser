@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.6)
+#set(CMAKE_C_COMPILER "gcc-7")
+#set(CMAKE_CXX_COMPILER "g++-7")
 
 project("xcsp3parser")
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/samples")
 
 set(CMAKE_CXX_STANDARD 11)
 

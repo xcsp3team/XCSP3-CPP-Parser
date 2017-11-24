@@ -231,6 +231,34 @@ public:
 };
 
 
+class PrimitiveTernary1 : public XCSP3Core::PrimitivePattern { // x = y <op> 3
+public:
+    PrimitiveTernary1(XCSP3Manager &m) : PrimitivePattern(m, "eq(add(y,z),x)") {
+        pattern.root->type = OFAKEOP; // We do not care between logical operator
+    }
+
+
+    bool post() override {
+        if(operators.size() != 1 || isRelationalOperator(operators[0]) == false)
+            return false;
+        std::vector<XVariable*> list;
+        for(string &s : variables)
+            list.push_back((XVariable *) manager.mapping[s]);
+        vector<int> coefs;
+        coefs.push_back(1);
+        coefs.push_back(1);
+        coefs.push_back(-1);
+        XCondition cond;
+        cond.operandType = INTEGER;
+        cond.op = expressionTypeToOrderType(operators[0]);
+        cond.val = 0;
+        manager.callback->buildConstraintSum(id, list,coefs, cond);
+
+        return true;
+    }
+};
+
+
 bool XCSP3Manager::recognizePrimitives(std::string id, Tree *tree) {
     for(PrimitivePattern *p : patterns)
         if(p->setTarget(id, tree)->match())
@@ -247,6 +275,8 @@ void XCSP3Manager::createPrimitivePatterns() {
     patterns.push_back(new PrimitiveBinary1(*this));
     patterns.push_back(new PrimitiveBinary2(*this));
     patterns.push_back(new PrimitiveBinary3(*this));
+    patterns.push_back(new PrimitiveTernary1(*this));
+
 }
 
 
