@@ -1,3 +1,4 @@
+*.xml
 *.o
 *.a
 test
