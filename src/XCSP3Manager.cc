@@ -400,8 +400,8 @@ void XCSP3Manager::newConstraintAllDiff(XConstraintAllDiff *constraint) {
                 trees.push_back(t);
             }
             callback->buildConstraintAlldifferent(constraint->id, trees);
+            return;
         }
-
         callback->buildConstraintAlldifferent(constraint->id, constraint->list);
     } else
         callback->buildConstraintAlldifferentExcept(constraint->id, constraint->list, constraint->except);
