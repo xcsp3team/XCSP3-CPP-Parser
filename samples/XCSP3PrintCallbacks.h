@@ -246,7 +246,7 @@ namespace XCSP3Core {
         virtual void buildObjectiveMaximize(ExpressionObjective type, vector<XVariable *> &list) override;
 
 
-        virtual void buildAnnotationDecision(vector<XVariable*> list) override;
+        virtual void buildAnnotationDecision(vector<XVariable*> &list) override;
         bool canonize;
     };
 
@@ -1114,7 +1114,7 @@ void XCSP3PrintCallbacks::buildObjectiveMaximize(ExpressionObjective type, vecto
     XCSP3CoreCallbacks::buildObjectiveMaximize(type, list);
 }
 
-void XCSP3PrintCallbacks::buildAnnotationDecision(vector<XVariable*> list) {
+void XCSP3PrintCallbacks::buildAnnotationDecision(vector<XVariable*> &list) {
     std::cout << "       decision variables" << std::endl<< "       ";
     displayList(list);
 

@@ -2012,7 +2012,7 @@ namespace XCSP3Core {
          * @param list
          */
 
-        virtual void buildAnnotationDecision(vector<XVariable *> list) {}
+        virtual void buildAnnotationDecision(vector<XVariable *> &list) {}
     };
 
 }
