@@ -275,12 +275,12 @@ namespace XCSP3Core {
 
     static OrderType _op;
 
-    class XConstraintOrdered : public XConstraint {
+    class XConstraintOrdered : public XConstraint, public XLengths {
     public :
         OrderType &op;
 
-
         XConstraintOrdered(std::string idd, std::string c) : XConstraint(idd, c), op(_op) {}
+        void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
 

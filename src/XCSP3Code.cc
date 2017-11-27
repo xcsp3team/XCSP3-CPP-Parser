@@ -430,6 +430,10 @@ void XConstraintAllDiffMatrix::unfoldParameters(XConstraintGroup *, vector<XVari
     throw runtime_error("Group Alldiff Matrix and list is not yet supported");
 }
 
+void XConstraintOrdered::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+    XConstraint::unfoldParameters(group, arguments, original);
+    XLengths::unfoldParameters(group, arguments, original);
+}
 
 void XConstraintLex::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
     XConstraintLex *xc = dynamic_cast<XConstraintLex *>(original);

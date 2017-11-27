@@ -420,7 +420,14 @@ void XCSP3Manager::newConstraintAllEqual(XConstraintAllEqual *constraint) {
 void XCSP3Manager::newConstraintOrdered(XConstraintOrdered *constraint) {
     if(discardedClasses(constraint->classes))
         return;
-    callback->buildConstraintOrdered(constraint->id, constraint->list, constraint->op);
+    if(constraint->lengths.size() > 0) {
+        vector<int> lengths;
+        for(XVariable *x : constraint->lengths)
+            lengths.push_back(((XInteger*)x)->value);
+        callback->buildConstraintOrdered(constraint->id, constraint->list, lengths, constraint->op);
+    }
+    else
+        callback->buildConstraintOrdered(constraint->id, constraint->list, constraint->op);
 }
 
 

@@ -134,6 +134,15 @@ namespace XCSP3Core {
             callback->endObjectives();
         }
 
+
+        void beginAnnotations() {
+            callback->beginAnnotations();
+        }
+
+
+        void endAnnotations() {
+            callback->endAnnotations();
+        }
         //--------------------------------------------------------------------------------------
         // Basic constraints
         //--------------------------------------------------------------------------------------
@@ -284,6 +293,14 @@ namespace XCSP3Core {
         //--------------------------------------------------------------------------------------
 
         void addObjective(XObjective *objective);
+
+        //--------------------------------------------------------------------------------------
+        // Annotation : Decision variables
+        //--------------------------------------------------------------------------------------
+
+        void buildAnnotationDecision(vector<XVariable*> &list) {
+            callback->buildAnnotationDecision(list);
+        }
     };
 
 }

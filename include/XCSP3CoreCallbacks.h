@@ -249,6 +249,19 @@ namespace XCSP3Core {
         virtual void endObjectives() {}
 
 
+        /**
+         * The start of parsing annotations
+         * Related to tag </annotations>
+         */
+        virtual void beginAnnotations() { }
+
+
+        /**
+         * The end of parsing annotations
+         * Related to tag </annotations>
+         */
+        virtual void endAnnotations() { }
+
         //--------------------------------------------------------------------------------------
         // Build Variable. Must be implemented.
         //--------------------------------------------------------------------------------------
@@ -647,6 +660,27 @@ namespace XCSP3Core {
          */
         virtual void buildConstraintOrdered(string id, vector<XVariable *> &list, OrderType order) {
             throw runtime_error("Ordered constraint  is not yet supported");
+        }
+
+
+        /**
+         * The callback function related to an ordered constraint
+         * See http://xcsp.org/specifications/ordered
+         *
+         * Ordered is LE, LT, GE, GT... See OrderType in XCSPConstants.h
+         *
+         * Example:
+         * <ordered>
+         *   <list> x1 x2 x3 x4 </list>
+         *   <operator> lt </operator>
+         * </ordered>
+         *
+         * @param id the id (name) of the constraint
+         * @param list the scope of the constraint
+         * @param order the order LT, LE...
+         */
+        virtual void buildConstraintOrdered(string id, vector<XVariable *> &list, vector<int> &lengths, OrderType order) {
+            throw runtime_error("Ordered constraint with lengths is not yet supported");
         }
 
 
@@ -1325,6 +1359,11 @@ namespace XCSP3Core {
          *     <list> y1 y2 y3 y4 </list>
          * </channel>
          *
+         * The size of the array {@code list1} must be less than or equal to the size of {@code list2}.
+         *
+         * If list1.size() == list2.size() then list1[i] = j <=> list2[j] = i
+         * If list1.size() <  list2.size() then list1[i] = j  => list2[j] = i
+         *
          * @param id the id (name) of the constraint
          * @param list1 the first list
          * @param startIndex1 the starting index for list1
@@ -1905,6 +1944,13 @@ namespace XCSP3Core {
             throw runtime_error("maximize objective   not yet supported");
         }
 
+        /**
+         * The callback function related to annotations.
+         * It provides the set of decision variables related to the problem.
+         * @param list
+         */
+
+        virtual void buildAnnotationDecision(vector<XVariable *> list) { }
     };
 
 }

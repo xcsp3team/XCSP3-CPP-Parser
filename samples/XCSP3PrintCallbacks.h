@@ -77,6 +77,9 @@ namespace XCSP3Core {
 
         virtual void endObjectives() override;
 
+        virtual void beginAnnotations() override;
+
+        virtual void endAnnotations() override;
 
         virtual void buildVariableInteger(string id, int minValue, int maxValue) override;
 
@@ -115,6 +118,8 @@ namespace XCSP3Core {
         virtual void buildConstraintNotAllEqual(string id, vector<XVariable *> &list) override;
 
         virtual void buildConstraintOrdered(string id, vector<XVariable *> &list, OrderType order) override;
+
+        virtual void buildConstraintOrdered(string id, vector<XVariable *> &list, vector<int> &lengths, OrderType order) override;
 
         virtual void buildConstraintLex(string id, vector<vector<XVariable *>> &lists, OrderType order) override;
 
@@ -235,6 +240,7 @@ namespace XCSP3Core {
         virtual void buildObjectiveMaximize(ExpressionObjective type, vector<XVariable *> &list) override;
 
 
+        virtual void buildAnnotationDecision(vector<XVariable*> list) override;
         bool canonize;
     };
 
@@ -357,6 +363,16 @@ void XCSP3PrintCallbacks::beginObjectives() {
 
 void XCSP3PrintCallbacks::endObjectives() {
     cout << "   end Objective " << endl;
+}
+
+
+void XCSP3PrintCallbacks::beginAnnotations() {
+    cout << "   begin Annotations " << endl;
+}
+
+
+void XCSP3PrintCallbacks::endAnnotations() {
+    cout << "   end Annotations " << endl;
 }
 
 
@@ -513,6 +529,18 @@ void XCSP3PrintCallbacks::buildConstraintOrdered(string, vector<XVariable *> &li
     displayList(list, sep);
 }
 
+// string id, vector<XVariable *> &list, vector<int> &lengths, OrderType order
+void XCSP3PrintCallbacks::buildConstraintOrdered(string, vector<XVariable *> &list, vector<int> &lengths, OrderType order) {
+    cout << "\n    ordered constraint with lengths" << endl;
+    string sep;
+    if(order == LT) sep = " < ";
+    if(order == LE) sep = " <= ";
+    if(order == GT) sep = " > ";
+    if(order == GE) sep = " >= ";
+    cout << "        ";
+    displayList(lengths); cout << "      ";
+    displayList(list, sep);
+}
 
 // string id, vector<vector<XVariable *>> &lists, OrderType order
 void XCSP3PrintCallbacks::buildConstraintLex(string, vector<vector<XVariable *>> &lists, OrderType order) {
@@ -1031,5 +1059,10 @@ void XCSP3PrintCallbacks::buildObjectiveMaximize(ExpressionObjective type, vecto
     XCSP3CoreCallbacks::buildObjectiveMaximize(type, list);
 }
 
+void XCSP3PrintCallbacks::buildAnnotationDecision(vector<XVariable*> list) {
+    std::cout << "       decision variables" << std::endl<< "       ";
+    displayList(list);
+
+}
 
 #endif //COSOCO_XCSP3PRINTCALLBACKS_H

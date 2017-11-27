@@ -337,6 +337,7 @@ void XMLParser::BasicConstraintTagAction::beginTag(const AttributeList &attribut
     this->parser->condition = "";
     this->parser->rank = ANY;
     this->parser->index = NULL;
+    this->parser->closed = true;
 }
 
 
@@ -603,6 +604,9 @@ void XMLParser::OrderedTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     constraint->op = this->parser->op;
     if(this->group == NULL) {
+        if(this->parser->lengths.size() > 0)
+            constraint->lengths.assign(this->parser->lengths.begin(), this->parser->lengths.end());
+
         this->parser->manager->newConstraintOrdered(constraint);
         delete constraint;
     }
@@ -769,7 +773,7 @@ void XMLParser::CardinalityTagAction::beginTag(const AttributeList &attributes) 
 
     // Must be called inside a constraint
     BasicConstraintTagAction::beginTag(attributes);
-
+    this->parser->closed = false;
     constraint = new XConstraintCardinality(this->id, this->parser->classes);
 
     // Link constraint to group
@@ -1187,8 +1191,7 @@ void XMLParser::ListOfVariablesOrIntegerTagAction::beginTag(const AttributeList 
         string tmp;
         attributes["closed"].to(tmp);
         this->parser->closed = (tmp == "true");
-    } else
-        this->parser->closed = true;
+    }
 }
 
 
@@ -1702,3 +1705,34 @@ void XMLParser::PatternsTagAction::text(const UTF8String txt, bool) {
     }
 
 }
+
+
+/***************************************************************************
+  *                            ANNOTATIONS
+  ****************************************************************************/
+
+void XMLParser::AnnotationsTagAction::beginTag(const AttributeList &attributes) {
+    this->parser->manager->beginAnnotations();
+
+}
+
+
+void XMLParser::AnnotationsTagAction::endTag() {
+    this->parser->manager->endAnnotations();
+}
+
+
+void XMLParser::DecisionTagAction::beginTag(const AttributeList &attributes) {
+
+}
+
+
+
+void XMLParser::DecisionTagAction::text(const UTF8String txt, bool last) {
+    this->parser->parseSequence(txt, list);
+}
+
+void XMLParser::DecisionTagAction::endTag() {
+    this->parser->manager->buildAnnotationDecision(list);
+}
+

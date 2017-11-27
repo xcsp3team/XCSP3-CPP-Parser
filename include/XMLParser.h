@@ -924,6 +924,30 @@ namespace XCSP3Core {
             void text(const UTF8String txt, bool last) override;
             void endTag() override;
         };
+
+
+        /***************************************************************************
+         * Actions performed on  ANNOTATIONS TAG
+        ****************************************************************************/
+
+        class AnnotationsTagAction : public TagAction {
+        public:
+            AnnotationsTagAction(XMLParser *parser, string name) : TagAction(parser, name) { }
+            void beginTag(const AttributeList &attributes) override;
+            void endTag() override;
+        };
+
+
+        class DecisionTagAction : public TagAction {
+            vector<XVariable *> list;
+        public:
+            DecisionTagAction(XMLParser *parser, string name) : TagAction(parser, name) { }
+            void beginTag(const AttributeList &attributes) override;
+            void text(const UTF8String txt, bool last) override;
+            void endTag() override;
+        };
+
+
     public:
         XMLParser(XCSP3CoreCallbacks *cb);
         ~XMLParser();

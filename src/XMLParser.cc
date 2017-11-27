@@ -362,6 +362,8 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
     registerTagAction(tagList, new ArrayTagAction(this, "array"));
     registerTagAction(tagList, new DomainTagAction(this, "domain"));
 
+    registerTagAction(tagList, new AnnotationsTagAction(this,"annotations"));
+    registerTagAction(tagList, new DecisionTagAction(this,"decision"));
 
     registerTagAction(tagList, new ConstraintsTagAction(this, "constraints"));
 
