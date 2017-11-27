@@ -1,6 +1,15 @@
+2017-11-27:
+ - Change parser to fit with specifications 3.0.5
+ - Add annotations: decision variables
+ - New callbacks:
+     void beginAnnotations()
+     void endAnnotations()
+     void buildAnnotationDecision(vector<XVariable *> list)
+     void buildConstraintOrdered(string id, vector<XVariable *> &list, vector<int> &lengths, OrderType order)
+
 2017-10-20:
  - Stop to use regex for primitive recognition
- - canonization of intension constraints.
+ - Canonization of intension constraints.
  - New primitives recognition
  - New option in the callback: intensionUsingString, false by default
  - New callbacks:
