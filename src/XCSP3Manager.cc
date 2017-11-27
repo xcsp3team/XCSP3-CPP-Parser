@@ -241,7 +241,7 @@ public:
     bool post() override {
         if(operators.size() != 1 || isRelationalOperator(operators[0]) == false)
             return false;
-        std::vector<XVariable*> list;
+        std::vector<XVariable *> list;
         for(string &s : variables)
             list.push_back((XVariable *) manager.mapping[s]);
         vector<int> coefs;
@@ -252,7 +252,7 @@ public:
         cond.operandType = INTEGER;
         cond.op = expressionTypeToOrderType(operators[0]);
         cond.val = 0;
-        manager.callback->buildConstraintSum(id, list,coefs, cond);
+        manager.callback->buildConstraintSum(id, list, coefs, cond);
 
         return true;
     }
@@ -296,9 +296,9 @@ void XCSP3Manager::buildVariable(XVariable *variable) {
     }
     std::vector<int> values;
 
-    for(unsigned int i = 0; i < variable->domain->values.size(); i++) {
-        for(int j = variable->domain->values[i]->minimum();
-            j <= variable->domain->values[i]->maximum(); j++) {
+    for(unsigned int i = 0 ; i < variable->domain->values.size() ; i++) {
+        for(int j = variable->domain->values[i]->minimum() ;
+            j <= variable->domain->values[i]->maximum() ; j++) {
             values.push_back(j);
         }
     }
@@ -389,9 +389,21 @@ void XCSP3Manager::newConstraintMDD(XConstraintMDD *constraint) {
 void XCSP3Manager::newConstraintAllDiff(XConstraintAllDiff *constraint) {
     if(discardedClasses(constraint->classes))
         return;
-    if(constraint->except.size() == 0)
+    if(constraint->except.size() == 0) {
+        XTree *xt = dynamic_cast<XTree *>(constraint->list[0]);
+        if(xt != nullptr) { // alldif over tree
+            vector<Tree *> trees;
+            for(XVariable *x : constraint->list) {
+                xt = dynamic_cast<XTree *>(x);
+                Tree *t = new Tree(xt->id);
+                t->canonize();
+                trees.push_back(t);
+            }
+            callback->buildConstraintAlldifferent(constraint->id, trees);
+        }
+
         callback->buildConstraintAlldifferent(constraint->id, constraint->list);
-    else
+    } else
         callback->buildConstraintAlldifferentExcept(constraint->id, constraint->list, constraint->except);
 }
 
@@ -423,10 +435,9 @@ void XCSP3Manager::newConstraintOrdered(XConstraintOrdered *constraint) {
     if(constraint->lengths.size() > 0) {
         vector<int> lengths;
         for(XVariable *x : constraint->lengths)
-            lengths.push_back(((XInteger*)x)->value);
+            lengths.push_back(((XInteger *) x)->value);
         callback->buildConstraintOrdered(constraint->id, constraint->list, lengths, constraint->op);
-    }
-    else
+    } else
         callback->buildConstraintOrdered(constraint->id, constraint->list, constraint->op);
 }
 
@@ -451,9 +462,9 @@ void XCSP3Manager::newConstraintLexMatrix(XConstraintLexMatrix *constraint) {
 
 void XCSP3Manager::normalizeSum(vector<XVariable *> &list, vector<int> &coefs) {
     // merge
-    for(unsigned int i = 0; i < list.size() - 1; i++) {
+    for(unsigned int i = 0 ; i < list.size() - 1 ; i++) {
         if(coefs[i] == 0) continue;
-        for(auto j = i + 1; j < list.size(); j++) {
+        for(auto j = i + 1 ; j < list.size() ; j++) {
             if(coefs[j] != 0 && list[i]->id == list[j]->id) {
                 coefs[i] += coefs[j];
                 coefs[j] = 0;
@@ -463,7 +474,7 @@ void XCSP3Manager::normalizeSum(vector<XVariable *> &list, vector<int> &coefs) {
     vector<int> tmpc;
     vector<XVariable *> tmpv;
     // remove coef=0
-    for(unsigned int i = 0; i < list.size(); i++)
+    for(unsigned int i = 0 ; i < list.size() ; i++)
         if(coefs[i] != 0) {
             tmpv.push_back(list[i]);
             tmpc.push_back(coefs[i]);
@@ -481,12 +492,37 @@ void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
         return;
     XCondition xc;
     constraint->extractCondition(xc);
+
+    XTree *xt = dynamic_cast<XTree *>(constraint->list[0]);
+    if(xt != nullptr) { // Sum over tree
+        vector<Tree *> trees;
+        for(XVariable *x : constraint->list) {
+            xt = dynamic_cast<XTree *>(x);
+            Tree *t = new Tree(xt->id);
+            t->canonize();
+            trees.push_back(t);
+        }
+        if(constraint->values.size() == 0)
+            callback->buildConstraintSum(constraint->id, trees, xc);
+        else {
+            vector<int> coefs;
+            int v;
+            for(XEntity *xe : constraint->values) {
+                isInteger(xe, v);
+                coefs.push_back(v);
+            }
+            callback->buildConstraintSum(constraint->id, trees, coefs, xc);
+        }
+        return;
+    }
+
+
     if(constraint->values.size() == 0) {
         bool toModify = false;
         if(callback->normalizeSum) {
             // Check if a variable appears two times
-            for(unsigned int i = 0; i < constraint->list.size() - 1; i++)
-                for(auto j = i + 1; j < constraint->list.size(); j++) {
+            for(unsigned int i = 0 ; i < constraint->list.size() - 1 ; i++)
+                for(auto j = i + 1 ; j < constraint->list.size() ; j++) {
                     if(constraint->list[i]->id == constraint->list[j]->id)
                         toModify = true;
                 }
@@ -962,7 +998,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
         return;
 
     vector<XVariable *> previousArguments; // Used to check if extension arguments have same domains
-    for(unsigned int i = 0; i < group->arguments.size(); i++) {
+    for(unsigned int i = 0 ; i < group->arguments.size() ; i++) {
         if(group->type == INTENSION)
             unfoldConstraint<XConstraintIntension>(group, i, &XCSP3Manager::newConstraintIntension);
         if(group->type == EXTENSION) {
@@ -972,7 +1008,7 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             if(i > 0) {
                 // Check previous arguments
                 bool same = true;
-                for(unsigned int j = 0; j < previousArguments.size(); j++)
+                for(unsigned int j = 0 ; j < previousArguments.size() ; j++)
                     if(previousArguments[j]->domain->equals(ce->list[j]->domain) == false) {
                         same = false;
                         break;
@@ -1061,8 +1097,8 @@ void XCSP3Manager::addObjective(XObjective *objective) {
         if(objective->coeffs.size() == 0) {
             bool toModify = false;
             // Check if a variable appears two times
-            for(unsigned int i = 0; i < objective->list.size() - 1; i++)
-                for(auto j = i + 1; j < objective->list.size(); j++) {
+            for(unsigned int i = 0 ; i < objective->list.size() - 1 ; i++)
+                for(auto j = i + 1 ; j < objective->list.size() ; j++) {
                     if(objective->list[i]->id == objective->list[j]->id)
                         toModify = true;
                 }

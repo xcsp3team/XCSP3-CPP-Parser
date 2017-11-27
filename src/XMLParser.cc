@@ -201,6 +201,12 @@ void XMLParser::parseSequence(const UTF8String &txt, vector<XVariable *> &list, 
         string current, compactForm;
         token.to(current);
         current = trim(current);
+        size_t tree = current.find('(');
+        if(tree != string::npos) { // Tree expressions
+            list.push_back(new XTree(current));
+            continue;
+        }
+
         size_t percent = current.find('%');
         if(percent == string::npos) { // Normal variable
             size_t pos = current.find('[');

@@ -80,6 +80,15 @@ namespace XCSP3Core {
 
     };
 
+    /*
+     * This is a fake variable used for representing a Tree
+     */
+    class XTree : public XVariable {
+    public:
+        XTree(std::string lid) : XVariable(lid, NULL) { }
+    };
+
+
     class XEInterval : public XVariable {
     public :
         int min, max;

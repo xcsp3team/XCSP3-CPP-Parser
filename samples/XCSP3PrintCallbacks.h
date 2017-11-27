@@ -109,6 +109,8 @@ namespace XCSP3Core {
 
         virtual void buildConstraintAlldifferentExcept(string id, vector<XVariable *> &list, vector<int> &except) override;
 
+        virtual void buildConstraintAlldifferent(string id, vector<Tree *> &list) override;
+
         virtual void buildConstraintAlldifferentList(string id, vector<vector<XVariable *>> &lists) override;
 
         virtual void buildConstraintAlldifferentMatrix(string id, vector<vector<XVariable *>> &matrix) override;
@@ -130,6 +132,10 @@ namespace XCSP3Core {
         virtual void buildConstraintSum(string id, vector<XVariable *> &list, XCondition &cond) override;
 
         virtual void buildConstraintSum(string id, vector<XVariable *> &list, vector<XVariable *> &coeffs, XCondition &cond) override;
+
+        virtual void buildConstraintSum(string id, vector<Tree *> &list, vector<int> &coeffs, XCondition &cond) override;
+
+        virtual void buildConstraintSum(string id, vector<Tree *> &list, XCondition &cond) override;
 
         virtual void buildConstraintAtMost(string id, vector<XVariable *> &list, int value, int k) override;
 
@@ -484,6 +490,15 @@ void XCSP3PrintCallbacks::buildConstraintAlldifferentExcept(string id, vector<XV
 }
 
 
+void XCSP3PrintCallbacks::buildConstraintAlldifferent(string id, vector<Tree *> &list) {
+    cout << "\n    allDiff constraint with expresions" << id << endl;
+    cout << "        ";
+    for(Tree *t : list) {
+        t->prefixe();std::cout << " ";
+    }
+    std::cout << std::endl;
+}
+
 void XCSP3PrintCallbacks::buildConstraintAlldifferentList(string id, vector<vector<XVariable *>> &lists) {
     cout << "\n    allDiff list constraint" << id << endl;
     for(unsigned int i = 0; i < (lists.size() < 4 ? lists.size() : 3); i++) {
@@ -618,6 +633,46 @@ void XCSP3PrintCallbacks::buildConstraintSum(string, vector<XVariable *> &list, 
     }
     cout << cond << endl;
 }
+
+
+void XCSP3PrintCallbacks::buildConstraintSum(string id, vector<Tree *> &list, vector<int> &coeffs, XCondition &cond) {
+    std::cout << "\n        sum with expression constraint;";
+    if(list.size() > 8) {
+        for(int i = 0; i < 3; i++) {
+            cout << coeffs[i];
+            list[i]->prefixe();
+        }
+        cout << " ... ";
+        for(unsigned int i = list.size() - 4; i < list.size(); i++) {
+            cout << coeffs[i];
+            list[i]->prefixe();
+        }
+    } else {
+        for(unsigned int i = 0; i < list.size(); i++) {
+            cout << coeffs[i];
+            list[i]->prefixe();
+        }
+    }
+    cout << cond << endl;
+}
+
+void XCSP3PrintCallbacks::buildConstraintSum(string id, vector<Tree *> &list, XCondition &cond) {
+    if(list.size() > 8) {
+        for(int i = 0; i < 3; i++) {
+            list[i]->prefixe();
+        }
+        cout << " ... ";
+        for(unsigned int i = list.size() - 4; i < list.size(); i++) {
+            list[i]->prefixe();
+        }
+    } else {
+        for(unsigned int i = 0; i < list.size(); i++) {
+            list[i]->prefixe();
+        }
+    }
+    cout << cond << endl;
+}
+
 
 
 // string id, vector<XVariable *> &list, int value, int k

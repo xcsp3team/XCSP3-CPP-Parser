@@ -72,6 +72,7 @@ namespace XCSP3Core {
          */
         bool normalizeSum;
 
+
         XCSP3CoreCallbacks() {
             intensionUsingString = false;
             recognizeSpecialIntensionCases = true;
@@ -111,14 +112,14 @@ namespace XCSP3Core {
          * See http://xcsp.org/specifications/skeleton
          * @param type COP or CSP
          */
-         virtual void beginInstance(InstanceType type) {}
+        virtual void beginInstance(InstanceType type) {}
 
 
-       /**
-        * End of parsing
-        * Related to tag </instance>
-        * See http://xcsp.org/specifications/skeleton
-        */
+        /**
+         * End of parsing
+         * Related to tag </instance>
+         * See http://xcsp.org/specifications/skeleton
+         */
         virtual void endInstance() {}
 
 
@@ -253,14 +254,14 @@ namespace XCSP3Core {
          * The start of parsing annotations
          * Related to tag </annotations>
          */
-        virtual void beginAnnotations() { }
+        virtual void beginAnnotations() {}
 
 
         /**
          * The end of parsing annotations
          * Related to tag </annotations>
          */
-        virtual void endAnnotations() { }
+        virtual void endAnnotations() {}
 
         //--------------------------------------------------------------------------------------
         // Build Variable. Must be implemented.
@@ -308,7 +309,7 @@ namespace XCSP3Core {
          * @param id
          * @param list
          */
-        virtual void buildConstraintTrue(string id) { }
+        virtual void buildConstraintTrue(string id) {}
 
 
         /**
@@ -420,8 +421,6 @@ namespace XCSP3Core {
         }
 
 
-
-
         /**
          * If  #recognizeSpecialIntensionCases is enabled (this is the case by default)
          * intensional constraint of the form : x +-k op y is recognized.
@@ -437,6 +436,7 @@ namespace XCSP3Core {
             throw runtime_error("primitive constraint x +-k op y  is not yet supported. "
                                         "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
         }
+
 
         /**
          * If  #recognizeSpecialIntensionCases is enabled (this is the case by default)
@@ -543,6 +543,23 @@ namespace XCSP3Core {
          */
         virtual void buildConstraintAlldifferent(string id, vector<XVariable *> &list) {
             throw runtime_error("AllDiff constraint is not yet supported");
+        }
+
+
+        /**
+         * The callback function related to a alldifferent constraint with expression
+         * See http://xcsp.org/specifications/alldifferent
+         *
+         * Example:
+         * <allDifferent>
+         *   add(q[0],0) add(q[1],1) add(q[2],2) add(q[3],3) add(q[4],4) add(q[5],5) add(q[6],6) add(q[7],7)
+         * </allDifferent>
+         *
+         * @param id the id (name) of the constraint
+         * @param list the trees of the constraint
+         */
+        virtual void buildConstraintAlldifferent(string id, vector<Tree *> &list) {
+            throw runtime_error("AllDiff constraint with expression is not yet supported");
         }
 
 
@@ -793,6 +810,44 @@ namespace XCSP3Core {
          */
         virtual void buildConstraintSum(string id, vector<XVariable *> &list, vector<XVariable *> &coeffs, XCondition &cond) {
             throw runtime_error("sum constraint with variables weights is not yet supported");
+        }
+
+
+        /**
+         * The callback function related to a sum constraint with trees in list
+         *
+         * Example:
+         * <sum>
+         *   <list>or(eq(x[5],0),eq(x[7],0)) or(eq(x[1],0),eq(x[2],0),eq(x[8],0)) or(eq(x[0],0),eq(x[3],0),eq(x[4],0),eq(x[6],0),eq(x[9],0))</list>
+         *   <condition> (gt,y) </condition>
+         * </sum>
+         *
+         * @param id the id (name) of the constraint
+         * @param list the different trees
+         * @param cond the condition (See XCondition object)
+         */
+        virtual void buildConstraintSum(string id, vector<Tree *> &trees, XCondition &cond) {
+            throw runtime_error("sum constraint with expressions not yet supported");
+        }
+
+
+        /**
+         * The callback function related to a sum constraint with trees in list
+         *
+         * Example:
+         * <sum>
+         *   <list>or(eq(x[5],0),eq(x[7],0)) or(eq(x[1],0),eq(x[2],0),eq(x[8],0)) or(eq(x[0],0),eq(x[3],0),eq(x[4],0),eq(x[6],0),eq(x[9],0))</list>
+         *   <coeffs>1 2 3</coeffs>
+         *   <condition> (gt,y) </condition>
+         * </sum>
+         *
+         * @param id the id (name) of the constraint
+         * @param list the different trees
+         * @param coefs the coefs.
+         * @param cond the condition (See XCondition object)
+         */
+        virtual void buildConstraintSum(string id, vector<Tree *> &trees, vector<int> &coefs, XCondition &cond) {
+            throw runtime_error("sum constraint with expressions and coefs not yet supported");
         }
 
 
@@ -1433,7 +1488,8 @@ namespace XCSP3Core {
          * @param patterns
          *
          */
-        virtual void buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths, vector<vector<int>> &patterns) {
+        virtual void
+        buildConstraintStretch(string id, vector<XVariable *> &list, vector<int> &values, vector<XInterval> &widths, vector<vector<int>> &patterns) {
             throw runtime_error("stretch constraint is not yet supported");
         }
 
@@ -1605,7 +1661,8 @@ namespace XCSP3Core {
          * @param heights the vector of heights (here variables)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, vector<XVariable *> &heights, XCondition &xc) {
+        virtual void
+        buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, vector<XVariable *> &heights, XCondition &xc) {
             throw runtime_error("cumulative (var lengths, var heights) constraint is not yet supported");
         }
 
@@ -1630,7 +1687,8 @@ namespace XCSP3Core {
          * @param ends the vector of ends (here variables)
          * @param xc the condition (see XCondition)
          */
-        virtual void buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<int> &lengths, vector<int> &heights, vector<XVariable *> &ends, XCondition &xc) {
+        virtual void buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<int> &lengths, vector<int> &heights, vector<XVariable *> &ends,
+                                               XCondition &xc) {
             throw runtime_error("cumulative (int lengths, int heights) constraint is not yet supported");
         }
 
@@ -1656,7 +1714,8 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<int> &lengths, vector<XVariable *> &varHeights, vector<XVariable *> &ends, XCondition &xc) {
+        buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<int> &lengths, vector<XVariable *> &varHeights, vector<XVariable *> &ends,
+                                  XCondition &xc) {
             throw runtime_error("cumulative (int lengths, var heights, ends) constraint is not yet supported");
         }
 
@@ -1682,7 +1741,8 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, vector<int> &heights, vector<XVariable *> &ends, XCondition &xc) {
+        buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, vector<int> &heights, vector<XVariable *> &ends,
+                                  XCondition &xc) {
             throw runtime_error("cumulative (var lengths, int heights, ends) constraint is not yet supported");
         }
 
@@ -1708,7 +1768,8 @@ namespace XCSP3Core {
          * @param xc the condition (see XCondition)
          */
         virtual void
-        buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, vector<XVariable *> &heights, vector<XVariable *> &ends, XCondition &xc) {
+        buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, vector<XVariable *> &heights,
+                                  vector<XVariable *> &ends, XCondition &xc) {
             throw runtime_error("cumulative (var lengths, var heights, ends) constraint is not yet supported");
         }
 
@@ -1944,13 +2005,14 @@ namespace XCSP3Core {
             throw runtime_error("maximize objective   not yet supported");
         }
 
+
         /**
          * The callback function related to annotations.
          * It provides the set of decision variables related to the problem.
          * @param list
          */
 
-        virtual void buildAnnotationDecision(vector<XVariable *> list) { }
+        virtual void buildAnnotationDecision(vector<XVariable *> list) {}
     };
 
 }
