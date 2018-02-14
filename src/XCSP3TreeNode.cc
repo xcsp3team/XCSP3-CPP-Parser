@@ -203,7 +203,7 @@ Node *NodeOperator::canonize() {
         newParams.push_back(n->canonize());
 
     if(isSymmetricOperator(type))
-        std::sort(newParams.begin(), newParams.end(), compareNodes);
+        std::stable_sort(newParams.begin(), newParams.end(), compareNodes);
 
 
     ExpressionType newType = type;
