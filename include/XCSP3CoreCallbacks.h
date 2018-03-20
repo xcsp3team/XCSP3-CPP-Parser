@@ -321,7 +321,6 @@ namespace XCSP3Core {
         virtual void buildConstraintFalse(string id) {
             std::cout << "c constraint " + id + " is always false (see during parsing)\n";
             std::cout << "s UNSATISFIABLE\n";
-            exit(1);
         }
 
 

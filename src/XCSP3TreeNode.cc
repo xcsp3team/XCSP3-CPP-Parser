@@ -172,32 +172,45 @@ bool XCSP3Core::isRelationalOperator(ExpressionType type) {
 }
 
 
-bool compareNodes(Node *a, Node *b) {
+int equalNodes(Node *a, Node *b) { // return -1 if a<0, 0 if a=b, +1 si a>b
     if(a->type != b->type)
-        return static_cast<int>(a->type) < static_cast<int>(b->type);
+        return static_cast<int>(a->type) - static_cast<int>(b->type);
 
     NodeConstant *c1 = dynamic_cast<NodeConstant *>(a), *c2 = dynamic_cast<NodeConstant *>(b);
     if(c1 != nullptr)
-        return c1->val < c2->val;
+        return c1->val - c2->val;
 
     NodeVariable *v1 = dynamic_cast<NodeVariable *>(a), *v2 = dynamic_cast<NodeVariable *>(b);
     if(v1 != nullptr)
-        return v1->var.compare(v2->var) < 0;
+        return v1->var.compare(v2->var);
+
 
     NodeOperator *o1 = dynamic_cast<NodeOperator *>(a), *o2 = dynamic_cast<NodeOperator *>(b);
     if(o1->parameters.size() < o2->parameters.size())
-        return 1;
+        return -1;
     if(o1->parameters.size() > o2->parameters.size())
-        return 0;
+        return +1;
 
-    for(unsigned int i = 0 ; i < o1->parameters.size() ; i++)
-        if((compareNodes(o1->parameters[i], o2->parameters[i])) == 1)
-            return 1;
-    return 0;
+    for(unsigned int i = 0 ; i < o1->parameters.size() - 1 ; i++) {
+        int cmp = equalNodes(o1->parameters[i], o2->parameters[i]);
+        if(cmp != 0)
+            return cmp;
+    }
+    return equalNodes(o1->parameters.back(), o2->parameters.back());
+}
+
+
+bool compareNodes(Node *a, Node *b) {
+    return equalNodes(a, b) < 0;
 }
 
 
 Node *NodeOperator::canonize() {
+    std::vector<int> constants;
+    std::vector<std::string> variables;
+    std::vector<ExpressionType> operators;
+
+
     std::vector<Node *> newParams;
     for(Node *n : parameters)
         newParams.push_back(n->canonize());
@@ -213,12 +226,15 @@ Node *NodeOperator::canonize() {
     // inverse the operator)
     if(newParams.size() == 2 && isNonSymmetricRelationalOperator(type) &&
        (static_cast<int>(arithmeticInversion(type)) < static_cast<int>(type)
-        || (arithmeticInversion(type) == type && compareNodes(newParams[0], newParams[1]) > 0))) {
+        || (arithmeticInversion(type) == type && equalNodes(newParams[0], newParams[1]) > 0))) {
         newType = arithmeticInversion(type);
         Node *tmp = newParams[0];
         newParams[0] = newParams[1];
         newParams[1] = tmp;
+        return createNodeOperator(operatorToString(newType))->addParameters(newParams)->canonize();
     }
+
+
     // Now, some specific reformulation rules are applied
     if(newType == OLT && newParams[1]->type == ODECIMAL) { // lt(x,k) becomes le(x,k-1)
         NodeConstant *c = dynamic_cast<NodeConstant *>(newParams[1]);
@@ -232,11 +248,11 @@ Node *NodeOperator::canonize() {
     }
 
 
-    NodeOperator *tmp = dynamic_cast<NodeOperator *>(newParams[0]);
+    NodeOperator *tmp = dynamic_cast<NodeOperator *>(newParams[0]);  // abs(sub becomes dist
     if(newType == OABS && newParams[0]->type == OSUB)
         return (new NodeDist())->addParameters(tmp->parameters);
 
-    if(newType == ONOT && newParams[0]->type == ONOT)
+    if(newType == ONOT && newParams[0]->type == ONOT)   // NOT(NOT.. becomes ..
         return tmp->parameters[0];
 
     if(newType == ONEG && newParams[0]->type == ONEG) // neg(neg(...)) becomes ...
@@ -250,29 +266,61 @@ Node *NodeOperator::canonize() {
                                  || newType == OOR || newType == OXOR || newType == OIFF)) // certainly can happen during the canonization process
         return newParams[0];
 
-    if(newType == OADD) {// we merge constant (similar operations possible for MUL, MIN, ...)
+
+    if(newType == OADD || newType == OMUL) {// we merge constant (similar operations possible for MUL, MIN, ...)
         // They are at the end of the add
         NodeConstant *c1, *c2;
         if(newParams.size() >= 2 && (c1 = dynamic_cast<NodeConstant *>(newParams[newParams.size() - 1])) != nullptr &&
            (c2 = dynamic_cast<NodeConstant *>(newParams[newParams.size() - 2])) != nullptr) {
             std::vector<Node *> l;
             l.insert(l.end(), newParams.begin(), newParams.end() - 2);
-            l.push_back(new NodeConstant(c1->val + c2->val));
-            return ((new NodeAdd())->addParameters(l))->canonize();
+            l.push_back(newType == OADD ? new NodeConstant(c1->val + c2->val) : new NodeConstant(c1->val * c2->val));
+
+            if(newType == OADD)
+                return ((new NodeAdd())->addParameters(l))->canonize();
+            else
+                return ((new NodeMult())->addParameters(l))->canonize();
         }
     }
+
+
+    // eq(mul(3,x),6) -> eq(x, 2)
+    Tree pattern1("eq(mul(3,x),6)");
+    if(Node::areSimilar(this, pattern1.root, operators, constants, variables)) {
+        if(constants[1] % constants[0] != 0)
+            return new NodeConstant(0);
+        return (new NodeEQ())->addParameter(new NodeVariable(variables[0]))->addParameter(new NodeConstant(constants[1] / constants[0]))->canonize();
+    }
+
+
+    //le(add(y[4],5),7) -> le(y[4],2)
+    constants.clear();variables.clear();operators.clear();
+    Tree pattern2("le(add(y[4],5),7)");
+    pattern2.root->type = OFAKEOP;
+
+    if(Node::areSimilar(this, pattern2.root, operators, constants, variables)) {
+        if(newType != OEQ && newType != ONE && newType != OLE && newType != OLT )
+            return createNodeOperator(operatorToString(newType))
+                    ->addParameter(new NodeVariable(variables[0]))->addParameter(new NodeConstant(constants[1] - constants[0]))->canonize();
+
+
+
+    }
+
+
+
     // Then, we merge operators when possible; for example add(add(x,y),z) becomes add(x,y,z)
     if(isSymmetricOperator(newType) && newType != OEQ && newType != ODIST && newType != ODJOINT) {
         for(unsigned int i = 0 ; i < newParams.size() ; i++) {
             NodeOperator *n;
             if((n = dynamic_cast<NodeOperator *>(newParams[i])) != nullptr && n->type == newType) {
                 std::vector<Node *> list;
-                for(unsigned int j = 0; j < i; j++)
+                for(unsigned int j = 0 ; j < i ; j++)
                     list.push_back(newParams[j]);
 
                 list.insert(list.end(), n->parameters.begin(), n->parameters.end());
 
-                for(unsigned int j = i+1; j < newParams.size(); j++)
+                for(unsigned int j = i + 1 ; j < newParams.size() ; j++)
                     list.push_back(newParams[j]);
                 return ((createNodeOperator(operatorToString(newType)))->addParameters(list))->canonize();
             }
@@ -362,7 +410,7 @@ Node::areSimilar(Node *canonized, Node *pattern, std::vector<ExpressionType> &op
 
     }
     if(pattern->type == OSET) {
-        for(Node* n : canonized->parameters)
+        for(Node *n : canonized->parameters)
             if(n->type != ODECIMAL)
                 return false;
         return true;

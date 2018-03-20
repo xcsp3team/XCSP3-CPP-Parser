@@ -154,7 +154,7 @@ public:
 
 class PrimitiveUnary4 : public XCSP3Core::PrimitivePattern {  // x>=1 and x<=4
 public:
-    PrimitiveUnary4(XCSP3Manager &m) : PrimitivePattern(m, "and(le(1,x),le(x,4))") {
+    PrimitiveUnary4(XCSP3Manager &m) : PrimitivePattern(m, "and(le(x,1),le(4,x))") {
         pattern.root->type = OFAKEOP;
     }
 
@@ -163,16 +163,16 @@ public:
         if(variables[0] != variables[1] || operators.size() != 1 || (operators[0] != OAND && operators[0] != OOR))
             return false;
         if(operators[0] == OAND) {
-            if(constants[0] > constants[1])
+            if(constants[0] < constants[1])
                 manager.callback->buildConstraintFalse(id);
             else
                 manager.callback->buildConstraintPrimitive(id, (XVariable *) manager.mapping[variables[0]], true, constants[0], constants[1]);
             return true;
         }
-        if(constants[0] < constants[1])
+        if(constants[0] > constants[1])
             manager.callback->buildConstraintTrue(id);
         else
-            manager.callback->buildConstraintPrimitive(id, (XVariable *) manager.mapping[variables[0]], false, constants[1], constants[0]);
+            manager.callback->buildConstraintPrimitive(id, (XVariable *) manager.mapping[variables[0]], false, constants[0] + 1, constants[1] - 1);
         return true;
     }
 };
@@ -354,8 +354,11 @@ void XCSP3Manager::newConstraintIntension(XConstraintIntension *constraint) {
         return;
     }
 
+    std::cout << "ROOT1= " << constraint->function << std::endl;
     Tree *tree = new Tree(constraint->function);
     tree->canonize();
+
+    std::cout << "ROOT2= " ; tree->prefixe();std::cout << std::endl;
     if(callback->recognizeSpecialIntensionCases && recognizePrimitives(constraint->id, tree))
         return;
 
