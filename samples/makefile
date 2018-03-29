@@ -24,7 +24,7 @@ testlib: main.cc
 testTree: testTree.cc
 	$(CXX)  $(CFLAGS) $(INC) -o testTree testTree.cc -L ../lib $(LIBS) -lparserxcsp3core
 
-testCanonization: testCanonisation.cc $(OBJ_FILES)
+testCanonization: testCanonization.cc $(OBJ_FILES)
 	$(CXX)  $(CFLAGS) $(INC) -o testCanonisation testCanonisation.cc -L ../lib $(LIBS) -lparserxcsp3core
 
 clean:
