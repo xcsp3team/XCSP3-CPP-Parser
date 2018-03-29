@@ -312,15 +312,15 @@ int main(int argc,char **argv) {
     allTests.push_back(std::make_pair("eq(x[0],min(x[1],min(x[2],x[3])))", "eq(min(x[1],x[2],x[3]),x[0])"));
     allTests.push_back(std::make_pair("eq(add(add(x[1],x[2],min(x[2],x[3]),add(x[3],x[4])),add(add(y[1],y[2]),y[3])),y[2])", "eq(add(min(x[2],x[3]),x[1],x[2],x[3],x[4],y[1],y[2],y[3]),y[2])"));
 
-
+    int nb=0;
     for(auto &p : allTests) {
         Tree t1(p.first);
         t1.canonize();
         Tree t2(p.second);
-
+        nb++;
         if(equalNodes(t1.root, t2.root) != 0) {
             nbFailed++;
-            std::cout << "Probleme\n";
+            std::cout << "Probleme: number " << nb << std::endl;
             std::cout << "   Initial expression: " << p.first<<std::endl;
             std::cout << "  Expected expression: " << p.second<<std::endl;
             std::cout << " Canonized expression: ";

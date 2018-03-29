@@ -434,7 +434,7 @@ void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, OrderType, XVariab
 
 
 void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, OrderType op, XVariable *x, int k) {
-    cout << "\n   constraint  " << id << ":" << x->id << " <= " << k << "\n";
+    cout << "\n   constraint  " << id << ":" << x->id << " op " << k << "\n";
 }
 
 void XCSP3PrintCallbacks::buildConstraintPrimitive(string id, XVariable *x, bool in, int min, int max) {
