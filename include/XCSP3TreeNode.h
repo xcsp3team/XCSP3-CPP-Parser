@@ -561,11 +561,10 @@ namespace XCSP3Core {
 
         int evaluate(std::map<std::string, int> &tuple) override {
 
-            int nb = !parameters[0]->evaluate(tuple) != !parameters[1]->evaluate(tuple);
-
-            for(unsigned int i = 2 ; i < parameters.size() ; i++)
-                nb = ((!nb) != parameters[i]->evaluate(tuple));
-            return nb;
+            int nb = 0;
+            for(unsigned int i = 0 ; i < parameters.size() ; i++)
+                nb = nb + parameters[i]->evaluate(tuple);
+            return nb % 2 == 1;
         }
     };
 
