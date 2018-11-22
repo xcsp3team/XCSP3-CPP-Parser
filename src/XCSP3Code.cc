@@ -34,7 +34,17 @@ using namespace XCSP3Core;
 
 
 namespace XCSP3Core {
-//------------------------------------------------------------------------------------------
+// Special global vars...
+ vector<XTransition> tr; // Not beautiful but remove code to fixed data in group constraint.
+ string st;
+ vector<string> fi;
+ vector<int> _except;
+ OrderType _op;
+ vector<int> _values;
+
+
+
+    //------------------------------------------------------------------------------------------
 //  XCSP3Domain.h functions
 //------------------------------------------------------------------------------------------
     ostream &operator<<(ostream &O, const XIntegerEntity &ie) {

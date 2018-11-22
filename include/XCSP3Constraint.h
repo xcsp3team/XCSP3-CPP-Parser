@@ -205,9 +205,9 @@ namespace XCSP3Core {
         string to;
     };
 
-    static vector<XTransition> tr; // Not beautiful but remove code to fixed data in group constraint.
-    static string st;
-    static vector<string> fi;
+    extern vector<XTransition> tr; // Not beautiful but remove code to fixed data in group constraint.
+    extern string st;
+    extern vector<string> fi;
 
     class XConstraintRegular : public XConstraint {
     public :
@@ -236,7 +236,7 @@ namespace XCSP3Core {
      *                  COMPARISON BASED CONSTRAINTS
      ****************************************************************************
      ***************************************************************************/
-    static vector<int> _except;
+    extern vector<int> _except;
 
     class XConstraintAllDiff : public XConstraint {
     public :
@@ -273,7 +273,7 @@ namespace XCSP3Core {
      * constraint ordered and lex
      **************************************************************************/
 
-    static OrderType _op;
+    extern OrderType _op;
 
     class XConstraintOrdered : public XConstraint, public XLengths {
     public :
@@ -492,7 +492,7 @@ namespace XCSP3Core {
      * constraint instantiation
      **************************************************************************/
 
-    static vector<int> _values;
+    extern vector<int> _values;
 
     class XConstraintInstantiation : public XConstraint {
     public :
