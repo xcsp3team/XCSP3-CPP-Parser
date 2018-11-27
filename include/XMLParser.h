@@ -674,6 +674,19 @@ namespace XCSP3Core {
             void endTag() override;
         };
 
+        /***************************************************************************
+         * Actions performed on clause tag
+         ****************************************************************************/
+        class ClauseTagAction : public BasicConstraintTagAction {
+        protected :
+            UTF8String literals;
+        public:
+            ClauseTagAction(XMLParser *parser, string name) : BasicConstraintTagAction(parser, name) { }
+            XConstraintClause *constraint;
+            void beginTag(const AttributeList &attributes) override;
+            void text(const UTF8String txt, bool last) override;
+            void endTag() override;
+        };
 
         /***************************************************************************
          * Actions performed on LIST tag

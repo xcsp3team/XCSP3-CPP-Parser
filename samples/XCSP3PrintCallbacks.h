@@ -213,6 +213,7 @@ namespace XCSP3Core {
 
         virtual void buildConstraintInstantiation(string id, vector<XVariable *> &list, vector<int> &values) override;
 
+        virtual void buildConstraintClause(string id, vector<XVariable *> &positive, vector<XVariable *> &negative) override ;
 
         virtual void buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex) override;
 
@@ -1041,6 +1042,17 @@ void XCSP3PrintCallbacks::buildConstraintInstantiation(string, vector<XVariable 
     displayList(list);
     cout << "        values:";
     displayList(values);
+
+}
+
+
+// string id, vector<XVariable *> &list, vector<int> &values
+void XCSP3PrintCallbacks::buildConstraintClause(string, vector<XVariable *> &positive, vector<XVariable *> &negative) {
+    cout << "\n    Clause constraint" << endl;
+    cout << "        positive lits:";
+    displayList(positive);
+    cout << "        negative lits:";
+    displayList(negative);
 
 }
 

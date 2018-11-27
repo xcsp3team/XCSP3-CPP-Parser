@@ -26,7 +26,11 @@
       <args> x[3] x[2] y[2][3] </args>
       <args> x[4] x[2] y[2][4] </args>
       <args> x[4] x[3] y[3][4] </args>
-    </group>-->
+      </group>-->
+<intension>
+ne(sub(x[1],x[2]))</intension>
+  
+
     <allDifferent> y[0][1..4] y[1][2..4] y[2][3..4] y[3][4] </allDifferent>
   </constraints>
   <objectives>

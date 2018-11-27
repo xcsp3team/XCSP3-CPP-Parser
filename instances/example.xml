@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <instance format="XCSP3" type="CSP">
     <variables>
+        <var id="r">0 1</var>
+        <var id="s">0 1</var>
+        <var id="t">0 1</var>
         <var id="zz">0..10</var>
         <var id="yy" as="zz"></var>
 
@@ -26,6 +29,10 @@
 
     </variables>
     <constraints>
+
+      <clause> r not(s) t</clause>
+      <clause> r not(s)  not(t)</clause>
+      <clause> not(r)    not(s)  t</clause>
 <intension>eq(add(x,3),5)</intension>
 
 <count id="c4">  <!-- atMost -->

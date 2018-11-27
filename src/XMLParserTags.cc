@@ -1335,6 +1335,68 @@ void XMLParser::InstantiationTagAction::endTag() {
     }
 }
 
+/***************************************************************************
+ * Actions performed on clause tag
+ ****************************************************************************/
+
+
+void XMLParser::ClauseTagAction::beginTag(const AttributeList &attributes) {
+    // Must be called inside a constraint
+    BasicConstraintTagAction::beginTag(attributes);
+    constraint = new XConstraintClause(this->id, this->parser->classes);
+    literals.clear();
+    // Link constraint to group
+    if(this->group != NULL) {
+        this->group->constraint = constraint;
+        this->group->type = CLAUSE;
+    }
+}
+
+void XMLParser::ClauseTagAction::text(const UTF8String txt, bool) {
+    literals.append(txt);
+}
+
+
+
+void XMLParser::ClauseTagAction::endTag() {
+    UTF8String::Tokenizer tokenizer(literals);
+
+    while(tokenizer.hasMoreTokens()) {
+
+        UTF8String token = tokenizer.nextToken();
+
+        string current;
+        token.to(current);
+        if(current == " ")
+            continue;
+        current = trim(current);
+        size_t p = current.find('(');
+
+        if(p == string::npos) {
+            if(this->parser->variablesList[current] != NULL)
+                constraint->positive.push_back((XVariable *) this->parser->variablesList[current]);
+            else
+                throw runtime_error("unknown variable: " + current);
+        } else {
+            assert(p == 3);
+            string v = current.substr(p + 1, current.size() - p - 2);
+
+            if(this->parser->variablesList[v] != NULL)
+                constraint->negative.push_back((XVariable *) this->parser->variablesList[v]);
+            else
+                throw runtime_error("unknown variable: " + v);
+        }
+
+    }
+    if(constraint->positive.size() == 0 && constraint->negative.size() == 0)
+        throw runtime_error("clause is empty (currently the tag list inside a clause is not supported...)");
+
+    if(this->group == NULL) {
+        this->parser->manager->newConstraintClause(constraint);
+        delete constraint;
+    }
+}
+
 
 void XMLParser::ListTagAction::beginTag(const AttributeList &attributes) {
     nbCallsToList++;

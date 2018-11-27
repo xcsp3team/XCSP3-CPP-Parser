@@ -960,6 +960,16 @@ void XCSP3Manager::newConstraintInstantiation(XConstraintInstantiation *constrai
     callback->buildConstraintInstantiation(constraint->id, constraint->list, constraint->values);
 }
 
+//--------------------------------------------------------------------------------------
+// Clause  constraint
+//--------------------------------------------------------------------------------------
+
+void XCSP3Manager::newConstraintClause(XConstraintClause *constraint) {
+    if(discardedClasses(constraint->classes))
+        return;
+    callback->buildConstraintClause(constraint->id, constraint->positive, constraint->negative);
+}
+
 
 //--------------------------------------------------------------------------------------
 // Graph  constraints

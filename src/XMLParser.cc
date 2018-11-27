@@ -437,6 +437,9 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
     registerTagAction(tagList, new TransitionsTagAction(this, "transitions"));
     registerTagAction(tagList, new PatternsTagAction(this, "patterns"));
 
+    registerTagAction(tagList, new ClauseTagAction(this, "clause"));
+
+
     registerTagAction(tagList, new ObjectivesTagAction(this, "objectives"));
     registerTagAction(tagList, new MinimizeOrMaximizeTagAction(this, "minimize"));
     registerTagAction(tagList, new MinimizeOrMaximizeTagAction(this, "maximize"));

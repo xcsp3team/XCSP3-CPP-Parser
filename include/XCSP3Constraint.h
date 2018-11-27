@@ -502,6 +502,21 @@ namespace XCSP3Core {
         XConstraintInstantiation(std::string idd, std::string c) : XConstraint(idd, c), values(_values) {}
     };
 
+
+    /***************************************************************************
+     * constraint clause
+     **************************************************************************/
+
+
+    class XConstraintClause : public XConstraint {
+    public :
+        vector<XVariable *> positive;
+        vector<XVariable *> negative;
+
+
+        XConstraintClause(std::string idd, std::string c) : XConstraint(idd, c) { }
+    };
+
     /***************************************************************************
      ****************************************************************************
     *                  COMPARISON BASED CONSTRAINTS

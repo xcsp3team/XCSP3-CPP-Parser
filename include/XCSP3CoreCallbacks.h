@@ -1796,6 +1796,27 @@ namespace XCSP3Core {
         }
 
 //--------------------------------------------------------------------------------------
+// Clause constraints
+//--------------------------------------------------------------------------------------
+
+
+        /**
+         * The callback function related to an clause  constraint
+         *
+         * Example:
+         * <clause>
+         *   <list> x not(y) z </list>
+         * </clause>
+         *
+         * @param id the id (name) of the constraint
+         * @param positive the positive variables in the clause
+         * @param negative the negative variables in the clause
+         */
+        virtual void buildConstraintClause(string id, vector<XVariable *> &positive, vector<XVariable *> &negative) {
+            throw runtime_error("Clause constraint not yet supported");
+        }
+
+//--------------------------------------------------------------------------------------
 // Graph constraints
 //--------------------------------------------------------------------------------------
 

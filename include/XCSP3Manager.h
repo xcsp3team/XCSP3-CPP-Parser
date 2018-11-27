@@ -246,6 +246,11 @@ namespace XCSP3Core {
         void newConstraintInstantiation(XConstraintInstantiation *constraint);
 
 
+        //--------------------------------------------------------------------------------------
+        // Clause  constraint
+        //--------------------------------------------------------------------------------------
+        void newConstraintClause(XConstraintClause *constraint);
+
 
         //--------------------------------------------------------------------------------------
         // Graph  constraints
