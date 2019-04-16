@@ -140,7 +140,7 @@ namespace XCSP3Core {
 
         virtual Node *canonize() = 0;
 
-        virtual void prefixe()   = 0;
+        virtual std::string toString() = 0;
 
         static bool areSimilar(Node *canonized, Node *pattern, std::vector<ExpressionType> &operators, std::vector<int> &constants, std::vector<std::string> &variables);
     };
@@ -169,8 +169,8 @@ namespace XCSP3Core {
         }
 
 
-        void prefixe() override {
-            std::cout << val;
+        std::string toString() override {
+            return std::to_string(val);
         }
     };
 
@@ -195,8 +195,8 @@ namespace XCSP3Core {
         }
 
 
-        void prefixe() override {
-            std::cout << var;
+        std::string toString() override {
+            return var;
         }
     };
 
@@ -224,14 +224,15 @@ namespace XCSP3Core {
         }
 
 
-        void prefixe() override {
-            std::cout << op << "(";
-            for(unsigned int i = 0 ; i < parameters.size() ; i++) {
-                if(i != 0) std::cout << ",";
-                parameters[i]->prefixe();
+        std::string toString() override {
+            std::string tmp = op + "(";
+            for(unsigned int i = 0; i < parameters.size(); i++) {
+                if(i != 0) tmp = tmp + ",";
+                tmp = tmp + parameters[i]->toString();
 
             }
-            std::cout << ")";
+            tmp = tmp + ")";
+            return tmp;
         }
 
 
@@ -265,7 +266,9 @@ namespace XCSP3Core {
 
     class NodeNAry : public NodeOperator {
         friend class NodeIn;
+
         friend class NodeNotIn;
+
     public:
         NodeNAry(std::string o, ExpressionType _operator) : NodeOperator(o, _operator) {}
     };
@@ -438,7 +441,7 @@ namespace XCSP3Core {
     class NodeImp : public NodeBinary {
     public:
 
-        NodeImp() : NodeBinary("impl", OIMP) {}
+        NodeImp() : NodeBinary("imp", OIMP) {}
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
@@ -456,7 +459,7 @@ namespace XCSP3Core {
 
         int evaluate(std::map<std::string, int> &tuple) override {
             int nb = 0;
-            for(unsigned int i = 0 ; i < parameters.size() ; i++)
+            for(unsigned int i = 0; i < parameters.size(); i++)
                 nb += parameters[i]->evaluate(tuple);
             return nb;
         }
@@ -470,7 +473,7 @@ namespace XCSP3Core {
 
         int evaluate(std::map<std::string, int> &tuple) override {
             int nb = 1;
-            for(unsigned int i = 0 ; i < parameters.size() ; i++)
+            for(unsigned int i = 0; i < parameters.size(); i++)
                 nb *= parameters[i]->evaluate(tuple);
             return nb;
         }
@@ -484,7 +487,7 @@ namespace XCSP3Core {
 
         int evaluate(std::map<std::string, int> &tuple) override {
             int nb = parameters[0]->evaluate(tuple);
-            for(unsigned int i = 1 ; i < parameters.size() ; i++) {
+            for(unsigned int i = 1; i < parameters.size(); i++) {
                 int v = parameters[i]->evaluate(tuple);
                 if(v < nb) nb = v;
             }
@@ -500,7 +503,7 @@ namespace XCSP3Core {
 
         int evaluate(std::map<std::string, int> &tuple) override {
             int nb = parameters[0]->evaluate(tuple);
-            for(unsigned int i = 1 ; i < parameters.size() ; i++) {
+            for(unsigned int i = 1; i < parameters.size(); i++) {
                 int v = parameters[i]->evaluate(tuple);
                 if(v > nb) nb = v;
             }
@@ -516,7 +519,7 @@ namespace XCSP3Core {
 
         int evaluate(std::map<std::string, int> &tuple) override {
             int nb = parameters[0]->evaluate(tuple);
-            for(unsigned int i = 1 ; i < parameters.size() ; i++) {
+            for(unsigned int i = 1; i < parameters.size(); i++) {
                 if(nb != parameters[i]->evaluate(tuple))
                     return 0;
             }
@@ -531,7 +534,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            for(unsigned int i = 0 ; i < parameters.size() ; i++)
+            for(unsigned int i = 0; i < parameters.size(); i++)
                 if(!parameters[i]->evaluate(tuple))
                     return 0;
             return 1;
@@ -545,7 +548,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            for(unsigned int i = 0 ; i < parameters.size() ; i++)
+            for(unsigned int i = 0; i < parameters.size(); i++)
                 if(parameters[i]->evaluate(tuple)) {
                     return 1;
                 }
@@ -562,7 +565,7 @@ namespace XCSP3Core {
         int evaluate(std::map<std::string, int> &tuple) override {
 
             int nb = 0;
-            for(unsigned int i = 0 ; i < parameters.size() ; i++)
+            for(unsigned int i = 0; i < parameters.size(); i++)
                 nb = nb + parameters[i]->evaluate(tuple);
             return nb % 2 == 1;
         }
@@ -621,13 +624,13 @@ namespace XCSP3Core {
             NodeSet *nodeSet;
             if((nodeSet = dynamic_cast<NodeSet *>(parameters[1])) == NULL)
                 throw std::runtime_error("intension constraint : in requires a set as second parameter");
-            for(unsigned int i = 0 ; i < nodeSet->parameters.size() ; i++)
+            for(unsigned int i = 0; i < nodeSet->parameters.size(); i++)
                 set.push_back(nodeSet->parameters[i]->evaluate(tuple));
             return find(set.begin(), set.end(), nb) != set.end();
         }
     };
 
-    class NodeNotIn: public NodeBinary {
+    class NodeNotIn : public NodeBinary {
     protected :
 
         std::vector<int> set;
@@ -641,7 +644,7 @@ namespace XCSP3Core {
             NodeSet *nodeSet;
             if((nodeSet = dynamic_cast<NodeSet *>(parameters[1])) == NULL)
                 throw std::runtime_error("intension constraint : in requires a set as second parameter");
-            for(unsigned int i = 0 ; i < nodeSet->parameters.size() ; i++)
+            for(unsigned int i = 0; i < nodeSet->parameters.size(); i++)
                 set.push_back(nodeSet->parameters[i]->evaluate(tuple));
             return find(set.begin(), set.end(), nb) == set.end();
         }

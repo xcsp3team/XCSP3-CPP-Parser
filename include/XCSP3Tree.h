@@ -64,9 +64,12 @@ namespace XCSP3Core {
             return root->evaluate(tuple);
         }
 
+        std::string toString() {
+            return root->toString();
+        }
 
         void prefixe()  {
-            root->prefixe();
+            std::cout << root->toString();
         }
 
         void canonize() {
