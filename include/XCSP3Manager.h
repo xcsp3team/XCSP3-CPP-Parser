@@ -66,6 +66,7 @@ namespace XCSP3Core {
 
 
         void beginInstance(InstanceType type) {
+            callback->_arguments = nullptr;
             callback->beginInstance(type);
         }
 

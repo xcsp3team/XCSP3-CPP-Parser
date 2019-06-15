@@ -38,8 +38,11 @@ namespace XCSP3Core {
     using namespace std;
 
     class XCSP3CoreCallbacks {
+        friend class XCSP3Manager;
+
     protected :
         vector<string> classesToDiscard;
+        vector<vector<XVariable*> >* _arguments;
     public :
 
         /**
@@ -184,6 +187,16 @@ namespace XCSP3Core {
          */
         virtual void beginGroup(string id) {}
 
+
+        /**
+         * Retrieve the  arguments of a group/slide  of constraints
+         * Arguments are available juste before the first constraint is called
+         * that is, after the beginGroup/beginSlide callback
+         * @return
+         */
+        vector<vector<XVariable*> > *arguments() {
+            return _arguments;
+        }
 
         /**
          * The end of parsing group of constraints
