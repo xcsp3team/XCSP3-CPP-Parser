@@ -1109,6 +1109,36 @@ void XCSP3Manager::addObjective(XObjective *objective) {
             callback->buildObjectiveMaximizeExpression(objective->expression);
         return;
     }
+
+
+    // Expressions ??
+    XTree *xt = dynamic_cast<XTree *>(objective->list[0]);
+    if(xt != nullptr) { // objective over tree
+        vector<Tree *> trees;
+        for(XVariable *x : objective->list) {
+            xt = dynamic_cast<XTree *>(x);
+            Tree *t = new Tree(xt->id);
+            t->canonize();
+            trees.push_back(t);
+        }
+
+        if(objective->coeffs.size() == 0) {
+            if(objective->goal == MINIMIZE)
+                callback->buildObjectiveMinimize(objective->type, trees);
+            else
+                callback->buildObjectiveMaximize(objective->type, trees);
+            return;
+        }
+        if(objective->goal == MINIMIZE)
+            callback->buildObjectiveMinimize(objective->type, trees, objective->coeffs);
+        else
+            callback->buildObjectiveMaximize(objective->type, trees, objective->coeffs);
+
+        return;
+    }
+
+
+
     if(objective->type == SUM_O && callback->normalizeSum) {
         if(objective->coeffs.size() == 0) {
             bool toModify = false;

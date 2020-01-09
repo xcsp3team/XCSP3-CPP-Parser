@@ -2039,6 +2039,87 @@ namespace XCSP3Core {
         }
 
 
+
+        /**
+         * The callback function related to an objective minimize a sum/product
+         * See http://xcsp.org/specifications/objectives
+         *
+         * Example:
+         * <objectives>
+         *   <minimize type="sum">
+         *     <list> ne(s[2],2) ne(s[3],3) ... </list>
+         *     <coeffs> 2 4 ... </coeffs>
+         *   </minimize>
+         * <objectives>
+         *
+         * @param type SUM, PRODUCT...
+         * @param trees the expressions
+         * @param coefs the vector of coefficients
+         */
+        virtual void buildObjectiveMinimize(ExpressionObjective type, vector<Tree *> &trees, vector<int> &coefs) {
+            throw runtime_error("minimize objective sum with expression  not yet supported");
+        }
+
+
+        /**
+         * The callback function related to an objective maximize a sum/product
+         * See http://xcsp.org/specifications/objectives
+         *
+         * Example:
+         * <objectives>
+         *   <maximize type="sum">
+         *     <list> ne(s[2],2) ne(s[3],3) ... </list>
+         *     <coeffs> 2 4 ... </coeffs>
+         *   </maximize>
+         * <objectives>
+         *
+         * @param type SUM, PRODUCT...
+         * @param list the scope
+         * @param coefs the vector of coefficients
+         */
+        virtual void buildObjectiveMaximize(ExpressionObjective type, vector<Tree *> &trees, vector<int> &coefs) {
+            throw runtime_error("maximize objective with expression  not yet supported");
+        }
+
+
+        /**
+         * The callback function related to an objective minimize a sum/product with coefs = 1
+         * See http://xcsp.org/specifications/objectives
+         *
+         * Example:
+         * <objectives>
+         *   <minimize type="sum">
+         *     <list> ne(s[2],2) ne(s[3],3) ... </list>
+         *   </minimize>
+         * <objectives>
+         *
+         * @param type SUM, PRODUCT...
+         * @param list the scope
+         */
+        virtual void buildObjectiveMinimize(ExpressionObjective type, vector<Tree *> &trees) {
+            throw runtime_error("minimize objective with expression  not yet supported");
+        }
+
+
+        /**
+         * The callback function related to an objective maximize a sum/product with coefs = 1
+         * See http://xcsp.org/specifications/objectives
+         *
+         * Example:
+         * <objectives>
+         *   <maximize type="sum">
+         *     <list> ne(s[2],2) ne(s[3],3) ... </list>
+         *   </maximize>
+         * <objectives>
+         *
+         * @param type SUM, PRODUCT...
+         * @param list the scope
+         */
+        virtual void buildObjectiveMaximize(ExpressionObjective type, vector<Tree *> &trees) {
+            throw runtime_error("maximize objective with expression not yet supported");
+        }
+
+
         /**
          * The callback function related to annotations.
          * It provides the set of decision variables related to the problem.

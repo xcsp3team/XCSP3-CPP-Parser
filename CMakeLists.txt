@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
-set(CMAKE_C_COMPILER "gcc-7")
-set(CMAKE_CXX_COMPILER "g++-7")
+#set(CMAKE_C_COMPILER "gcc-7")
+#set(CMAKE_CXX_COMPILER "g++-7")
 
 project("xcsp3parser")
 
