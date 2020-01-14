@@ -87,6 +87,8 @@ Node *Tree::fromStringToTree(std::string current) {
 
         if (nb == posOpenParenthesis)
             createOperator(currentElement,stack,params);
+        if(nb == std::numeric_limits<int>::max()) // No operator, just a variable
+            break;
 
         current = current.substr(nb + 1);
         if (current == "") break;

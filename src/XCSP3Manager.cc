@@ -496,12 +496,15 @@ void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
     XCondition xc;
     constraint->extractCondition(xc);
 
-    XTree *xt = dynamic_cast<XTree *>(constraint->list[0]);
+    XTree *xt = nullptr;
+    for(XVariable *x : constraint->list)
+        if((xt = dynamic_cast<XTree *>(constraint->list[0])) != nullptr)
+            break;
     if(xt != nullptr) { // Sum over tree
         vector<Tree *> trees;
         for(XVariable *x : constraint->list) {
             xt = dynamic_cast<XTree *>(x);
-            Tree *t = new Tree(xt->id);
+            Tree *t = (xt == nullptr) ? new Tree(x->id) : new Tree(xt->id);
             t->canonize();
             trees.push_back(t);
         }

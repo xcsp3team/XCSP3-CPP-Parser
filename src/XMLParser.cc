@@ -100,12 +100,12 @@ void XMLParser::characters(UTF8String chars) {
         // text()
         UTF8String::iterator it = chars.begin(), end = chars.end();
 
-        while(it != end && !it.isWhiteSpace() && ((*it) != ')')) {
+        while(it != end && !it.isWhiteSpace() ) {
             textLeft.append(*it);
             ++it;
         }
 
-        while(it != end && it.isWhiteSpace() && ((*it) == ')')) {
+        while(it != end && it.isWhiteSpace() ) {
             textLeft.append(*it);
             ++it;
         }
@@ -206,7 +206,6 @@ void XMLParser::parseSequence(const UTF8String &txt, vector<XVariable *> &list, 
             list.push_back(new XTree(current));
             continue;
         }
-
         size_t percent = current.find('%');
         if(percent == string::npos) { // Normal variable
             size_t pos = current.find('[');
