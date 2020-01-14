@@ -100,12 +100,12 @@ void XMLParser::characters(UTF8String chars) {
         // text()
         UTF8String::iterator it = chars.begin(), end = chars.end();
 
-        while(it != end && !it.isWhiteSpace() ) {
+        while(it != end && !it.isWhiteSpace()) {
             textLeft.append(*it);
             ++it;
         }
 
-        while(it != end && it.isWhiteSpace() ) {
+        while(it != end && it.isWhiteSpace()) {
             textLeft.append(*it);
             ++it;
         }
@@ -125,7 +125,7 @@ void XMLParser::characters(UTF8String chars) {
     while(brk != chars.begin()) {
         --brk;
         char c = *brk;
-        if(brk.isWhiteSpace() || c == ')') {
+        if(brk.isWhiteSpace() ) {
             ++brk;
             break;
         }
