@@ -47,6 +47,17 @@ bool XCSP3Core::isNonSymmetricRelationalOperator(ExpressionType type) {
 }
 
 
+bool XCSP3Core::isPredicateOperator(ExpressionType type) {
+    return isRelationalOperator(type) || type == ONOT || type == OIMP || type == OAND || type == OOR || type == OAND || type == OOR || type == OXOR ||
+    type == OIF || type == OIFF || type == OIN || type == ONOTIN;
+}
+
+
+bool XCSP3Core::isRelationalOperator(ExpressionType type) {
+    return XCSP3Core::isNonSymmetricRelationalOperator(type) || type == ONE || type == OEQ;
+}
+
+
 ExpressionType XCSP3Core::arithmeticInversion(ExpressionType type) {
     return type == OLT ? OGT : type == OLE ? OGE : type == OGE ? OLE : type == OGT ? OLT : type; // no change for NE and EQ
 }
@@ -167,9 +178,8 @@ ExpressionType XCSP3Core::logicalInversion(ExpressionType type) {
 }
 
 
-bool XCSP3Core::isRelationalOperator(ExpressionType type) {
-    return XCSP3Core::isNonSymmetricRelationalOperator(type) || type == ONE || type == OEQ;
-}
+
+
 
 
 int equalNodes(Node *a, Node *b) { // return -1 if a<0, 0 if a=b, +1 si a>b

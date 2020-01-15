@@ -119,7 +119,7 @@ namespace XCSP3Core {
 
     bool isRelationalOperator(ExpressionType type);
 
-
+    bool isPredicateOperator(ExpressionType type);
     //-------------------------------------
 
 
@@ -321,7 +321,7 @@ namespace XCSP3Core {
 
         int evaluate(std::map<std::string, int> &tuple) override {
             int v = parameters[0]->evaluate(tuple);
-            return !v;//v ? 0 : v;
+            return v == 0 ? 1 : 0; // Must return 0....
         }
 
     };
@@ -445,7 +445,7 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            return parameters[0]->evaluate(tuple) == 0 || parameters[1]->evaluate(tuple);
+            return parameters[0]->evaluate(tuple) == 0 || parameters[1]->evaluate(tuple) != 0; // Must return 0 or 1
         }
     };
 
@@ -579,8 +579,8 @@ namespace XCSP3Core {
 
         int evaluate(std::map<std::string, int> &tuple) override {
             int nb = parameters[0]->evaluate(tuple);
-            if(nb) return parameters[1]->evaluate(tuple);
-            return parameters[2]->evaluate(tuple);
+            if(nb) return parameters[1]->evaluate(tuple) != 0;
+            return parameters[2]->evaluate(tuple) != 0;
         }
     };
 
@@ -594,7 +594,7 @@ namespace XCSP3Core {
         int evaluate(std::map<std::string, int> &tuple) override {
             assert(parameters.size() == 2); // TODO if greater!!
             int nb = parameters[0]->evaluate(tuple);
-            return (nb) ? parameters[1]->evaluate(tuple) : !parameters[1]->evaluate(tuple);
+            return (nb) ? parameters[1]->evaluate(tuple) != 0 : parameters[1]->evaluate(tuple) == 0;
         }
     };
 
