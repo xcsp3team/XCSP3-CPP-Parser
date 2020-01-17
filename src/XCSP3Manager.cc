@@ -817,6 +817,7 @@ void XCSP3Manager::newConstraintElementMatrix(XConstraintElementMatrix *constrai
                 matrix[i].push_back(v);
             }
         callback->buildConstraintElement(constraint->id, matrix, constraint->startRowIndex, constraint->index, constraint->startColIndex, constraint->index2, constraint->value);
+        return;
     }
     if(isInteger(constraint->value, v))
         callback->buildConstraintElement(constraint->id, constraint->matrix, constraint->startRowIndex, constraint->index, constraint->startColIndex, constraint->index2, v);
