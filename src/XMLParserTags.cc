@@ -883,6 +883,7 @@ void XMLParser::ElementTagAction::endTag() {
     if(this->group == NULL) {
         if(this->parser->matrix.size() > 0) { // Matrix
             XConstraintElementMatrix *c = new XConstraintElementMatrix(this->id, this->parser->classes, this->parser->matrix);
+            c->value = this->parser->values[0];
             c->index = this->parser->index;
             c->rank = this->parser->rank;
             if(this->parser->index2 == NULL)
