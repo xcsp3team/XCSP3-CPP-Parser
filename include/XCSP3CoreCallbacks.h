@@ -1330,7 +1330,7 @@ namespace XCSP3Core {
          * @param startColIndex the start index for cols
          * @param value the value (here a variable)
          */
-        void buildConstraintElement(string id, vector<vector<XVariable*> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) {
+        virtual void buildConstraintElement(string id, vector<vector<XVariable*> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) {
             throw runtime_error("Element matrix constraint is not yet supported");
         }
 
@@ -1354,7 +1354,7 @@ namespace XCSP3Core {
         * @param startColIndex the start index for cols
         * @param value the value (here an int)
         */
-        void buildConstraintElement(string id, vector<vector<XVariable*> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, int value) {
+        virtual void buildConstraintElement(string id, vector<vector<XVariable*> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, int value) {
             throw runtime_error("Element matrix constraint is not yet supported");
         }
 
@@ -1378,7 +1378,7 @@ namespace XCSP3Core {
         * @param value the value (here a variable)
         */
 
-        void buildConstraintElement(string id, vector<vector<int> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, XVariable *value) {
+        virtual void buildConstraintElement(string id, vector<vector<int> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, XVariable *value) {
             throw runtime_error("Element matrix constraint is not yet supported");
         }
 
