@@ -223,6 +223,9 @@ namespace XCSP3Core {
         void newConstraintElement(XConstraintElement *constraint);
 
 
+        void newConstraintElementMatrix(XConstraintElementMatrix *constraint);
+
+
         void newConstraintChannel(XConstraintChannel *constraint);
         //--------------------------------------------------------------------------------------
         // packing and scheduling constraints

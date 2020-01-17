@@ -1311,6 +1311,77 @@ namespace XCSP3Core {
         }
 
 
+         /**
+         * The callback function related to a element constraint matrix
+         * See http://xcsp.org/specifications/element
+         *
+         * Example:  matrix[t][v] = z
+         * <element>
+         *    <matrix> (x1 x2 x3)(y1 y2 y3) </matrix>
+         *    <index> t v </index>
+         *    <value> z </value>
+         * </element>
+         *
+         * @param id the id (name) of the constraint
+         * @param matrix the matrix (of variables)
+         * @param rowIndex the row index
+         * @param colIndex the col index
+         * @param startRowIndex the start index for rows
+         * @param startColIndex the start index for cols
+         * @param value the value (here a variable)
+         */
+        void buildConstraintElement(string id, vector<vector<XVariable*> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, XVariable* value) {
+            throw runtime_error("Element matrix constraint is not yet supported");
+        }
+
+
+        /**
+        * The callback function related to a element constraint matrix
+        * See http://xcsp.org/specifications/element
+        *
+        * Example:  matrix[t][v] = 2
+        * <element>
+        *    <matrix> (x1 x2 x3)(y1 y2 y3) </matrix>
+        *    <index> t v </index>
+        *    <value> z </value>
+        * </element>
+        *
+        * @param id the id (name) of the constraint
+        * @param matrix the matrix (of variables)
+        * @param rowIndex the row index
+        * @param colIndex the col index
+        * @param startRowIndex the start index for rows
+        * @param startColIndex the start index for cols
+        * @param value the value (here an int)
+        */
+        void buildConstraintElement(string id, vector<vector<XVariable*> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, int value) {
+            throw runtime_error("Element matrix constraint is not yet supported");
+        }
+
+        /**
+        * The callback function related to a element constraint matrix
+        * See http://xcsp.org/specifications/element
+        *
+        * Example:  matrix[t][v] = z
+        * <element>
+        *    <matrix> (1 2 3)(4 5 6) </matrix>
+        *    <index> t v </index>
+        *    <value> z </value>
+        * </element>
+        *
+        * @param id the id (name) of the constraint
+        * @param matrix the matrix (here a matrix of int)
+        * @param rowIndex the row index
+        * @param colIndex the col index
+        * @param startRowIndex the start index for rows
+        * @param startColIndex the start index for cols
+        * @param value the value (here a variable)
+        */
+
+        void buildConstraintElement(string id, vector<vector<int> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, XVariable *value) {
+            throw runtime_error("Element matrix constraint is not yet supported");
+        }
+
         /**
          * The callback function related to a element constraint with variable value
          * See http://xcsp.org/specifications/element

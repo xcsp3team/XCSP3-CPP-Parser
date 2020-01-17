@@ -506,6 +506,11 @@ void XConstraintElement::unfoldParameters(XConstraintGroup *group, vector<XVaria
 }
 
 
+void XConstraintElementMatrix::unfoldParameters(XConstraintGroup *, vector<XVariable *> &, XConstraint *) {
+    throw runtime_error("Group element Matrix  is not yet supported");
+}
+
+
 void XConstraintChannel::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
     XConstraintChannel *xc = dynamic_cast<XConstraintChannel *>(original);
     XConstraint::unfoldParameters(group, arguments, original);

@@ -337,6 +337,7 @@ void XMLParser::BasicConstraintTagAction::beginTag(const AttributeList &attribut
     this->parser->condition = "";
     this->parser->rank = ANY;
     this->parser->index = NULL;
+    this->parser->index2 = NULL;
     this->parser->closed = true;
 }
 
@@ -880,8 +881,21 @@ void XMLParser::ElementTagAction::endTag() {
     constraint->value = this->parser->values[0];
 
     if(this->group == NULL) {
-        this->parser->manager->newConstraintElement(constraint);
-        delete constraint;
+        if(this->parser->matrix.size() > 0) { // Matrix
+            XConstraintElementMatrix *c = new XConstraintElementMatrix(this->id, this->parser->classes, this->parser->matrix);
+            c->index = this->parser->index;
+            c->rank = this->parser->rank;
+            if(this->parser->index2 == NULL)
+                throw runtime_error("<index> tag should have two values in element matrix");
+            c->index2 = this->parser->index2;
+            c->startRowIndex = this->parser->startRowIndex;
+            c->startColIndex = this->parser->startColIndex;
+            this->parser->manager->newConstraintElementMatrix(c);
+            delete c;
+        } else {
+            this->parser->manager->newConstraintElement(constraint);
+            delete constraint;
+        }
     }
 }
 
@@ -1601,13 +1615,27 @@ void XMLParser::IndexTagAction::text(const UTF8String txt, bool) {
     tmp = trim(tmp);
     if(tmp == "")
         return;
-    if(this->parser->index != NULL)
-        throw runtime_error("<index> tag must contain only one variable");
+    if(this->parser->index != NULL && strcmp(this->parser->getParentTagAction(1)->getTagName(), "element") == 0)
+        throw runtime_error("<index> tag must contain only one variable1");
     vector<XVariable *> tmpList;
     this->parser->parseSequence(txt, tmpList);
-    if(tmpList.size() != 1)
-        throw runtime_error("<index> tag must contain only one variable");
-    this->parser->index = tmpList[0];
+    if(tmpList.size() > 2 && strcmp(this->parser->getParentTagAction(1)->getTagName(), "element") == 0)
+        throw runtime_error("<index> tag must contain only one variable2");
+
+    if(this->parser->index2 != NULL)
+        throw runtime_error("<index> tag must contain only two variables");
+    if(tmpList.size() > 2)
+        throw runtime_error("<index> tag must contain only two variables");
+
+    if(this->parser->index == NULL) {
+        this->parser->index = tmpList[0];
+        if(tmpList.size() == 2)
+            this->parser->index2 = tmpList[1];
+    }else {
+        if(tmpList.size() > 1)
+            throw runtime_error("<index> tag must contain only two variables");
+        this->parser->index2 = tmpList[0];
+    }
 }
 
 
@@ -1616,11 +1644,20 @@ void XMLParser::IndexTagAction::text(const UTF8String txt, bool) {
  ****************************************************************************/
 
 // AttributeList &attributes
-void XMLParser::MatrixTagAction::beginTag(const AttributeList &) {
+void XMLParser::MatrixTagAction::beginTag(const AttributeList &attributes) {
     if(strcmp(this->parser->getParentTagAction(2)->getTagName(), "group") == 0)
         throw runtime_error("<matrix> can not be used in a <group>");
     if(strcmp(this->parser->getParentTagAction(2)->getTagName(), "slide") == 0)
         throw runtime_error("<matrix> can not be used in a <slide>");
+
+    this->parser->startRowIndex = 0;
+    this->parser->startColIndex = 0;
+
+
+    if(!attributes["startRowIndex"].isNull())
+        attributes["startRo<Index"].to(this->parser->startRowIndex);
+    if(!attributes["startColIndex"].isNull())
+        attributes["startColIndex"].to(this->parser->startColIndex);
 }
 
 

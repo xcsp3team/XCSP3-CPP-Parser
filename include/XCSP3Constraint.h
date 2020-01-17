@@ -411,6 +411,23 @@ namespace XCSP3Core {
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
+    class XConstraintElementMatrix : public XConstraintElement {
+    public :
+        vector<vector<XVariable *> > matrix;
+        XVariable *index2;
+        int startRowIndex, startColIndex;
+
+
+        XConstraintElementMatrix(std::string idd, std::string c, vector<vector<XVariable *> > &mat) : XConstraintElement(idd, c) {
+            matrix.resize(mat.size());
+            for(unsigned int i = 0 ; i < mat.size() ; i++)
+                matrix[i].assign(mat[i].begin(), mat[i].end());
+        }
+
+
+        void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
+    };
+
     /***************************************************************************
      * constraint channel
      **************************************************************************/

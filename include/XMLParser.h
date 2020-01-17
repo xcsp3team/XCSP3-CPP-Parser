@@ -215,7 +215,9 @@ namespace XCSP3Core {
         string condition;          // used to store a condition in prefix form
         bool star;                 // true if the extension contain star in tuples
         int startIndex, startIndex2;            // used in some list tag
+        int startRowIndex, startColIndex;
         XVariable *index;          // used with tag index
+        XVariable *index2;         // Only for element matrix
         RankType rank;             // used with rank tag
         OrderType op;
         string expr;

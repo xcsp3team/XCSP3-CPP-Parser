@@ -804,6 +804,27 @@ void XCSP3Manager::newConstraintElement(XConstraintElement *constraint) {
 }
 
 
+void XCSP3Manager::newConstraintElementMatrix(XConstraintElementMatrix *constraint) {
+    if(discardedClasses(constraint->classes))
+        return;
+    int v;
+    if(isInteger(constraint->matrix[0][0], v)) {
+        vector<vector<int> > matrix;
+        matrix.resize(constraint->matrix.size());
+        for(unsigned int i = 0 ; i < constraint->matrix.size() ; i++)
+            for(unsigned int j = 0 ; j < constraint->matrix[i].size() ; j++) {
+                isInteger(constraint->matrix[i][j], v);
+                matrix[i].push_back(v);
+            }
+        callback->buildConstraintElement(constraint->id, matrix, constraint->startRowIndex, constraint->index, constraint->startColIndex, constraint->index2, constraint->value);
+    }
+    if(isInteger(constraint->value, v))
+        callback->buildConstraintElement(constraint->id, constraint->matrix, constraint->startRowIndex, constraint->index, constraint->startColIndex, constraint->index2, v);
+     else
+        callback->buildConstraintElement(constraint->id, constraint->matrix, constraint->startRowIndex, constraint->index, constraint->startColIndex, constraint->index2, constraint->value);
+}
+
+
 void XCSP3Manager::newConstraintChannel(XConstraintChannel *constraint) {
     if(discardedClasses(constraint->classes))
         return;
