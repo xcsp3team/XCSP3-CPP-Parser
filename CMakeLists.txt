@@ -76,6 +76,6 @@ set_target_properties(${LIBRARY_NAME} PROPERTIES
 set(APPLICATION_NAME samplesXcsp3)
 add_executable(${APPLICATION_NAME} ${APP_SOURCES})
 target_link_libraries(${APPLICATION_NAME} ${LIBRARY_NAME} ${LIBXML2_LIBRARIES})
-
+target_include_directories(${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 
