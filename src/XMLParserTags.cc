@@ -366,6 +366,14 @@ void XMLParser::ExtensionTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     constraint->containsStar = this->parser->star;
 
+    /*for(unsigned int i = 0; i < constraint->tuples.size(); i++) {
+        if ( constraint->tuples[i].size() != this->parser->lists[0].size()) {
+            throw runtime_error("Problem between size of tuples and size of scope");
+            exit(1);
+
+        }
+    }
+*/
     if(this->group == NULL) {
         this->parser->manager->newConstraintExtension(constraint);
         delete constraint;

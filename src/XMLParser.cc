@@ -100,11 +100,18 @@ void XMLParser::characters(UTF8String chars) {
         // text()
         UTF8String::iterator it = chars.begin(), end = chars.end();
 
-        while(it != end && !it.isWhiteSpace()) {
-            textLeft.append(*it);
-            ++it;
-        }
 
+        if(dynamic_cast<ConflictOrSupportTagAction *>(actionStack.front()) != nullptr) {
+            while(it != end && !it.isWhiteSpace() && ((*it) != ')') ) {
+                textLeft.append(*it);
+                ++it;
+            }
+        } else {
+            while(it != end && !it.isWhiteSpace()) {
+                textLeft.append(*it);
+                ++it;
+            }
+        }
         while(it != end && it.isWhiteSpace()) {
             textLeft.append(*it);
             ++it;
@@ -125,13 +132,13 @@ void XMLParser::characters(UTF8String chars) {
     while(brk != chars.begin()) {
         --brk;
         char c = *brk;
-        if(brk.isWhiteSpace() ) {
+        if(brk.isWhiteSpace()) {
             ++brk;
             break;
         }
     }
 
-    for(it = brk; it != chars.end(); ++it)
+    for(it = brk ; it != chars.end() ; ++it)
         textLeft.append(*it);
 
     chars = chars.substr(chars.begin(), brk);
@@ -185,7 +192,7 @@ void XMLParser::parseSequence(const UTF8String &txt, vector<XVariable *> &list, 
 
         UTF8String token = tokenizer.nextToken();
         bool isSep = false;
-        for(unsigned int i = 0; i < delimiters.size(); i++) {
+        for(unsigned int i = 0 ; i < delimiters.size() ; i++) {
             string tt;
             token.to(tt);
             if(tt.size() == 1 && tt[0] == delimiters[i]) {
@@ -231,7 +238,7 @@ void XMLParser::parseSequence(const UTF8String &txt, vector<XVariable *> &list, 
                     if(keepIntervals) {
                         list.push_back(new XEInterval(current, first, last));
                     } else {
-                        for(int i = first; i <= last; i++) {
+                        for(int i = first ; i <= last ; i++) {
                             XInteger *xi = new XInteger(to_string(i), i);
                             list.push_back(xi);
                             toFree.push_back(xi);
@@ -367,8 +374,8 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
     registerTagAction(tagList, new ArrayTagAction(this, "array"));
     registerTagAction(tagList, new DomainTagAction(this, "domain"));
 
-    registerTagAction(tagList, new AnnotationsTagAction(this,"annotations"));
-    registerTagAction(tagList, new DecisionTagAction(this,"decision"));
+    registerTagAction(tagList, new AnnotationsTagAction(this, "annotations"));
+    registerTagAction(tagList, new DecisionTagAction(this, "decision"));
 
     registerTagAction(tagList, new ConstraintsTagAction(this, "constraints"));
 
@@ -458,8 +465,8 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
 
 XMLParser::~XMLParser() {
     delete unknownTagHandler;
-    for(TagActionList::iterator it = tagList.begin();
-        it != tagList.end(); ++it)
+    for(TagActionList::iterator it = tagList.begin() ;
+        it != tagList.end() ; ++it)
         delete (*it).second;
 }
 

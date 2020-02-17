@@ -96,9 +96,9 @@ namespace XCSP3Core {
         protected:
             bool activated;
             XMLParser *parser;
-            string tagName;
 
         public:
+            string tagName;
             TagAction(XMLParser *parser, string name) : parser(parser), tagName(name) { activated = false; }
 
 
