@@ -612,10 +612,10 @@ void XMLParser::OrderedTagAction::text(const UTF8String txt, bool) {
 void XMLParser::OrderedTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     constraint->op = this->parser->op;
-    if(this->group == NULL) {
-        if(this->parser->lengths.size() > 0)
-            constraint->lengths.assign(this->parser->lengths.begin(), this->parser->lengths.end());
+    if(this->parser->lengths.size() > 0)
+        constraint->lengths.assign(this->parser->lengths.begin(), this->parser->lengths.end());
 
+    if(this->group == NULL) {
         this->parser->manager->newConstraintOrdered(constraint);
         delete constraint;
     }
