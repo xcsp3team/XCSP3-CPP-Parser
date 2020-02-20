@@ -506,8 +506,20 @@ void XConstraintElement::unfoldParameters(XConstraintGroup *group, vector<XVaria
 }
 
 
-void XConstraintElementMatrix::unfoldParameters(XConstraintGroup *, vector<XVariable *> &, XConstraint *) {
-    throw runtime_error("Group element Matrix  is not yet supported");
+void XConstraintElementMatrix::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+    XConstraintElementMatrix *xc = dynamic_cast<XConstraintElementMatrix *>(original);
+    XConstraint::unfoldParameters(group, arguments, original);
+    XIndex::unfoldParameters(group, arguments, original);
+    XValue::unfoldParameters(group, arguments, original);
+    startColIndex = xc->startColIndex;
+    startRowIndex = xc->startRowIndex;
+    XParameterVariable *xp;
+    if((xp = dynamic_cast<XParameterVariable *>(xc->index2)) == nullptr)
+        index2 = xc->index2;
+    else
+        index2 = arguments[xp->number == -1 ? 0 : xp->number];
+
+    matrix = xc->matrix;
 }
 
 

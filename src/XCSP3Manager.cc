@@ -1093,6 +1093,8 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             unfoldConstraint<XConstraintMinimum>(group, i, &XCSP3Manager::newConstraintMinimum);
         if(group->type == ELEMENT)
             unfoldConstraint<XConstraintElement>(group, i, &XCSP3Manager::newConstraintElement);
+        if(group->type == ELEMENTMATRIX)
+            unfoldConstraint<XConstraintElementMatrix>(group, i, &XCSP3Manager::newConstraintElementMatrix);
         if(group->type == NOOVERLAP)
             unfoldConstraint<XConstraintNoOverlap>(group, i, &XCSP3Manager::newConstraintNoOverlap);
         if(group->type == STRETCH)

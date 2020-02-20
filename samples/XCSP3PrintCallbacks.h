@@ -192,6 +192,8 @@ namespace XCSP3Core {
 
         virtual void buildConstraintElement(string id, vector<int> &list, int startIndex, XVariable *index, RankType rank, XVariable *value) override;
 
+        virtual void buildConstraintElement(string id, vector<vector<int> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, XVariable *value) override;
+
         virtual void buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex) override;
 
         virtual void buildConstraintChannel(string id, vector<XVariable *> &list1, int startIndex1, vector<XVariable *> &list2, int startIndex2) override;
@@ -903,6 +905,17 @@ void XCSP3PrintCallbacks::buildConstraintElement(string, vector<XVariable *> &li
     cout << "        index : " << *index << endl;
 }
 
+void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<vector<int> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, XVariable *value) {
+    cout << "\n    element matrix with rowIndex, colIndex and Value variables\n";
+    for(unsigned int i = 0; i < matrix.size(); i++) {
+        for(int j = 0; j < matrix.size(); j++)
+            cout << matrix[i][j] << " ";
+        cout << endl;
+    }
+    cout << "        row index : " << *rowIndex << endl;
+    cout << "        col index : " << *colIndex << endl;
+    cout << "        value     : " << *value << endl;
+}
 
 // string id, vector<XVariable *> &list, int startIndex, XVariable *index, RankType rank, XVariable *value
 void XCSP3PrintCallbacks::buildConstraintElement(string, vector<XVariable *> &list, int startIndex, XVariable *index, RankType, XVariable *value) {

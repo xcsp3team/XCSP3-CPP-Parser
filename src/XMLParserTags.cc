@@ -888,17 +888,27 @@ void XMLParser::ElementTagAction::endTag() {
         throw runtime_error("<element> tag should have one value");
     constraint->value = this->parser->values[0];
 
+    XConstraintElementMatrix *c  = nullptr;
+    if(this->parser->matrix.size() > 0) {
+        c = new XConstraintElementMatrix(this->id, this->parser->classes, this->parser->matrix);
+        c->value = this->parser->values[0];
+        c->index = this->parser->index;
+        c->rank = this->parser->rank;
+        if(this->parser->index2 == NULL)
+            throw runtime_error("<index> tag should have two values in element matrix");
+        c->index2 = this->parser->index2;
+        c->startRowIndex = this->parser->startRowIndex;
+        c->startColIndex = this->parser->startColIndex;
+        if(this->group != nullptr) {
+            this->group->type = ELEMENTMATRIX;
+            this->group->constraint = c;
+        }
+        delete constraint;
+    }
+
+
     if(this->group == NULL) {
         if(this->parser->matrix.size() > 0) { // Matrix
-            XConstraintElementMatrix *c = new XConstraintElementMatrix(this->id, this->parser->classes, this->parser->matrix);
-            c->value = this->parser->values[0];
-            c->index = this->parser->index;
-            c->rank = this->parser->rank;
-            if(this->parser->index2 == NULL)
-                throw runtime_error("<index> tag should have two values in element matrix");
-            c->index2 = this->parser->index2;
-            c->startRowIndex = this->parser->startRowIndex;
-            c->startColIndex = this->parser->startColIndex;
             this->parser->manager->newConstraintElementMatrix(c);
             delete c;
         } else {
@@ -1624,7 +1634,7 @@ void XMLParser::IndexTagAction::text(const UTF8String txt, bool) {
     tmp = trim(tmp);
     if(tmp == "")
         return;
-    if(this->parser->index != NULL && strcmp(this->parser->getParentTagAction(1)->getTagName(), "element") == 0)
+    if(this->parser->index != NULL && strcmp(this->parser->getParentTagAction(1)->getTagName(), "element") == 0 && this->parser->matrix.size() == 0)
         throw runtime_error("<index> tag must contain only one variable1");
     vector<XVariable *> tmpList;
     this->parser->parseSequence(txt, tmpList);
@@ -1654,8 +1664,6 @@ void XMLParser::IndexTagAction::text(const UTF8String txt, bool) {
 
 // AttributeList &attributes
 void XMLParser::MatrixTagAction::beginTag(const AttributeList &attributes) {
-    if(strcmp(this->parser->getParentTagAction(2)->getTagName(), "group") == 0)
-        throw runtime_error("<matrix> can not be used in a <group>");
     if(strcmp(this->parser->getParentTagAction(2)->getTagName(), "slide") == 0)
         throw runtime_error("<matrix> can not be used in a <slide>");
 
@@ -1664,7 +1672,7 @@ void XMLParser::MatrixTagAction::beginTag(const AttributeList &attributes) {
 
 
     if(!attributes["startRowIndex"].isNull())
-        attributes["startRo<Index"].to(this->parser->startRowIndex);
+        attributes["startRowIndex"].to(this->parser->startRowIndex);
     if(!attributes["startColIndex"].isNull())
         attributes["startColIndex"].to(this->parser->startColIndex);
 }

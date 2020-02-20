@@ -417,6 +417,7 @@ namespace XCSP3Core {
         XVariable *index2;
         int startRowIndex, startColIndex;
 
+        XConstraintElementMatrix(std::string idd, std::string c) : XConstraintElement(idd, c) {}
 
         XConstraintElementMatrix(std::string idd, std::string c, vector<vector<XVariable *> > &mat) : XConstraintElement(idd, c) {
             matrix.resize(mat.size());
