@@ -738,7 +738,17 @@ namespace XCSP3Core {
 
             virtual void endTag() {
                 this->parser->condition = trim(this->parser->condition);
-            }
+
+                std::regex const rglt(R"(\(.*(le|lt|ge|gt|in|eq|ne),%([0-9]+)\).*)");
+                std::smatch match;
+                std::regex_match(this->parser->condition, match, rglt);
+
+                if(match.size() != 3)
+                    return;
+                int tmp =  std::stoi(match[2].str());
+                if(XParameterVariable::max < tmp)
+                    XParameterVariable::max = tmp;
+                }
         };
 
 

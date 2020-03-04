@@ -107,7 +107,7 @@ namespace XCSP3Core {
         string condition;
 
 
-        void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original);
+        virtual void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original);
         void extractCondition(XCondition &xc);  // Create the op and the operand (which can be a value, an interval or a XVariable)
     };
 

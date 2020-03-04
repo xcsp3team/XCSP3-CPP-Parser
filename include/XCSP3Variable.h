@@ -114,6 +114,7 @@ namespace XCSP3Core {
      */
     class XParameterVariable : public XVariable {
     public :
+        static int max; // Max parameter number for current group
         int number; // -1 if %...
         XParameterVariable(std::string lid);
     };

@@ -1514,6 +1514,7 @@ void XMLParser::GroupTagAction::beginTag(const AttributeList &attributes) {
 
     group = new XConstraintGroup(lid, tmp);
     this->parser->manager->beginGroup(lid);
+    XParameterVariable::max = -1;
 }
 
 

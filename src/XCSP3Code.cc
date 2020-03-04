@@ -43,6 +43,7 @@ namespace XCSP3Core {
  vector<int> _values;
 
 
+ int XParameterVariable::max;
 
     //------------------------------------------------------------------------------------------
 //  XCSP3Domain.h functions
@@ -97,6 +98,8 @@ XParameterVariable::XParameterVariable(std::string lid) : XVariable(lid, NULL) {
         number = -1;
     else
         number = std::stoi(id.substr(1));
+    if(max < number)
+        max = number;
 }
 
 
@@ -296,7 +299,7 @@ void XConstraintGroup::unfoldVector(vector<XVariable *> &toUnfold, vector<XVaria
         return;
     }
     if(xp->number == -1) { // %...
-        toUnfold.assign(args.begin(), args.end());
+        toUnfold.assign(args.begin() + (XParameterVariable::max == -1 ? 0 : XParameterVariable::max + 1), args.end());
         return;
     }
     for(XVariable *xv : initial) {
@@ -336,9 +339,10 @@ namespace XCSP3Core {
 }
 
 
-void XInitialCondition::unfoldParameters(XConstraintGroup *, vector<XVariable *> &, XConstraint *original) {
+void XInitialCondition::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
     XInitialCondition *xi = dynamic_cast<XInitialCondition *>(original);
     condition = xi->condition;
+    group->unfoldString(condition, arguments);
 }
 
 
@@ -491,6 +495,7 @@ void XConstraintMaximum::unfoldParameters(XConstraintGroup *group, vector<XVaria
     XConstraintMaximum *xc = dynamic_cast<XConstraintMaximum *>(original);
     XConstraint::unfoldParameters(group, arguments, original);
     XIndex::unfoldParameters(group, arguments, original);
+    XInitialCondition::unfoldParameters(group, arguments, original);
     startIndex = xc->startIndex;
     rank = xc->rank;
 }
