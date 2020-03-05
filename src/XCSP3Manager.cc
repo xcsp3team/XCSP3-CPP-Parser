@@ -389,19 +389,39 @@ void XCSP3Manager::newConstraintMDD(XConstraintMDD *constraint) {
 // Comparison constraints
 //--------------------------------------------------------------------------------------
 
+void XCSP3Manager::containsTrees(vector<XVariable *>&list, vector<Tree *>&trees) {
+    trees.clear();
+    XTree *xt = nullptr;
+    for(XVariable *x : list) {
+        xt = dynamic_cast<XTree *>(x);
+        if(xt != nullptr) { // The list contains at least one tree. Transform in list of trees
+            break;
+        }
+    }
+    if(xt == nullptr)
+        return;
+
+    for(XVariable *x : list) {
+        xt = dynamic_cast<XTree *>(x);
+        if(xt != nullptr) { // The list contains at least one tree. Transform in list of trees
+            Tree *t = new Tree(xt->id);
+            t->canonize();
+            trees.push_back(t);
+        } else {
+            Tree *t = new Tree(x->id);
+            trees.push_back(t);
+        }
+    }
+}
+
 void XCSP3Manager::newConstraintAllDiff(XConstraintAllDiff *constraint) {
+    vector<Tree *> trees;
+
     if(discardedClasses(constraint->classes))
         return;
     if(constraint->except.size() == 0) {
-        XTree *xt = dynamic_cast<XTree *>(constraint->list[0]);
-        if(xt != nullptr) { // alldif over tree
-            vector<Tree *> trees;
-            for(XVariable *x : constraint->list) {
-                xt = dynamic_cast<XTree *>(x);
-                Tree *t = new Tree(xt->id);
-                t->canonize();
-                trees.push_back(t);
-            }
+        containsTrees(constraint->list, trees);
+        if(trees.size() > 0) { // alldif over tree
             callback->buildConstraintAlldifferent(constraint->id, trees);
             return;
         }
@@ -496,18 +516,9 @@ void XCSP3Manager::newConstraintSum(XConstraintSum *constraint) {
     XCondition xc;
     constraint->extractCondition(xc);
 
-    XTree *xt = nullptr;
-    for(XVariable *x : constraint->list)
-        if((xt = dynamic_cast<XTree *>(constraint->list[0])) != nullptr)
-            break;
-    if(xt != nullptr) { // Sum over tree
-        vector<Tree *> trees;
-        for(XVariable *x : constraint->list) {
-            xt = dynamic_cast<XTree *>(x);
-            Tree *t = (xt == nullptr) ? new Tree(x->id) : new Tree(xt->id);
-            t->canonize();
-            trees.push_back(t);
-        }
+    vector<Tree *> trees;
+    containsTrees(constraint->list, trees);
+    if(trees.size() > 0) { // alldif over tree
         if(constraint->values.size() == 0)
             callback->buildConstraintSum(constraint->id, trees, xc);
         else {
@@ -1139,16 +1150,9 @@ void XCSP3Manager::addObjective(XObjective *objective) {
 
 
     // Expressions ??
-    XTree *xt = dynamic_cast<XTree *>(objective->list[0]);
-    if(xt != nullptr) { // objective over tree
-        vector<Tree *> trees;
-        for(XVariable *x : objective->list) {
-            xt = dynamic_cast<XTree *>(x);
-            Tree *t = new Tree(xt->id);
-            t->canonize();
-            trees.push_back(t);
-        }
-
+    vector<Tree *> trees;
+    containsTrees(objective->list, trees);
+    if(trees.size() > 0) { // alldif over tree
         if(objective->coeffs.size() == 0) {
             if(objective->goal == MINIMIZE)
                 callback->buildObjectiveMinimize(objective->type, trees);

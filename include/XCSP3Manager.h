@@ -59,6 +59,7 @@ namespace XCSP3Core {
         void createPrimitivePatterns();
         void destroyPrimitivePatterns();
 
+        void containsTrees(vector<XVariable *>&list, vector<Tree *>&newlist);
 
     public :
         // XCSP3CoreCallbacks *c, std::map<std::string, XEntity *> &m, bool
