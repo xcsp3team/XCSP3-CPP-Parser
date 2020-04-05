@@ -49,7 +49,7 @@ bool XCSP3Core::isNonSymmetricRelationalOperator(ExpressionType type) {
 
 bool XCSP3Core::isPredicateOperator(ExpressionType type) {
     return isRelationalOperator(type) || type == ONOT || type == OIMP || type == OAND || type == OOR || type == OAND || type == OOR || type == OXOR ||
-    type == OIF || type == OIFF || type == OIN || type == ONOTIN;
+     type == OIFF || type == OIN || type == ONOTIN;
 }
 
 
