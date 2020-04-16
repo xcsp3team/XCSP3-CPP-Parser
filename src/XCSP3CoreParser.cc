@@ -61,7 +61,7 @@ int XCSP3CoreParser::parse(istream &in) {
     xmlParserCtxtPtr parserCtxt = nullptr;
 
     const int bufSize = 4096;
-    char *buffer = new char[bufSize];
+    std::unique_ptr<char[]> buffer { new char[bufSize] };
 
     int size;
 
@@ -77,21 +77,21 @@ int XCSP3CoreParser::parse(istream &in) {
     try {
         xmlSubstituteEntitiesDefault(1);
 
-        in.read(buffer, bufSize);
+        in.read(buffer.get(), bufSize);
         size = in.gcount();
 
         if(size > 0) {
-            parserCtxt = xmlCreatePushParserCtxt(&handler, &cspParser, buffer, size, filename);
+            parserCtxt = xmlCreatePushParserCtxt(&handler, &cspParser, buffer.get(), size, filename);
 
             while(in.good()) {
-                in.read(buffer, bufSize);
+                in.read(buffer.get(), bufSize);
                 size = in.gcount();
 
                 if(size > 0)
-                    xmlParseChunk(parserCtxt, buffer, size, 0);
+                    xmlParseChunk(parserCtxt, buffer.get(), size, 0);
             }
 
-            xmlParseChunk(parserCtxt, buffer, 0, 1);
+            xmlParseChunk(parserCtxt, buffer.get(), 0, 1);
 
             xmlFreeParserCtxt(parserCtxt);
 
@@ -105,8 +105,6 @@ int XCSP3CoreParser::parse(istream &in) {
            cout << "c Exception at undefined line" << endl;
         throw;
     }
-
-    delete[] buffer;
 
     return 0;
 }
