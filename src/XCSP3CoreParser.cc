@@ -97,13 +97,13 @@ int XCSP3CoreParser::parse(istream &in) {
 
             xmlCleanupParser();
         }
-    } catch(runtime_error &e) {
+    } catch( ... ) {
         // ???
         if ( parserCtxt && parserCtxt->input )
-           cout << "Exception at line " << parserCtxt->input->line << endl;
+           cout << "c Exception at line " << parserCtxt->input->line << endl;
         else
-           cout << "Exception at undefined line";
-        throw (e);
+           cout << "c Exception at undefined line" << endl;
+        throw;
     }
 
     delete[] buffer;
