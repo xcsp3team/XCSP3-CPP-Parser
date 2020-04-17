@@ -464,10 +464,11 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
 
 
 XMLParser::~XMLParser() {
-    delete unknownTagHandler;
     for(TagActionList::iterator it = tagList.begin() ;
         it != tagList.end() ; ++it)
         delete (*it).second;
+    delete unknownTagHandler;
+    delete manager;
 }
 
 
