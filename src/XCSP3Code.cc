@@ -234,7 +234,8 @@ void XVariableArray::getVarsFor(vector<XVariable *> &list, string compactForm, v
         if(storeIndexes)
             flatIndexes->push_back(flatIndexFor(indexes));
         else {
-            list.push_back(variables[flatIndexFor(indexes)]);
+            if(variables[flatIndexFor(indexes)] != nullptr)
+                list.push_back(variables[flatIndexFor(indexes)]);
         }
     } while(incrementIndexes(indexes, ranges));
 
