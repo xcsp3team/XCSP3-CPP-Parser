@@ -132,7 +132,7 @@ void Tree::createBasicParameter(string currentElement, std::vector<NodeOperator*
     try {
         int nb = stoi(currentElement);
         params.push_back(new NodeConstant(nb));
-    } catch (invalid_argument e) {
+    } catch (invalid_argument const &) {
         int position = -1;
         for (unsigned int i = 0; i < listOfVariables.size(); i++)
             if (listOfVariables[i] == currentElement) {

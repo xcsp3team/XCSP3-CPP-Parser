@@ -131,7 +131,6 @@ void XMLParser::characters(UTF8String chars) {
     brk = chars.end();
     while(brk != chars.begin()) {
         --brk;
-        char c = *brk;
         if(brk.isWhiteSpace()) {
             ++brk;
             break;

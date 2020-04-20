@@ -1828,7 +1828,7 @@ void XMLParser::PatternsTagAction::text(const UTF8String txt, bool) {
   *                            ANNOTATIONS
   ****************************************************************************/
 
-void XMLParser::AnnotationsTagAction::beginTag(const AttributeList &attributes) {
+void XMLParser::AnnotationsTagAction::beginTag(const AttributeList &) {
     this->parser->manager->beginAnnotations();
 
 }
@@ -1839,13 +1839,13 @@ void XMLParser::AnnotationsTagAction::endTag() {
 }
 
 
-void XMLParser::DecisionTagAction::beginTag(const AttributeList &attributes) {
+void XMLParser::DecisionTagAction::beginTag(const AttributeList &) {
 
 }
 
 
 
-void XMLParser::DecisionTagAction::text(const UTF8String txt, bool last) {
+void XMLParser::DecisionTagAction::text(const UTF8String txt, bool) {
     this->parser->parseSequence(txt, list);
 }
 
