@@ -849,6 +849,7 @@ namespace XCSP3Core {
          ****************************************************************************/
         class BlockTagAction : public TagAction {
         public:
+            vector<string> classes; // it is possible to have block inside block
             BlockTagAction(XMLParser *parser, string name) : TagAction(parser, name) { }
             void beginTag(const AttributeList &attributes) override;
             void endTag() override;

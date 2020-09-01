@@ -1599,20 +1599,24 @@ void XMLParser::SlideTagAction::endTag() {
 
 
 void XMLParser::BlockTagAction::beginTag(const AttributeList &attributes) {
-    string classes, lid;
+    string currentClasses, lid;
 
-    this->checkParentTag("constraints");
     attributes["id"].to(lid);
     if(!attributes["class"].isNull())
-        attributes["class"].to(classes);
+        attributes["class"].to(currentClasses);
     else
-        classes = "";
-    this->parser->manager->beginBlock(classes);
+        currentClasses = "";
+    if(classes.empty())
+        classes.push_back(currentClasses);
+    else
+        classes.push_back(classes.back() + " " + currentClasses);
+    this->parser->manager->beginBlock(classes.back());
 }
 
 
 void XMLParser::BlockTagAction::endTag() {
     this->parser->manager->endBlock();
+    classes.pop_back();
 }
 
 
