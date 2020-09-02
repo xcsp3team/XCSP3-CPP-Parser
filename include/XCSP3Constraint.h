@@ -533,6 +533,7 @@ namespace XCSP3Core {
 
 
         XConstraintClause(std::string idd, std::string c) : XConstraint(idd, c) { }
+        void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
 
     /***************************************************************************

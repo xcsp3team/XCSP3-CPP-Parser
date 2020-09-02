@@ -26,6 +26,7 @@
 
 // definition of different functions coming from XCSP3Constraint, XCSPVariables, XCS3Domain
 #include <assert.h>
+#include <XCSP3Tree.h>
 #include "XCSP3Domain.h"
 #include "XCSP3Variable.h"
 #include "XCSP3Constraint.h"
@@ -571,6 +572,22 @@ void XConstraintCircuit::unfoldParameters(XConstraintGroup *group, vector<XVaria
     startIndex = xc->startIndex;
 }
 
+
+void XConstraintClause::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+
+    for(XVariable *xv : arguments) {
+        XTree *xt;
+        if(dynamic_cast<XTree*>(xv) != nullptr) { // not
+            if (xv->id.rfind("not(", 0) != 0)
+                throw runtime_error("a clause is malformed in a group: " + xv->id);
+            string name = xv->id.substr(4, xv->id.length() - 5);
+            negative.push_back(new XVariable(name, nullptr)); // TODO: improvements needed here
+        } else {
+            positive.push_back(xv);
+        }
+
+    }
+}
 
 //------------------------------------------------------------------------------------------
 //  XCSP3Utils.h functions

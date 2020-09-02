@@ -1062,9 +1062,9 @@ void XCSP3PrintCallbacks::buildConstraintInstantiation(string, vector<XVariable 
 // string id, vector<XVariable *> &list, vector<int> &values
 void XCSP3PrintCallbacks::buildConstraintClause(string, vector<XVariable *> &positive, vector<XVariable *> &negative) {
     cout << "\n    Clause constraint" << endl;
-    cout << "        positive lits:";
+    cout << "        positive lits size:" << positive.size() <<" ";
     displayList(positive);
-    cout << "        negative lits:";
+    cout << "        negative lits size:" << negative.size() <<" ";
     displayList(negative);
 
 }

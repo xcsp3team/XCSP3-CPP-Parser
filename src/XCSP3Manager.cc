@@ -1082,6 +1082,8 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             delete ce;
         }
 
+        if(group->type == CLAUSE)
+            unfoldConstraint<XConstraintClause>(group, i, &XCSP3Manager::newConstraintClause);
         if(group->type == INSTANTIATION)
             unfoldConstraint<XConstraintInstantiation>(group, i, &XCSP3Manager::newConstraintInstantiation);
         if(group->type == ALLDIFF)
