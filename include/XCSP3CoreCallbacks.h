@@ -1267,6 +1267,25 @@ namespace XCSP3Core {
 
         }
 
+        /**
+         * The callback function related to a minimum constraint
+         * See http://xcsp.org/specifications/minimum
+         *
+         * Example:
+         * <minimum>
+         *    <list> x1 x2 x3 x4 </list>
+         *    <condition> (eq,y) </condition>
+         * </minimum>
+         *
+         * @param id the id (name) of the constraint
+         * @param list set of expression
+         * @param xc the condition (see #XCondition)
+         */
+        virtual void buildConstraintMinimum(string id, vector<Tree *> &list, XCondition &xc) {
+            (void)id; (void)list; (void)xc;
+            throw runtime_error("minimum constraint over trees is not yet supported");
+
+        }
 
         /**
          * The callback function related to a minimum constraint (arg_min)
@@ -1312,6 +1331,25 @@ namespace XCSP3Core {
 
         }
 
+        /**
+                * The callback function related to a maximum constraint
+                * See http://xcsp.org/specifications/maximum
+                *
+                * Example:
+                * <maximum>
+                *    <list> add(x1,2) x2 x3 x4 </list>
+                *    <condition> (ge,2) </condition>
+                * </maximum>
+                *
+                * @param id the id (name) of the constraint
+                * @param list the expressions of the constraint
+                * @param xc the condition (see #XCondition)
+                */
+        virtual void buildConstraintMaximum(string id, vector<Tree*> &list, XCondition &xc) {
+            (void)id; (void)list; (void)xc;
+            throw runtime_error("maximum constraint over trees is not yet supported");
+
+        }
 
         /**
          * The callback function related to a maximum constraint (arg_max)

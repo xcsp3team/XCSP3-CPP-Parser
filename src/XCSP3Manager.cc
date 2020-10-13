@@ -751,7 +751,12 @@ void XCSP3Manager::newConstraintMinimum(XConstraintMinimum *constraint) {
     constraint->extractCondition(xc);
 
     if(constraint->index == NULL) {
-        callback->buildConstraintMinimum(constraint->id, constraint->list, xc);
+        vector<Tree *> trees;
+        containsTrees(constraint->list, trees);
+        if(trees.size() > 0)
+            callback->buildConstraintMinimum(constraint->id, trees, xc);
+        else
+            callback->buildConstraintMinimum(constraint->id, constraint->list, xc);
         return;
     }
     callback->buildConstraintMinimum(constraint->id, constraint->list, constraint->index, constraint->startIndex, constraint->rank, xc);
@@ -765,7 +770,12 @@ void XCSP3Manager::newConstraintMaximum(XConstraintMaximum *constraint) {
     constraint->extractCondition(xc);
 
     if(constraint->index == NULL) {
-        callback->buildConstraintMaximum(constraint->id, constraint->list, xc);
+        vector<Tree *> trees;
+        containsTrees(constraint->list, trees);
+        if(trees.size() > 0)
+            callback->buildConstraintMaximum(constraint->id, trees, xc);
+        else
+            callback->buildConstraintMaximum(constraint->id, constraint->list, xc);
         return;
     }
     callback->buildConstraintMaximum(constraint->id, constraint->list, constraint->index, constraint->startIndex, constraint->rank, xc);
