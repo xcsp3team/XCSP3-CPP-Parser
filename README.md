@@ -67,6 +67,14 @@ for each element of the array
 8. Given a group of constraint, a call to the dedicated <code>builConstraintXXX</code> will occur for each arguments
 of the group (the same occurs for slide).
 
+###Requirements
+ - libxml2
+ - cmake >= 3.6
+ - c++11 compiler
+ 
+###Installation
+open a console and type ````./build.sh````
+
 
 
 
