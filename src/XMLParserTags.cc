@@ -569,6 +569,8 @@ void XMLParser::AllDiffEqualTagAction::endTag() {
         }
         delete ct;
     } else {
+        alldiff->except.assign(this->parser->integers.begin(), this->parser->integers.end());
+
         ct->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     }
 }
