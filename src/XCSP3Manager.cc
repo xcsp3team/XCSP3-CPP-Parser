@@ -259,6 +259,20 @@ public:
 };
 
 
+class PrimitiveTernary2 : public XCSP3Core::PrimitivePattern { // x * y = z
+public:
+  PrimitiveTernary2(XCSP3Manager &m) : PrimitivePattern(m, "eq(mul(x,y),z)") { }
+
+
+  bool post() override {
+    manager.callback->buildConstraintMult(id, (XVariable *)manager.mapping[variables[0]],
+                                          (XVariable *) manager.mapping[variables[1]],
+                                          (XVariable *) manager.mapping[variables[2]]);
+    return true;
+  }
+};
+
+
 bool XCSP3Manager::recognizePrimitives(std::string id, Tree *tree) {
     for(PrimitivePattern *p : patterns)
         if(p->setTarget(id, tree)->match())
@@ -276,6 +290,7 @@ void XCSP3Manager::createPrimitivePatterns() {
     patterns.push_back(new PrimitiveBinary2(*this));
     patterns.push_back(new PrimitiveBinary3(*this));
     patterns.push_back(new PrimitiveTernary1(*this));
+    patterns.push_back(new PrimitiveTernary2(*this));
 
 }
 

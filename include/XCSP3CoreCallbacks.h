@@ -491,6 +491,19 @@ namespace XCSP3Core {
                                         "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
         }
 
+        /**
+         * If  #recognizeSpecialIntensionCases is enabled (this is the case by default)
+         * intensional constraint of the form : x*y=z are recognized
+         * If such a intensional constraint is recognized, a callback to this function is done and not to  #buildConstraintIntension
+         *
+         * @param id the id (name) of the constraint
+         * @param x,y,z  the variables
+         */
+        virtual void buildConstraintMult(string id, XVariable *x, XVariable *y, XVariable *z) {
+            (void)id; (void)x; (void)y; (void)z;
+            throw runtime_error("primitive constraint x*y=z  is not yet supported. "
+                                "You can use classical intension constrain by assigning recognizeSpecialIntensionCases to false ");
+        }
 
         //--------------------------------------------------------------------------------------
         // Language constraints
