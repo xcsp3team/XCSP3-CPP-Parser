@@ -1763,14 +1763,18 @@ void XMLParser::MatrixTagAction::endTag() {
 // AttributeList &attributes
 void XMLParser::TransitionsTagAction::beginTag(const AttributeList &) {
     nb = 0;
+    transitions.clear();
 }
 
-
-// UTF8String txt, bool last
-void XMLParser::TransitionsTagAction::text(const UTF8String txt, bool) {
+void XMLParser::TransitionsTagAction::text(const UTF8String txt, bool last) {
     if(txt.isWhiteSpace())
         return;
-    UTF8String::Tokenizer tokenizer(txt);
+    transitions.append(txt);
+}
+
+// UTF8String txt, bool last
+void XMLParser::TransitionsTagAction::endTag() {
+    UTF8String::Tokenizer tokenizer(transitions);
     tokenizer.addSeparator(')');
     tokenizer.addSeparator(',');
     tokenizer.addSeparator('(');

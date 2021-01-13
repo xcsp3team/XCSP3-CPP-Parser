@@ -257,6 +257,23 @@ namespace XCSP3Core {
 
         virtual void buildAnnotationDecision(vector<XVariable*> &list) override;
         bool canonize;
+
+        void buildConstraintMaximum(string id, vector<Tree*> &list, XCondition &xc) {
+            nbc++;
+        }
+
+        void buildConstraintMinimum(string id, vector<Tree*> &list, XCondition &xc) {
+            nbc++;
+        }
+
+
+
+
+        virtual void buildObjectiveMinimize(ExpressionObjective t, vector<Tree *> &trees, vector<int> &coefs) {
+            type = "sum";
+            minmax = "Minimize";
+        }
+
     };
 
 
