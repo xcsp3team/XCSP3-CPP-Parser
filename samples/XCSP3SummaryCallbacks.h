@@ -266,6 +266,10 @@ namespace XCSP3Core {
             nbc++;
         }
 
+        virtual void buildConstraintMult(string id, XVariable *x, XVariable *y, XVariable *z) {
+            nbc++;
+        }
+
 
 
 
