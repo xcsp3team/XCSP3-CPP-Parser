@@ -442,6 +442,11 @@ void XConstraintGroup::unfoldArgumentNumber(int i, XConstraint *builtConstraint)
 }
 
 
+void XConstraintAllDiff::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+    XConstraint::unfoldParameters(group, arguments, original);
+    XValues::unfoldParameters(group, arguments, original);
+}
+
 void XConstraintAllDiffMatrix::unfoldParameters(XConstraintGroup *, vector<XVariable *> &, XConstraint *) {
     throw runtime_error("Group Alldiff Matrix and list is not yet supported");
 }

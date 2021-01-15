@@ -431,18 +431,24 @@ void XCSP3Manager::containsTrees(vector<XVariable *>&list, vector<Tree *>&trees)
 
 void XCSP3Manager::newConstraintAllDiff(XConstraintAllDiff *constraint) {
     vector<Tree *> trees;
-
     if(discardedClasses(constraint->classes))
         return;
-    if(constraint->except.size() == 0) {
+    if(constraint->values.size() == 0) {
         containsTrees(constraint->list, trees);
         if(trees.size() > 0) { // alldif over tree
             callback->buildConstraintAlldifferent(constraint->id, trees);
             return;
         }
         callback->buildConstraintAlldifferent(constraint->id, constraint->list);
-    } else
-        callback->buildConstraintAlldifferentExcept(constraint->id, constraint->list, constraint->except);
+    } else {
+        vector<int> except;
+        for(auto *xv:  constraint->values ) {
+            int v;
+            isInteger(xv, v);
+            except.push_back(v);
+        }
+        callback->buildConstraintAlldifferentExcept(constraint->id, constraint->list, except);
+    }
 }
 
 

@@ -559,8 +559,8 @@ void XMLParser::AllDiffEqualTagAction::endTag() {
                 } else {
                     // Alldiff classic
                     ct->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
-                    if(this->parser->integers.empty() == false)
-                        alldiff->except.assign(this->parser->integers.begin(), this->parser->integers.end());
+                    if(this->parser->values.empty() == false)
+                        alldiff->values.assign(this->parser->values.begin(), this->parser->values.end());
                     this->parser->manager->newConstraintAllDiff(alldiff);
                 }
             }
@@ -570,8 +570,8 @@ void XMLParser::AllDiffEqualTagAction::endTag() {
         }
         delete ct;
     } else {
-        if(this->parser->integers.empty() == false)
-            alldiff->except.assign(this->parser->integers.begin(), this->parser->integers.end());
+        if(this->parser->values.empty() == false)
+            alldiff->values.assign(this->parser->values.begin(), this->parser->values.end());
 
         ct->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     }

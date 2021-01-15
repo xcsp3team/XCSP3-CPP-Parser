@@ -449,7 +449,7 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
     registerTagAction(tagList, new MinimizeOrMaximizeTagAction(this, "minimize"));
     registerTagAction(tagList, new MinimizeOrMaximizeTagAction(this, "maximize"));
 
-    registerTagAction(tagList, new ListOfIntegerTagAction(this, "except"));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "except", this->values));
     registerTagAction(tagList, new MatrixTagAction(this, "matrix"));
 
     registerTagAction(tagList, new BlockTagAction(this, "block"));

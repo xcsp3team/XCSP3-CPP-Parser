@@ -238,12 +238,14 @@ namespace XCSP3Core {
      ***************************************************************************/
     extern vector<int> _except;
 
-    class XConstraintAllDiff : public XConstraint {
+    class XConstraintAllDiff : public XConstraint, public XValues {
+    // Values refer to except values
     public :
-        vector<int> &except;
 
 
-        XConstraintAllDiff(std::string idd, std::string c) : XConstraint(idd, c), except(_except) {}
+        XConstraintAllDiff(std::string idd, std::string c) : XConstraint(idd, c) {}
+        void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
+
     };
 
 
