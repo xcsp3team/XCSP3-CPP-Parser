@@ -278,7 +278,12 @@ namespace XCSP3Core {
             minmax = "Minimize";
         }
 
-    };
+        virtual void buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<int> &lengths, vector<int> &heights, XCondition &xc) {
+            nbc++;
+        }
+
+
+        };
 
 
 }
