@@ -220,11 +220,22 @@ void XMLParser::parseSequence(const UTF8String &txt, vector<XVariable *> &list, 
                 if(dotdot == string::npos) {
                     int nb;
                     try { // An integer
-                        nb = std::stoi(current);
-                        XInteger *xi = new XInteger(current, nb);
-                        list.push_back(xi);
-                        toFree.push_back(xi);
-
+                        vector<string> compact;
+                        split(current, 'x', compact);
+                        if(compact.size() == 2) {
+                            nb = std::stoi(compact[0]);
+                            int sz;
+                            sz = std::stoi(compact[1]);
+                            for(int k = 0; k < sz; k++) {
+                                XInteger *xi = new XInteger(compact[0], nb);
+                                list.push_back(xi);
+                            }
+                        } else {
+                            nb = std::stoi(current);
+                            XInteger *xi = new XInteger(current, nb);
+                            list.push_back(xi);
+                            toFree.push_back(xi);
+                        }
                     } catch(invalid_argument &e) {
                         if(variablesList[current] != NULL)
                             list.push_back((XVariable *) variablesList[current]);
