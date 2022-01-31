@@ -59,7 +59,9 @@ void XMLParser::startElement(UTF8String name, const AttributeList &attributes) {
     } else {
         // add a handler to ignore the text and end element
         action = unknownTagHandler;
-        cerr << "unknown tag " << name << endl;
+        std::string tmp;
+        name.to(tmp);
+        throw runtime_error("c unknown tag " + tmp);
     }
 
     stateStack.push_front(State());

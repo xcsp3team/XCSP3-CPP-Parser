@@ -74,7 +74,7 @@ int XCSP3CoreParser::parse(istream &in) {
     handler.endElement = endElement;
     handler.comment = comment;
 
-    try {
+
         xmlSubstituteEntitiesDefault(1);
 
         in.read(buffer.get(), bufSize);
@@ -97,14 +97,6 @@ int XCSP3CoreParser::parse(istream &in) {
 
             xmlCleanupParser();
         }
-    } catch( ... ) {
-        // ???
-        if ( parserCtxt && parserCtxt->input )
-           cout << "c Exception at line " << parserCtxt->input->line << endl;
-        else
-           cout << "c Exception at undefined line" << endl;
-        throw;
-    }
 
     return 0;
 }
