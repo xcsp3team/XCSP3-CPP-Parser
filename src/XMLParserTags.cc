@@ -339,6 +339,8 @@ void XMLParser::BasicConstraintTagAction::beginTag(const AttributeList &attribut
     this->parser->index = NULL;
     this->parser->index2 = NULL;
     this->parser->closed = true;
+    this->parser->listTag->nbCallsToList = 0;
+
 }
 
 
@@ -1462,10 +1464,11 @@ void XMLParser::ListTagAction::text(const UTF8String txt, bool) {
 void XMLParser::ListTagAction::endTag() {
     if(this->parser->getParentTagAction() != NULL &&
        strcmp(this->parser->getParentTagAction()->getTagName(), "slide") == 0) {
-        assert(this->parser->lists.size() == 1);
+        if(nbCallsToList > 1)
+            throw runtime_error("Multiple lists in slide constraint is not yet supported");
+
         SlideTagAction *sl = ((XMLParser::SlideTagAction *) this->parser->getParentTagAction());
         sl->list.insert(sl->list.begin(), this->parser->lists[0].begin(), this->parser->lists[0].end());
-        nbCallsToList = 0;
         this->parser->lists[0].clear(); // for sure.
     }
 
