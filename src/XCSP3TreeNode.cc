@@ -143,8 +143,8 @@ NodeOperator *createNodeOperator(std::string op) {
     if(op == "notin") tmp = new NodeNotIn();
     if(op == "set") tmp = new NodeSet();
 
-    assert(tmp != nullptr);
-
+    if(tmp == nullptr)
+        throw std::runtime_error("in expression, unexpected keyword " + op);
     return tmp;
 }
 
