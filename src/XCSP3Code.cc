@@ -594,6 +594,16 @@ void XConstraintClause::unfoldParameters(XConstraintGroup *group, vector<XVariab
     }
 }
 
+
+
+void XConstraintPrecedence::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+    XConstraintPrecedence *xc = dynamic_cast<XConstraintPrecedence *>(original);
+    XConstraint::unfoldParameters(group, arguments, original);
+    XValues::unfoldParameters(group, arguments, original);
+}
+
+
+
 //------------------------------------------------------------------------------------------
 //  XCSP3Utils.h functions
 //------------------------------------------------------------------------------------------

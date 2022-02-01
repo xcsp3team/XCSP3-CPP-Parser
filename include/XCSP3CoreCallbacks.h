@@ -2088,6 +2088,24 @@ namespace XCSP3Core {
             throw runtime_error("circuit constraint not yet supported");
         }
 
+        /**
+         * The callback function related to precedence   constraint with defined variable size
+         *
+         * Example:
+         * <precedence class="symmetry-breaking">
+         * <list> x[][] </list>
+         * <values> 1 2 </values>
+         * </precedence>
+         *
+         * @param id the id (name) of the constraint
+         * @param list the list of variables (not necessary the scope)
+         * @param values the different vaules
+         */
+        virtual void buildConstraintPrecedence(string id, vector<XVariable *> &list, vector<int> values) {
+            (void)id; (void)list; (void)values;
+            throw runtime_error("precedence constraint not yet supported");
+        }
+
 //--------------------------------------------------------------------------------------
 // Objectives
 //--------------------------------------------------------------------------------------

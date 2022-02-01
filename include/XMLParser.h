@@ -953,6 +953,21 @@ namespace XCSP3Core {
             void endTag() override;
         };
 
+        /***************************************************************************
+         * Actions performed on  PRECEDENCE tag
+        ****************************************************************************/
+
+
+        class PrecedenceTagAction : public BasicConstraintTagAction {
+            XConstraintPrecedence *constraint;
+        public:
+            PrecedenceTagAction(XMLParser *parser, string name) : BasicConstraintTagAction(parser, name) { }
+            void beginTag(const AttributeList &attributes) override;
+            void text(const UTF8String txt, bool last) override;
+            void endTag() override;
+        };
+
+
 
         /***************************************************************************
          * Actions performed on  ANNOTATIONS TAG

@@ -1060,6 +1060,24 @@ void XCSP3Manager::newConstraintCircuit(XConstraintCircuit *constraint) {
 
 
 //--------------------------------------------------------------------------------------
+// Graph  constraints
+//--------------------------------------------------------------------------------------
+
+void XCSP3Manager::newConstraintPrecedence(XConstraintPrecedence *constraint) {
+    if(discardedClasses(constraint->classes))
+        return;
+
+    vector<int> values;
+    int v;
+    for(XEntity *xe : constraint->values) {
+        isInteger(xe, v);
+        values.push_back(v);
+    }
+
+        callback->buildConstraintPrecedence(constraint->id, constraint->list, values);
+}
+
+//--------------------------------------------------------------------------------------
 // group constraints
 //--------------------------------------------------------------------------------------
 

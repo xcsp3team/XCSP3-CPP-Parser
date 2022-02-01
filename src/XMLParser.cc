@@ -471,6 +471,7 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
     registerTagAction(tagList, new CircuitTagAction(this, "circuit"));
     registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "size", this->values));
 
+    registerTagAction(tagList, new PrecedenceTagAction(this, "precedence"));
 
 }
 

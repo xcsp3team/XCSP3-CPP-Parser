@@ -263,6 +263,11 @@ namespace XCSP3Core {
 
         void newConstraintCircuit(XConstraintCircuit *constraint);
 
+        //--------------------------------------------------------------------------------------
+        // Precedence  constraints
+        //--------------------------------------------------------------------------------------
+
+        void newConstraintPrecedence(XConstraintPrecedence *constraint);
 
         //--------------------------------------------------------------------------------------
         // block of  constraints

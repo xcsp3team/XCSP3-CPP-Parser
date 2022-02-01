@@ -225,6 +225,7 @@ namespace XCSP3Core {
 
         virtual void buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex, XVariable *size) override;
 
+        virtual void buildConstraintPrecedence(string id, vector<XVariable *> &list, vector<int> values) override;
 
         virtual void buildObjectiveMinimizeExpression(string expr) override;
 
@@ -1098,6 +1099,15 @@ void XCSP3PrintCallbacks::buildConstraintCircuit(string, vector<XVariable *> &li
     cout << "        size: " << size->id << endl;
 }
 
+void XCSP3PrintCallbacks::buildConstraintPrecedence(string id, vector<XVariable *> &list, vector<int> values) {
+    cout << "\n    Precedence constraint" << endl;
+    cout << "        list:";
+    displayList(list);
+    cout << "        values: ";
+    displayList(values);
+
+
+}
 
 void XCSP3PrintCallbacks::buildObjectiveMinimizeExpression(string expr) {
 

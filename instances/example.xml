@@ -30,10 +30,17 @@
     </variables>
     <constraints>
 
+      <precedence class="symmetry-breaking">
+        <list> y[][] </list>
+        <values> 1 2 </values>
+      </precedence>
+
+
+
       <clause> r not(s) t</clause>
       <clause> r not(s)  not(t)</clause>
       <clause> not(r)    not(s)  t</clause>
-<intension>eq(add(x,3),5,4)</intension>
+<intension>eq(add(x,3),5)</intension>
 
 <count id="c4">  <!-- atMost -->
   <list> y[][1] </list>

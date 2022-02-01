@@ -553,6 +553,15 @@ namespace XCSP3Core {
 
     };
 
+
+    class XConstraintPrecedence :  public XConstraint, public XValues {
+
+        void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
+
+    public:
+        XConstraintPrecedence(std::string idd, std::string c) : XConstraint(idd, c) {}
+    };
+
 }
 
 

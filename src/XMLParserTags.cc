@@ -1131,6 +1131,42 @@ void XMLParser::CircuitTagAction::endTag() {
     }
 }
 
+/***************************************************************************
+****************************************************************************
+ *                  CPRECEDENCE CONSTRAINT
+****************************************************************************
+***************************************************************************/
+
+void XMLParser::PrecedenceTagAction::beginTag(const AttributeList &attributes) {
+    BasicConstraintTagAction::beginTag(attributes);
+
+    constraint = new XConstraintPrecedence(this->id, this->parser->classes);
+
+    // Link constraint to group
+    if(this->group != NULL) {
+        this->group->constraint = constraint;
+        this->group->type = PRECEDENCE;
+    }
+    this->parser->values.clear();
+}
+
+
+// UTF8String txt, bool last
+void XMLParser::PrecedenceTagAction::text(const UTF8String txt, bool) {
+    this->parser->parseSequence(txt, this->parser->lists[0]);
+}
+
+
+void XMLParser::PrecedenceTagAction::endTag() {
+    constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
+    constraint->values.assign(this->parser->values.begin(), this->parser->values.end());
+
+    if(this->group == NULL) {
+        this->parser->manager->newConstraintPrecedence(constraint);
+        delete constraint;
+    }
+}
+
 
 /***************************************************************************
  ****************************************************************************
