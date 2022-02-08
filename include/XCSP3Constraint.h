@@ -491,6 +491,18 @@ namespace XCSP3Core {
     };
 
     /***************************************************************************
+     * constraint BinPacking
+     **************************************************************************/
+    class XConstraintBinPacking : public XConstraint, public XValues, public XInitialCondition {
+    public :
+
+
+
+        XConstraintBinPacking(std::string idd, std::string c) : XConstraint(idd, c) {}
+
+        void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
+    };
+    /***************************************************************************
      * constraint stretch
      **************************************************************************/
 

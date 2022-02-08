@@ -1088,6 +1088,39 @@ void XMLParser::CumulativeTagAction::endTag() {
 
 
 /***************************************************************************
+   * Actions performed on BinPAcking tag
+   ****************************************************************************/
+
+
+void XMLParser::BinPackingTagAction::beginTag(const AttributeList &attributes) {
+
+    // Must be called inside a constraint
+    BasicConstraintTagAction::beginTag(attributes);
+
+    constraint = new XConstraintBinPacking(this->id, this->parser->classes);
+
+    // Link constraint to group
+    if(this->group != NULL) {
+        this->group->constraint = constraint;
+        this->group->type = BINPACKING;
+    }
+}
+
+
+void XMLParser::BinPackingTagAction::endTag() {
+    constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
+    constraint->values.assign(this->parser->values.begin(), this->parser->values.end());
+    constraint->condition = this->parser->condition;
+
+
+    if(this->group == NULL) {
+        this->parser->manager->newConstraintBinPacking(constraint);
+        delete constraint;
+    }
+}
+
+
+/***************************************************************************
 ****************************************************************************
  *                  CONSTRAINTS DEFINED ON GRAPHS
 ****************************************************************************

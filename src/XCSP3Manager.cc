@@ -1017,6 +1017,27 @@ void XCSP3Manager::newConstraintCumulative(XConstraintCumulative *constraint) {
         callback->buildConstraintCumulative(constraint->id, constraint->origins, varLengths, varHeights, constraint->ends, xc);
 }
 
+
+
+
+void XCSP3Manager::newConstraintBinPacking(XConstraintBinPacking *constraint) {
+    if(discardedClasses(constraint->classes))
+        return;
+    int v;
+    vector<int> sizes;
+
+    for(XEntity *xe : constraint->values) {
+        if(isInteger(xe, v))
+            sizes.push_back(v);
+        else
+            throw runtime_error("in binPacking constraint: sizes must be integers");
+    }
+
+    XCondition xc;
+    constraint->extractCondition(xc);
+    callback->buildConstraintBinPacking(constraint->id, constraint->list, sizes, xc);
+}
+
 //--------------------------------------------------------------------------------------
 // Instantiation  constraint
 //--------------------------------------------------------------------------------------

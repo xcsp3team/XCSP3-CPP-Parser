@@ -565,6 +565,14 @@ void XConstraintCumulative::unfoldParameters(XConstraintGroup *group, vector<XVa
 }
 
 
+void XConstraintBinPacking::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+    XConstraintBinPacking *xc = dynamic_cast<XConstraintBinPacking *>(original);
+    XConstraint::unfoldParameters(group, arguments, original);
+    XValues::unfoldParameters(group, arguments, original);
+    XInitialCondition::unfoldParameters(group, arguments, original);
+}
+
+
 void XConstraintStretch::unfoldParameters(XConstraintGroup *, vector<XVariable *> &, XConstraint *) {
     throw runtime_error("group is not yet allowed with stretch constraint");
 }

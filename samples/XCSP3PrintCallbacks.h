@@ -227,6 +227,8 @@ namespace XCSP3Core {
 
         virtual void buildConstraintPrecedence(string id, vector<XVariable *> &list, vector<int> values) override;
 
+        virtual void buildConstraintBinPacking(string id, vector<XVariable *> &list, vector<int> &sizes, XCondition &cond) override;
+
         virtual void buildObjectiveMinimizeExpression(string expr) override;
 
         virtual void buildObjectiveMaximizeExpression(string expr) override;
@@ -1105,8 +1107,18 @@ void XCSP3PrintCallbacks::buildConstraintPrecedence(string id, vector<XVariable 
     displayList(list);
     cout << "        values: ";
     displayList(values);
+}
 
 
+void XCSP3PrintCallbacks::buildConstraintBinPacking(string id, vector<XVariable *> &list, vector<int> &sizes,
+                                                    XCondition &cond) {
+
+    cout << "\n    BinPacking constraint" << endl;
+    cout << "        list:";
+    displayList(list);
+    cout << "        sizes: ";
+    displayList(sizes);
+    cout << "        condition:" << cond << endl;
 }
 
 void XCSP3PrintCallbacks::buildObjectiveMinimizeExpression(string expr) {

@@ -244,7 +244,7 @@ namespace XCSP3Core {
         void newConstraintCumulative(XConstraintCumulative *constraint);
 
 
-
+        void newConstraintBinPacking(XConstraintBinPacking *constraint);
         //--------------------------------------------------------------------------------------
         // Instantiation  constraint
         //--------------------------------------------------------------------------------------

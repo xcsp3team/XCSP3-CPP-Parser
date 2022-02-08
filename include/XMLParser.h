@@ -641,7 +641,17 @@ namespace XCSP3Core {
             void endTag() override;
         };
 
+        /***************************************************************************
+           * Actions performed on binPacking tag
+           ****************************************************************************/
 
+        class BinPackingTagAction : public BasicConstraintTagAction {
+        public:
+            XConstraintBinPacking *constraint;
+            BinPackingTagAction(XMLParser *parser, string name) : BasicConstraintTagAction(parser, name) { }
+            void beginTag(const AttributeList &attributes) override;
+            void endTag() override;
+        };
         /***************************************************************************
          ****************************************************************************
           *                            OBJECTIVES

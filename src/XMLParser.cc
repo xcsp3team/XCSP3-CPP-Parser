@@ -448,6 +448,9 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
 
     registerTagAction(tagList, new OperatorTagAction(this, "operator"));
 
+    registerTagAction(tagList, new BinPackingTagAction(this, "binPacking"));
+
+
     registerTagAction(tagList, new RegularTagAction(this, "regular"));
     registerTagAction(tagList, new MDDTagAction(this, "mdd"));
     registerTagAction(tagList, new StringTagAction(this, "start"));
@@ -470,6 +473,7 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
 
     registerTagAction(tagList, new CircuitTagAction(this, "circuit"));
     registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "size", this->values));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "sizes", this->values));
 
     registerTagAction(tagList, new PrecedenceTagAction(this, "precedence"));
 

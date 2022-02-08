@@ -1977,6 +1977,12 @@ namespace XCSP3Core {
             throw runtime_error("cumulative (var lengths, var heights, ends) constraint is not yet supported");
         }
 
+
+
+        virtual void buildConstraintBinPacking(string id, vector<XVariable *> &list, vector<int> &sizes, XCondition &cond) {
+            (void)id; (void)list; (void)sizes; (void)cond;
+            throw runtime_error("binPacking constraint  is not yet supported");
+        }
 //--------------------------------------------------------------------------------------
 // instantiation constraints
 //--------------------------------------------------------------------------------------
