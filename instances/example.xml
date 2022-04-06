@@ -269,9 +269,11 @@ x[2]   x[3] </list>
 
 
 
-      <allEqual>
-        mul(0,eq(lg[0],0)) mul(0,eq(lg[1],0)) mul(0,eq(lg[2],0))
-      </allEqual>
+
+      <nValues>
+        <list>mul(0,eq(lg[0],0)) mul(0,eq(lg[1],0)) mul(0,eq(lg[2],0))</list>
+        <condition>(eq,4)</condition>
+      </nValues>
   </constraints>
 
  <objectives>

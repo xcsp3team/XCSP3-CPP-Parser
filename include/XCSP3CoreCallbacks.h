@@ -1114,6 +1114,24 @@ namespace XCSP3Core {
             throw runtime_error("NValues with exception constraint is not yet supported");
         }
 
+        /**
+         * The callback function related to a nValues constraint with expressions
+         * See http://xcsp.org/specifications/nValues
+         * Example:
+         * <nValues id="c3">
+         *   <list> eq(z1,5) ne(z2,4) </list>
+         *    <condition> (eq,2) </condition>
+         * </nValues>
+         *
+         * @param id the id (name) of the constraint
+         * @param list the scope of the constraint
+         * @param except the set of excepted values
+         * @param xc the condition (see #XCondition)
+         */
+        virtual void buildConstraintNValues(string id, vector<Tree *> &trees, XCondition &xc) {
+            (void)id; (void)trees;  (void)xc;
+            throw runtime_error("NValues with expressions constraint is not yet supported");
+        }
 
         /**
          * The callback function related to a nValues constraint with exception

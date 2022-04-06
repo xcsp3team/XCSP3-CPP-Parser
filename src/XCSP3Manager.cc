@@ -678,9 +678,14 @@ void XCSP3Manager::newConstraintNValues(XConstraintNValues *constraint) {
     XCondition xc;
     constraint->extractCondition(xc);
 
+    vector<Tree *> trees;
+    containsTrees(constraint->list, trees);
+
     // Special NotAllEqual case
     if(callback->recognizeNValuesCases && xc.operandType == INTEGER && constraint->except.size() == 0
        && ((xc.op == GE && xc.val == 2) || (xc.op == GT && xc.val == 1))) {
+        if(trees.size() > 0)
+            throw runtime_error("Not all Equal with expressions not yet implemented");
         callback->buildConstraintNotAllEqual(constraint->id, constraint->list);
         return;
     }
@@ -688,21 +693,33 @@ void XCSP3Manager::newConstraintNValues(XConstraintNValues *constraint) {
     // Special AllEqual case
     if(callback->recognizeNValuesCases && xc.operandType == INTEGER &&
        constraint->except.size() == 0 && (xc.op == OrderType::EQ && xc.val == 1)) {
-        callback->buildConstraintAllEqual(constraint->id, constraint->list);
+        if(trees.size() > 0)
+            callback->buildConstraintAllEqual(constraint->id, trees);
+        else
+            callback->buildConstraintAllEqual(constraint->id, constraint->list);
         return;
     }
 
     // Special AllDiff case
     if(callback->recognizeNValuesCases && xc.operandType == INTEGER && constraint->except.size() == 0
        && (xc.op == OrderType::EQ && ((unsigned int) xc.val) == constraint->list.size())) {
-        callback->buildConstraintAlldifferent(constraint->id, constraint->list);
+        if(trees.size() > 0)
+            callback->buildConstraintAlldifferent(constraint->id, trees);
+        else
+            callback->buildConstraintAlldifferent(constraint->id, constraint->list);
         return;
     }
 
     if(constraint->except.size() == 0) {
-        callback->buildConstraintNValues(constraint->id, constraint->list, xc);
+
+        if(trees.size() >0)
+            callback->buildConstraintNValues(constraint->id, trees, xc);
+        else
+            callback->buildConstraintNValues(constraint->id, constraint->list, xc);
         return;
     }
+    if(trees.size() > 0)
+        throw runtime_error("NVAlues with expression and expect not yet implemented");
     callback->buildConstraintNValues(constraint->id, constraint->list, constraint->except, xc);
 }
 
