@@ -469,6 +469,13 @@ void XCSP3Manager::newConstraintAllDiffList(XConstraintAllDiffList *constraint) 
 void XCSP3Manager::newConstraintAllEqual(XConstraintAllEqual *constraint) {
     if(discardedClasses(constraint->classes))
         return;
+    vector<Tree *> trees;
+    containsTrees(constraint->list, trees);
+    if(trees.size() > 0) { // alldif over tree
+        callback->buildConstraintAllEqual(constraint->id, trees);
+        return;
+    }
+
     callback->buildConstraintAllEqual(constraint->id, constraint->list);
 }
 
