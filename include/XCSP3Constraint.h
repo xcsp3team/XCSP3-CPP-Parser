@@ -106,7 +106,6 @@ namespace XCSP3Core {
     public :
         string condition;
 
-
         virtual void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original);
         void extractCondition(XCondition &xc);  // Create the op and the operand (which can be a value, an interval or a XVariable)
     };
@@ -401,7 +400,7 @@ namespace XCSP3Core {
      * constraint element
      **************************************************************************/
 
-    class XConstraintElement : public XConstraint, public XIndex, public XValue {
+    class XConstraintElement : public XConstraint, public XIndex, public XValue, public XInitialCondition {
     public :
         int startIndex;
         RankType rank;

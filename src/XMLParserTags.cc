@@ -890,9 +890,10 @@ void XMLParser::ElementTagAction::endTag() {
     constraint->index = this->parser->index;
     constraint->rank = this->parser->rank;
 
-    if(this->parser->values.size() != 1)
-        throw runtime_error("<element> tag should have one value");
-    constraint->value = this->parser->values[0];
+    if(this->parser->values.size() == 0)
+        constraint->condition = this->parser->condition;
+    else
+        constraint->value = this->parser->values[0];
 
     XConstraintElementMatrix *c  = nullptr;
     if(this->parser->matrix.size() > 0) {

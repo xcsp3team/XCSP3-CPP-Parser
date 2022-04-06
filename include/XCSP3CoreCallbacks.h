@@ -1408,6 +1408,11 @@ namespace XCSP3Core {
         }
 
 
+        virtual void buildConstraintElement(string id, vector<XVariable *> &list, XVariable *index, int startIndex, XCondition &xc) {
+            (void)id; (void)list;(void)index;(void)startIndex;(void)xc;
+            throw runtime_error("Element constraint with condition is not yet supported");
+
+        }
          /**
          * The callback function related to a element constraint matrix
          * See http://xcsp.org/specifications/element

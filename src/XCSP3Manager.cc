@@ -814,7 +814,14 @@ void XCSP3Manager::newConstraintElement(XConstraintElement *constraint) {
             listOfIntegers.push_back(v);
         }
     }
-
+    if(constraint->value == nullptr) {
+        if(listOfIntegers.size() > 0)
+            throw runtime_error("Not yet supported");
+        XCondition xc;
+        constraint->extractCondition(xc);
+        callback->buildConstraintElement(constraint->id, constraint->list, constraint->index, constraint->startIndex, xc);
+        return;
+    }
 
     if(isInteger(constraint->value, v)) {
         if(constraint->index == NULL) {
