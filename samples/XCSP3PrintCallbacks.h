@@ -231,6 +231,8 @@ namespace XCSP3Core {
 
         void buildConstraintBinPacking(string id, vector<XVariable *> &list, vector<int> &sizes, XCondition &cond) override;
 
+        void buildConstraintFlow(string id, vector<XVariable *> &list, vector<int> balance, vector<int> weights, vector<vector<int> > arcs, XCondition &xc) override;
+
         void buildObjectiveMinimizeExpression(string expr) override;
 
         void buildObjectiveMaximizeExpression(string expr) override;
@@ -1130,6 +1132,22 @@ void XCSP3PrintCallbacks::buildConstraintBinPacking(string id, vector<XVariable 
     cout << "        sizes: ";
     displayList(sizes);
     cout << "        condition:" << cond << endl;
+}
+
+
+void XCSP3PrintCallbacks::buildConstraintFlow(string id, vector<XVariable *> &list, vector<int> balance, vector<int> weights, vector<vector<int> > arcs, XCondition &cond) {
+    cout << "\n    Flow constraint" << endl;
+    cout << "        list:";
+    displayList(list);
+    cout << "        balance: ";
+    displayList(balance);
+    cout << "        weights: ";
+    displayList(weights);
+    cout << "        arcs: ";
+    cout << "("<<arcs[0][0] << "," << arcs[0][1] << ") ... (" << arcs.back()[0] << "," << arcs.back()[1]<<")" <<endl;
+
+    cout << "        condition:" << cond << endl;
+
 }
 
 void XCSP3PrintCallbacks::buildObjectiveMinimizeExpression(string expr) {

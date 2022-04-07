@@ -270,6 +270,12 @@ namespace XCSP3Core {
         void newConstraintPrecedence(XConstraintPrecedence *constraint);
 
         //--------------------------------------------------------------------------------------
+        // Flow constraint
+        //--------------------------------------------------------------------------------------
+
+        void newConstraintFlow(XConstraintFlow *constraint);
+
+        //--------------------------------------------------------------------------------------
         // block of  constraints
         //--------------------------------------------------------------------------------------
         void beginBlock(string classes) {

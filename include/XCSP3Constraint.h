@@ -576,11 +576,11 @@ namespace XCSP3Core {
 
     class XConstraintFlow :  public XConstraint, public XInitialCondition {
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
-        vector<vector<int> > arcs;
-        vector<int>balance;
-        vector<int> weights;
-
     public:
+        vector<vector<int> > arcs;
+        vector<XVariable *>balance;
+        vector<XVariable *> weights;
+
         XConstraintFlow(std::string idd, std::string c) : XConstraint(idd, c) {}
     };
 

@@ -982,10 +982,10 @@ namespace XCSP3Core {
          * Actions performed on  Flow TAG
          ****************************************************************************/
 
-        class FlowTagAction : public TagAction {
+        class FlowTagAction : public BasicConstraintTagAction {
             XConstraintFlow *constraint;
         public:
-            FlowTagAction(XMLParser *parser, string name) : TagAction(parser, name) { }
+            FlowTagAction(XMLParser *parser, string name) : BasicConstraintTagAction(parser, name) { }
             void beginTag(const AttributeList &attributes) override;
             void endTag() override;
         };
@@ -1011,18 +1011,7 @@ namespace XCSP3Core {
             void endTag() override;
         };
 
-
-
-
-
-        class DecisionTagAction : public TagAction {
-            vector<XVariable *> list;
-        public:
-            DecisionTagAction(XMLParser *parser, string name) : TagAction(parser, name) { }
-            void beginTag(const AttributeList &attributes) override;
-            void text(const UTF8String txt, bool last) override;
-            void endTag() override;
-        };
+        
 
 
     public:

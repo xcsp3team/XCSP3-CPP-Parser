@@ -1181,6 +1181,30 @@ void XCSP3Manager::newConstraintPrecedence(XConstraintPrecedence *constraint) {
     callback->buildConstraintPrecedence(constraint->id, constraint->list, values);
 }
 
+
+//--------------------------------------------------------------------------------------
+// Flow  constraints
+//--------------------------------------------------------------------------------------
+
+void XCSP3Manager::newConstraintFlow(XConstraintFlow *constraint) {
+    if (discardedClasses(constraint->classes))
+        return;
+
+    vector<int> balance, weights;
+    int v;
+    for (XEntity *xe: constraint->balance) {
+        isInteger(xe, v);
+        balance.push_back(v);
+    }
+    for (XEntity *xe: constraint->weights) {
+        isInteger(xe, v);
+        weights.push_back(v);
+    }
+    XCondition xc;
+    constraint->extractCondition(xc);
+    callback->buildConstraintFlow(constraint->id, constraint->list, balance, weights, constraint->arcs, xc);
+}
+
 //--------------------------------------------------------------------------------------
 // group constraints
 //--------------------------------------------------------------------------------------
@@ -1277,6 +1301,8 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             unfoldConstraint<XConstraintCircuit>(group, i, &XCSP3Manager::newConstraintCircuit);
         if (group->type == CUMULATIVE)
             unfoldConstraint<XConstraintCumulative>(group, i, &XCSP3Manager::newConstraintCumulative);
+        if (group->type == FLOW)
+            unfoldConstraint<XConstraintFlow>(group, i, &XCSP3Manager::newConstraintFlow);
 
         if (group->type == UNKNOWN) {
             throw runtime_error("Group constraint is badly defined");
