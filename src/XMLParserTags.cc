@@ -321,6 +321,7 @@ void XMLParser::BasicConstraintTagAction::beginTag(const AttributeList &attribut
     this->parser->lists.push_back(vector<XVariable *>());
     this->parser->matrix.clear();
     this->parser->patterns.clear();
+    this->parser->weights.clear();
 
 
     this->parser->integers.clear();
@@ -1197,6 +1198,49 @@ void XMLParser::PrecedenceTagAction::endTag() {
 
     if(this->group == NULL) {
         this->parser->manager->newConstraintPrecedence(constraint);
+        delete constraint;
+    }
+}
+
+
+
+void XMLParser::FlowTagAction::beginTag(const AttributeList &attributes) {
+    BasicConstraintTagAction::beginTag(attributes);
+
+    constraint = new XConstraintFlow(this->id, this->parser->classes);
+
+    // Link constraint to group
+    if(this->group != NULL) {
+        this->group->constraint = constraint;
+        this->group->type = FLOW;
+    }
+}
+
+
+
+
+void XMLParser::FlowTagAction::endTag() {
+    constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
+    constraint->balance.assign(this->parser->values.begin(), this->parser->values.end());
+    constraint->weights.assign(this->parser->weights.begin(), this->parser->weights.end());
+    constraint->condition = this->parser->condition;
+
+    std::cout << this->parser->lengths.size() << std::endl;
+
+    int v=0;
+    int i = 0;
+    for (XEntity *xe: this->parser->lengths) {
+
+        if(isInteger(xe, v)) { // Horrible, but too lazy....
+            if(i%2 == 0)
+                constraint->arcs.push_back(vector<int>());
+            i++;
+            constraint->arcs.back().push_back(v);
+        }
+    }
+
+    if(this->group == NULL) {
+        this->parser->manager->newConstraintFlow(constraint);
         delete constraint;
     }
 }

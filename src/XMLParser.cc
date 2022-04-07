@@ -477,6 +477,13 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
 
     registerTagAction(tagList, new PrecedenceTagAction(this, "precedence"));
 
+
+    // Flow
+    registerTagAction(tagList, new FlowTagAction(this, "flow"));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "balance", this->values));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "weights", this->weights));
+    registerTagAction(tagList, new OriginsTagAction(this, "arcs", this->lengths));
+
 }
 
 

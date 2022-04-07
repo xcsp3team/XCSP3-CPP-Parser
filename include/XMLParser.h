@@ -197,6 +197,7 @@ namespace XCSP3Core {
         vector<XVariable *> args;   // used to store a list of args
         vector<XVariable *> values; // used to store a list of variables
         vector<XVariable *> occurs;   // used in cardinality
+        vector<XVariable *> weights;   // used in flow
 
         vector<int> integers;  // used to store a list of coefficients
 
@@ -977,7 +978,17 @@ namespace XCSP3Core {
             void endTag() override;
         };
 
+        /***************************************************************************
+         * Actions performed on  Flow TAG
+         ****************************************************************************/
 
+        class FlowTagAction : public BasicConstraintTagAction {
+            XConstraintFlow *constraint;
+        public:
+            FlowTagAction(XMLParser *parser, string name) : BasicConstraintTagAction(parser, name) { }
+            void beginTag(const AttributeList &attributes) override;
+            void endTag() override;
+        };
 
         /***************************************************************************
          * Actions performed on  ANNOTATIONS TAG
@@ -999,6 +1010,8 @@ namespace XCSP3Core {
             void text(const UTF8String txt, bool last) override;
             void endTag() override;
         };
+
+        
 
 
     public:

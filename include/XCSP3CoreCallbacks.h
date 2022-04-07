@@ -2195,6 +2195,20 @@ namespace XCSP3Core {
             throw runtime_error("precedence constraint not yet supported");
         }
 
+
+        /**
+         * The callback function related to flow  constraint
+         *
+         * @param id the id (name) of the constraint
+         * @param list the list of variables (not necessary the scope)
+         * @param balance the different vaules
+         * @param weights the different vaules
+         * @param arcs the different vaules
+         */
+        virtual void buildConstraintFlow(string id, vector<XVariable *> &list, vector<int> balance, vector<int> weights, vector<vector<int> > arcs, XCondition &xc) {
+            (void)id; (void)list; (void)balance; (void) weights; (void) arcs; (void) xc;
+            throw runtime_error("flow constraint not yet supported");
+        }
 //--------------------------------------------------------------------------------------
 // Objectives
 //--------------------------------------------------------------------------------------
