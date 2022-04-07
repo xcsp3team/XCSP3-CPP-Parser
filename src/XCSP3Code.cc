@@ -613,6 +613,11 @@ void XConstraintPrecedence::unfoldParameters(XConstraintGroup *group, vector<XVa
     XValues::unfoldParameters(group, arguments, original);
 }
 
+void XConstraintFlow::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+    XConstraint::unfoldParameters(group, arguments, original);
+    XInitialCondition::unfoldParameters(group, arguments, original);
+}
+
 
 
 //------------------------------------------------------------------------------------------

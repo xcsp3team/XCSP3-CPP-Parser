@@ -573,6 +573,19 @@ namespace XCSP3Core {
         XConstraintPrecedence(std::string idd, std::string c) : XConstraint(idd, c) {}
     };
 
+
+    class XConstraintFlow :  public XConstraint, public XInitialCondition {
+        void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
+        vector<vector<int> > arcs;
+        vector<int>balance;
+        vector<int> weights;
+
+    public:
+        XConstraintFlow(std::string idd, std::string c) : XConstraint(idd, c) {}
+    };
+
+
+
 }
 
 
