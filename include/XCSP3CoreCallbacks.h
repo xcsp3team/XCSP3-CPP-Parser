@@ -1076,6 +1076,49 @@ namespace XCSP3Core {
             throw runtime_error("count with variables values constraint is not yet supported");
         }
 
+        /**
+         * The callback function related to a count constraint with expressions
+         * See http://xcsp.org/specifications/count
+         * Example:
+         * <count id="c1">
+         *     <list> eq(x,1) ne(z,2) </list>
+         *     <values> 2 </values>
+         *     <condition> (ne,k1) </condition>
+         * </count>
+         *
+         * @param id the id (name) of the constraint
+         * @param trees the trees
+         * @param value the set of  integer values
+         * @param k the  number of variables
+         * @param xc the condition (see #XCondition)
+         */
+        virtual void buildConstraintCount(string id, vector<Tree*> &trees, vector<int> &values, XCondition &xc) {
+            (void) id; (void) trees; (void) values; (void) xc;
+            throw runtime_error("count with trees and integer values is not yet supported");
+        }
+
+
+        /**
+         * The callback function related to a count constraint with expressions
+         * See http://xcsp.org/specifications/count
+         * Example:
+         * <count id="c1">
+         *     <list> eq(x,1) ne(z,2) </list>
+         *     <values> x1 </values>
+         *     <condition> (ne,k1) </condition>
+         * </count>
+         *
+         * @param id the id (name) of the constraint
+         * @param trees the trees
+         * @param value the set of  Variable values
+         * @param k the  number of variables
+         * @param xc the condition (see #XCondition)
+         */
+        virtual void buildConstraintCount(string id, vector<Tree*> &trees, vector<XVariable *> &values, XCondition &xc) {
+            (void) id; (void) trees; (void) values; (void) xc;
+            throw runtime_error("count with trees and variables values is not yet supported");
+        }
+
 
         /**
          * The callback function related to a nValues constraint with exception
