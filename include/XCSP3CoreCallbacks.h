@@ -681,6 +681,23 @@ namespace XCSP3Core {
 
 
         /**
+         * The callback function related to a allEqual constraint with expression
+         * See http://xcsp.org/specifications/allEqual
+         *
+         * Example:
+         * <allEqual>
+         *   add(q[0],0) add(q[1],1) add(q[2],2) add(q[3],3) add(q[4],4) add(q[5],5) add(q[6],6) add(q[7],7)
+         * </allEqual>
+         *
+         * @param id the id (name) of the constraint
+         * @param list the trees of the constraint
+          */
+        virtual void buildConstraintAllEqual(string id, vector<Tree *> &list) {
+            (void)id; (void)list;
+            throw runtime_error("AllEqual constraint with expression is not yet supported");
+        }
+
+        /**
          * The callback function related to a not all equal constraint
          * This is a special case of nvalues constraint
          * Recognized if #recognizeNValuesCases is enabled (this is the case by default)
@@ -1140,6 +1157,24 @@ namespace XCSP3Core {
             throw runtime_error("NValues with exception constraint is not yet supported");
         }
 
+        /**
+         * The callback function related to a nValues constraint with expressions
+         * See http://xcsp.org/specifications/nValues
+         * Example:
+         * <nValues id="c3">
+         *   <list> eq(z1,5) ne(z2,4) </list>
+         *    <condition> (eq,2) </condition>
+         * </nValues>
+         *
+         * @param id the id (name) of the constraint
+         * @param list the scope of the constraint
+         * @param except the set of excepted values
+         * @param xc the condition (see #XCondition)
+         */
+        virtual void buildConstraintNValues(string id, vector<Tree *> &trees, XCondition &xc) {
+            (void)id; (void)trees;  (void)xc;
+            throw runtime_error("NValues with expressions constraint is not yet supported");
+        }
 
         /**
          * The callback function related to a nValues constraint with exception
@@ -1451,6 +1486,11 @@ namespace XCSP3Core {
         }
 
 
+        virtual void buildConstraintElement(string id, vector<XVariable *> &list, XVariable *index, int startIndex, XCondition &xc) {
+            (void)id; (void)list;(void)index;(void)startIndex;(void)xc;
+            throw runtime_error("Element constraint with condition is not yet supported");
+
+        }
          /**
          * The callback function related to a element constraint matrix
          * See http://xcsp.org/specifications/element

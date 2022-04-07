@@ -512,7 +512,10 @@ void XConstraintElement::unfoldParameters(XConstraintGroup *group, vector<XVaria
     XConstraintElement *xc = dynamic_cast<XConstraintElement *>(original);
     XConstraint::unfoldParameters(group, arguments, original);
     XIndex::unfoldParameters(group, arguments, original);
-    XValue::unfoldParameters(group, arguments, original);
+    if(xc->value != nullptr)
+        XValue::unfoldParameters(group, arguments, original);
+    else
+        XInitialCondition::unfoldParameters(group, arguments, original);
     startIndex = xc->startIndex;
     rank = xc->rank;
 }
