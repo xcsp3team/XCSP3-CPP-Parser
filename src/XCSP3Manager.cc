@@ -658,7 +658,7 @@ void XCSP3Manager::newConstraintCount(XConstraintCount *constraint) {
             callback->buildConstraintAtLeast(constraint->id, constraint->list, value, xc.val);
             return;
         }
-        if (xc.operandType == INTEGER && xc.op == OrderType::LT) {
+        if (xc.operandType == INTEGER && xc.op == OrderType::GT) {
             callback->buildConstraintAtLeast(constraint->id, constraint->list, value, xc.val + 1);
             return;
         }
