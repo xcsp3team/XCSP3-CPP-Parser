@@ -90,8 +90,9 @@ void XMLParser::VarTagAction::beginTag(const AttributeList &attributes) {
 
     this->checkParentTag("variables");
     this->parser->stateStack.front().subtagAllowed = false;
-    if(variable != NULL)
-        variable = NULL;
+
+    variable = nullptr;
+    variableArray = nullptr;
 
 
     if(!attributes["id"].to(lid))
@@ -117,9 +118,9 @@ void XMLParser::VarTagAction::beginTag(const AttributeList &attributes) {
             throw runtime_error("Variable as \"" + as + "\" does not exist");
         if((similarArray = dynamic_cast<XVariableArray *>(this->parser->variablesList[as])) != NULL) {
             variableArray = new XVariableArray(id, similarArray);
+
         } else {
-            XVariable *similar = (XVariable *)
-                    this->parser->variablesList[as];
+            XVariable *similar = (XVariable *)this->parser->variablesList[as];
             variable = new XVariable(id, similar->domain);
         }
     } else {
@@ -131,7 +132,6 @@ void XMLParser::VarTagAction::beginTag(const AttributeList &attributes) {
 
 // UTF8String txt, bool last
 void XMLParser::VarTagAction::text(const UTF8String txt, bool) {
-
     if((variable != NULL || variableArray != NULL) && !txt.isWhiteSpace())
         throw runtime_error("<var> with attribute 'as' must not have domain declaration");
     this->parser->parseDomain(txt, *domain);
