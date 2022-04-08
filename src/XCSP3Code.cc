@@ -624,6 +624,18 @@ void XConstraintFlow::unfoldParameters(XConstraintGroup *group, vector<XVariable
 
 
 
+
+void XConstraintKnapsack::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+    XConstraintKnapsack *xc = dynamic_cast<XConstraintKnapsack *>(original);
+    XConstraint::unfoldParameters(group, arguments, original);
+    XValue::unfoldParameters(group, arguments, original);
+    XInitialCondition::unfoldParameters(group, arguments, original);
+    group->unfoldVector(profits, arguments, xc->profits);
+    group->unfoldVector(weights, arguments, xc->weights);
+}
+
+
+
 //------------------------------------------------------------------------------------------
 //  XCSP3Utils.h functions
 //------------------------------------------------------------------------------------------

@@ -2205,10 +2205,42 @@ namespace XCSP3Core {
          * @param weights the different vaules
          * @param arcs the different vaules
          */
-        virtual void buildConstraintFlow(string id, vector<XVariable *> &list, vector<int> balance, vector<int> weights, vector<vector<int> > arcs, XCondition &xc) {
+        virtual void buildConstraintFlow(string id, vector<XVariable *> &list, vector<int> &balance, vector<int> &weights, vector<vector<int> > &arcs, XCondition &xc) {
             (void)id; (void)list; (void)balance; (void) weights; (void) arcs; (void) xc;
             throw runtime_error("flow constraint not yet supported");
         }
+
+
+        /**
+         * The callback function related to knapsack  constraint
+         *
+         * @param id the id (name) of the constraint
+         * @param list the list of variables (not necessary the scope)
+         * @param profits
+         * @param weights
+         * @param limit an integer
+         * @param condition
+         */
+        virtual void buildConstraintKnapsack(string id, vector<XVariable *> &list, vector<int> &weights, vector<int> &profits, int limit, XCondition &xc) {
+            (void)id; (void)list; (void)weights; (void) profits; (void) limit; (void) xc;
+            throw runtime_error("knapsack constraint with integer limit not yet supported");
+        }
+
+        /**
+         * The callback function related to knapsack  constraint
+         *
+         * @param id the id (name) of the constraint
+         * @param list the list of variables (not necessary the scope)
+         * @param profits
+         * @param weights
+         * @param limit an integer
+         * @param condition
+         */
+        virtual void buildConstraintKnapsack(string id, vector<XVariable *> &list, vector<int> &weights, vector<int> &profits, XVariable* limit, XCondition &xc) {
+            (void)id; (void)list; (void)weights; (void) profits; (void) limit; (void) xc;
+            throw runtime_error("knapsack constraint with variable limitnot yet supported");
+        }
+
 //--------------------------------------------------------------------------------------
 // Objectives
 //--------------------------------------------------------------------------------------

@@ -276,6 +276,13 @@ namespace XCSP3Core {
         void newConstraintFlow(XConstraintFlow *constraint);
 
         //--------------------------------------------------------------------------------------
+        // Knapsack constraint
+        //--------------------------------------------------------------------------------------
+
+        void newConstraintKnapsack(XConstraintKnapsack *constraint);
+
+
+        //--------------------------------------------------------------------------------------
         // block of  constraints
         //--------------------------------------------------------------------------------------
         void beginBlock(string classes) {

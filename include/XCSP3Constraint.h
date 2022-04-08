@@ -585,6 +585,16 @@ namespace XCSP3Core {
     };
 
 
+    class XConstraintKnapsack :  public XConstraint, public XInitialCondition, public XValue {
+        void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
+    public:
+        vector<XVariable *>profits;
+        vector<XVariable *> weights;
+
+        XConstraintKnapsack(std::string idd, std::string c) : XConstraint(idd, c) {}
+    };
+
+
 
 }
 

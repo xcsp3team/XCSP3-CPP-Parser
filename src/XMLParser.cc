@@ -484,6 +484,12 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
     registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "weights", this->weights));
     registerTagAction(tagList, new OriginsTagAction(this, "arcs", this->lengths));
 
+
+    // Knapsack
+    registerTagAction(tagList, new KnapsackTagAction(this, "knapsack"));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "profits", this->heights));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "limit", this->values));
+
 }
 
 

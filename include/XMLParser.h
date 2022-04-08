@@ -991,6 +991,19 @@ namespace XCSP3Core {
         };
 
         /***************************************************************************
+         * Actions performed on  Knapsack TAG
+         ****************************************************************************/
+
+        class KnapsackTagAction : public BasicConstraintTagAction {
+            XConstraintKnapsack *constraint;
+        public:
+            KnapsackTagAction(XMLParser *parser, string name) : BasicConstraintTagAction(parser, name) { }
+            void beginTag(const AttributeList &attributes) override;
+            void endTag() override;
+        };
+
+
+        /***************************************************************************
          * Actions performed on  ANNOTATIONS TAG
         ****************************************************************************/
 

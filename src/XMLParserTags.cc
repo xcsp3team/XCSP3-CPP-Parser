@@ -1219,13 +1219,13 @@ void XMLParser::FlowTagAction::beginTag(const AttributeList &attributes) {
 
 
 
+
+
 void XMLParser::FlowTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     constraint->balance.assign(this->parser->values.begin(), this->parser->values.end());
     constraint->weights.assign(this->parser->weights.begin(), this->parser->weights.end());
     constraint->condition = this->parser->condition;
-
-    std::cout << this->parser->lengths.size() << std::endl;
 
     int v=0;
     int i = 0;
@@ -1241,6 +1241,38 @@ void XMLParser::FlowTagAction::endTag() {
 
     if(this->group == NULL) {
         this->parser->manager->newConstraintFlow(constraint);
+        delete constraint;
+    }
+}
+
+
+
+
+void XMLParser::KnapsackTagAction::beginTag(const AttributeList &attributes) {
+    BasicConstraintTagAction::beginTag(attributes);
+    constraint = new XConstraintKnapsack(this->id, this->parser->classes);
+    // Link constraint to group
+    if(this->group != NULL) {
+        this->group->constraint = constraint;
+        this->group->type = FLOW;
+    }
+}
+
+
+
+
+
+
+void XMLParser::KnapsackTagAction::endTag() {
+    constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
+    constraint->profits.assign(this->parser->heights.begin(), this->parser->heights.end());
+    constraint->weights.assign(this->parser->weights.begin(), this->parser->weights.end());
+    constraint->condition = this->parser->condition;
+    constraint->value = this->parser->values[0];
+
+
+    if(this->group == NULL) {
+        this->parser->manager->newConstraintKnapsack(constraint);
         delete constraint;
     }
 }

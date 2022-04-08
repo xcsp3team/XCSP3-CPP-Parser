@@ -1205,6 +1205,37 @@ void XCSP3Manager::newConstraintFlow(XConstraintFlow *constraint) {
     callback->buildConstraintFlow(constraint->id, constraint->list, balance, weights, constraint->arcs, xc);
 }
 
+
+//--------------------------------------------------------------------------------------
+// Knapsack  constraints
+//--------------------------------------------------------------------------------------
+
+void XCSP3Manager::newConstraintKnapsack(XConstraintKnapsack *constraint) {
+    if (discardedClasses(constraint->classes))
+        return;
+
+    vector<int> profits, weights;
+    int v;
+    for (XEntity *xe: constraint->profits) {
+        isInteger(xe, v);
+        profits.push_back(v);
+    }
+    for (XEntity *xe: constraint->weights) {
+        isInteger(xe, v);
+        weights.push_back(v);
+    }
+    XCondition xc;
+    constraint->extractCondition(xc);
+
+    int value;
+    if (isInteger(constraint->value, value))
+        callback->buildConstraintKnapsack(constraint->id, constraint->list, weights, profits, value, xc);
+    else
+        callback->buildConstraintKnapsack(constraint->id, constraint->list, weights, profits, (XVariable *) constraint->value, xc);
+}
+
+
+
 //--------------------------------------------------------------------------------------
 // group constraints
 //--------------------------------------------------------------------------------------
@@ -1303,6 +1334,8 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             unfoldConstraint<XConstraintCumulative>(group, i, &XCSP3Manager::newConstraintCumulative);
         if (group->type == FLOW)
             unfoldConstraint<XConstraintFlow>(group, i, &XCSP3Manager::newConstraintFlow);
+        if (group->type == KNAPSACK)
+            unfoldConstraint<XConstraintKnapsack>(group, i, &XCSP3Manager::newConstraintKnapsack);
 
         if (group->type == UNKNOWN) {
             throw runtime_error("Group constraint is badly defined");
