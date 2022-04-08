@@ -490,6 +490,10 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
     registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "profits", this->heights));
     registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "limit", this->values));
 
+    registerTagAction(tagList, new MinMaxTagAction(this, "maximumArg"));
+    registerTagAction(tagList, new MinMaxTagAction(this, "minimumArg"));
+
+
 }
 
 

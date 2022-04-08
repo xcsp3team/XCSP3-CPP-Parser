@@ -1439,7 +1439,6 @@ namespace XCSP3Core {
         virtual void buildConstraintMaximum(string id, vector<Tree*> &list, XCondition &xc) {
             (void)id; (void)list; (void)xc;
             throw runtime_error("maximum constraint over trees is not yet supported");
-
         }
 
         /**
@@ -1465,6 +1464,26 @@ namespace XCSP3Core {
             throw runtime_error("maximum with index constraint is not yet supported");
         }
 
+
+        virtual void buildConstraintMaximumArg(string id, vector<Tree*> &list, RankType rank, XCondition &xc) {
+            (void)id; (void)list; (void)xc; (void)rank;
+            throw runtime_error("maximum Arg constraint over trees is not yet supported");
+        }
+
+        virtual void buildConstraintMaximumArg(string id, vector<XVariable*> &list, RankType rank, XCondition &xc) {
+            (void)id; (void)list; (void)xc; (void)rank;
+            throw runtime_error("maximum Arg constraint (variables) is not yet supported");
+        }
+
+        virtual void buildConstraintMinimumArg(string id, vector<Tree*> &list, RankType rank, XCondition &xc) {
+            (void)id; (void)list; (void)xc; (void)rank;
+            throw runtime_error("minimum Arg constraint over trees is not yet supported");
+        }
+
+        virtual void buildConstraintMinimumArg(string id, vector<XVariable*> &list, RankType rank, XCondition &xc) {
+            (void)id; (void)list; (void)xc; (void)rank;
+            throw runtime_error("minimum Arg constraint (variables) is not yet supported");
+        }
 
         /**
          * The callback function related to a element constraint with int value

@@ -935,6 +935,15 @@ void XMLParser::ElementTagAction::endTag() {
 
 void XMLParser::MinMaxTagAction::beginTag(const AttributeList &attributes) {
 
+    if(!attributes["rank"].isNull()) {
+        string rank;
+        attributes["rank"].to(rank);
+        if(rank == "any") this->parser->rank = ANY;
+        if(rank == "first") this->parser->rank = FIRST;
+        if(rank == "last") this->parser->rank = LAST;
+    }
+
+
     // Must be called inside a constraint
     BasicConstraintTagAction::beginTag(attributes);
 
@@ -943,10 +952,10 @@ void XMLParser::MinMaxTagAction::beginTag(const AttributeList &attributes) {
     // Link constraint to group
     if(this->group != NULL) {
         this->group->constraint = constraint;
-        if(this->tagName == "maximum")
-            this->group->type = MAXIMUM;
-        else
-            this->group->type = MINIMUM;
+        if(this->tagName == "maximum") this->group->type = MAXIMUM;
+        if(this->tagName == "minimum") this->group->type = MINIMUM;
+        if(this->tagName == "minimumArg") this->group->type = MINARG;
+        if(this->tagName == "maximumArg") this->group->type = MAXARG;
     }
 }
 
@@ -959,10 +968,10 @@ void XMLParser::MinMaxTagAction::endTag() {
     constraint->rank = this->parser->rank;
 
     if(this->group == NULL) {
-        if(this->tagName == "maximum")
-            this->parser->manager->newConstraintMaximum(constraint);
-        else
-            this->parser->manager->newConstraintMinimum(constraint);
+        if(this->tagName == "maximum") this->parser->manager->newConstraintMaximum(constraint);
+        if(this->tagName == "minimum") this->parser->manager->newConstraintMinimum(constraint);
+        if(this->tagName == "maximumArg") this->parser->manager->newConstraintMinMaxArg(constraint, true);
+        if(this->tagName == "minimumArg")  this->parser->manager->newConstraintMinMaxArg(constraint, false);
         delete constraint;
     }
 }

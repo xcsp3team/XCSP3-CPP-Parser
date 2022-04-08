@@ -220,6 +220,9 @@ namespace XCSP3Core {
 
         void newConstraintMaximum(XConstraintMaximum *constraint);
 
+        void newConstraintMinMaxArg(XConstraintMaximum *constraint, bool max = true);
+        void newConstraintMinArg(XConstraintMaximum *constraint);
+        void newConstraintMaxArg(XConstraintMaximum *constraint);
 
         void newConstraintElement(XConstraintElement *constraint);
 
