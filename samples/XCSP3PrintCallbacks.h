@@ -179,6 +179,8 @@ namespace XCSP3Core {
 
         void buildConstraintMaximum(string id, vector<XVariable *> &list, XCondition &xc) override;
 
+        void buildConstraintMaximum(string id, vector<Tree *> &list, XCondition &xc) override;
+
         void buildConstraintMaximum(string id, vector<XVariable *> &list, XVariable *index, int startIndex, RankType rank,
                                             XCondition &xc) override;
 
@@ -873,6 +875,16 @@ void XCSP3PrintCallbacks::buildConstraintMaximum(string, vector<XVariable *> &li
     cout << "\n    maximum  constraint" << endl;
     cout << "        ";
     displayList(list);
+    cout << "        condition: " << xc << endl;
+}
+
+
+void XCSP3PrintCallbacks::buildConstraintMaximum(string, vector<Tree *> &list, XCondition &xc) {
+    cout << "\n    maximum  constraint" << endl;
+    cout << "        ";
+    for(Tree *t : list) {
+        t->prefixe();std::cout << " ";
+    }
     cout << "        condition: " << xc << endl;
 }
 

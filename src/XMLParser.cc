@@ -225,7 +225,7 @@ void XMLParser::parseSequence(const UTF8String &txt, vector<XVariable *> &list, 
                         vector<string> compact;
                         split(current, 'x', compact);
                         if(compact.size() == 2) {
-                            nb = std::stoi(compact[0]);
+                            nb = compact[0] == "*" ? STAR : std::stoi(compact[0]);
                             int sz;
                             sz = std::stoi(compact[1]);
                             for(int k = 0; k < sz; k++) {
@@ -239,10 +239,14 @@ void XMLParser::parseSequence(const UTF8String &txt, vector<XVariable *> &list, 
                             toFree.push_back(xi);
                         }
                     } catch(invalid_argument &e) {
-                        if(variablesList[current] != NULL)
-                            list.push_back((XVariable *) variablesList[current]);
-                        else
-                            throw runtime_error("unknown variable: " + current);
+                        if(current == "*")
+                            list.push_back(new XInteger(current, STAR));
+                        else {
+                            if (variablesList[current] != NULL)
+                                list.push_back((XVariable *) variablesList[current]);
+                            else
+                                throw runtime_error("unknown variable: " + current);
+                        }
                     }
                 } else { // A range
                     int first = std::stoi(current.substr(0, dotdot));
