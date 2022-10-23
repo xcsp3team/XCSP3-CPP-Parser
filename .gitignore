@@ -3,3 +3,8 @@
 *.a
 test
 testlib
+Testing
+lib
+*.so
+CMakeFiles
+CMakeCache.txt
