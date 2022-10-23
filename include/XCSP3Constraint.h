@@ -235,7 +235,7 @@ namespace XCSP3Core {
      *                  COMPARISON BASED CONSTRAINTS
      ****************************************************************************
      ***************************************************************************/
-    extern vector<int> _except;
+    extern vector<int> ___except;
 
     class XConstraintAllDiff : public XConstraint, public XValues {
     // Values refer to except values
