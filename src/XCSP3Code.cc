@@ -39,7 +39,7 @@ namespace XCSP3Core {
  vector<XTransition> tr; // Not beautiful but remove code to fixed data in group constraint.
  string st;
  vector<string> fi;
- vector<int> _except;
+ vector<int> ___except;
  OrderType _op;
  vector<int> _values;
 

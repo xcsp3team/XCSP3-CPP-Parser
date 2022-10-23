@@ -1,0 +1,2 @@
+/usr/bin/ar qc lib/libxcsp3parser.a CMakeFiles/xcsp3parser.dir/src/UTF8String.cc.o CMakeFiles/xcsp3parser.dir/src/XCSP3Code.cc.o CMakeFiles/xcsp3parser.dir/src/XCSP3CoreParser.cc.o CMakeFiles/xcsp3parser.dir/src/XCSP3Manager.cc.o CMakeFiles/xcsp3parser.dir/src/XMLParser.cc.o CMakeFiles/xcsp3parser.dir/src/XMLParserTags.cc.o CMakeFiles/xcsp3parser.dir/src/XCSP3Tree.cc.o CMakeFiles/xcsp3parser.dir/src/XCSP3TreeNode.cc.o
+/usr/bin/ranlib lib/libxcsp3parser.a

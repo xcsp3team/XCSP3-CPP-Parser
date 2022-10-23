@@ -1,0 +1,78 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "xcsp3parser",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "samplesXcsp3::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-samplesXcsp3-Debug-3cc473626dbcecbf5784.json",
+					"name" : "samplesXcsp3",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "xcsp3parser::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-xcsp3parser-Debug-bbcb50f09dd1fa1c4aac.json",
+					"name" : "xcsp3parser",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "xcsp3parser_dynamic::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-xcsp3parser_dynamic-Debug-b64f08eabab360311858.json",
+					"name" : "xcsp3parser_dynamic",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/falque/Travail/Doctorat/CP/Workspace/XCSP3-CPP-Parser",
+		"source" : "/home/falque/Travail/Doctorat/CP/Workspace/XCSP3-CPP-Parser"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

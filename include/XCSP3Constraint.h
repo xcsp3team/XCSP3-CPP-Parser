@@ -338,7 +338,7 @@ namespace XCSP3Core {
         vector<int> &except;
 
 
-        XConstraintNValues(std::string idd, std::string c) : XConstraint(idd, c), except(_except) {}
+        XConstraintNValues(std::string idd, std::string c) : XConstraint(idd, c), except(___except) {}
 
 
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;

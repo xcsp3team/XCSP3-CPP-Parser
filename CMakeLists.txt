@@ -21,6 +21,7 @@ find_package(LibXml2 REQUIRED)
 include_directories(${LIBXML2_INCLUDE_DIR})
 
 set(LIBRARY_NAME xcsp3parser)
+set(LIBRARY_NAME_DYNAMIC xcsp3parser_dynamic)
 
 set(LIB_HEADERS
         include/AttributeList.h
@@ -63,6 +64,7 @@ include_directories(
 )
 
 add_library(${LIBRARY_NAME} STATIC ${LIB_SOURCES} ${LIB_HEADERS})
+add_library(${LIBRARY_NAME_DYNAMIC} SHARED ${LIB_SOURCES} ${LIB_HEADERS})
 #add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES} ${LIB_HEADERS})
 target_link_libraries(${LIBRARY_NAME} ${LIBXML2_LIBRARIES})
 
