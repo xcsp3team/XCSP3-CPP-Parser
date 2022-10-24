@@ -31,6 +31,8 @@
 #include <vector>
 #include <limits>
 #include <algorithm>
+#include <functional>
+
 using namespace XCSP3Core;
 using namespace std;
 
