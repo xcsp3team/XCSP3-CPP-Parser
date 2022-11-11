@@ -11,7 +11,7 @@ CSP/WCSP instances named XCSP 3.0 (see [xcsp.org](https://xcsp.org)).
 This parser uses the libxml2 library which must be installed on your
 system
 
-See http://xmlsoft.org/
+See [xmlsoft.org](https://xmlsoft.org/)
 
 This library is probably installed on most Linux platforms. Note that
 you'll need both the libxml2 and the libxml2-devel packages to compile
