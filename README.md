@@ -6,7 +6,7 @@ C/C++ parser for the CSP XML format version 3.0
 
 ### Introduction
 The files in this archive contains a C++ parser for the XML format of
-CSP/WCSP instances named XCSP 3.0 (see [xcsp.org](https://xcsp.org). 
+CSP/WCSP instances named XCSP 3.0 (see [xcsp.org](https://xcsp.org)). 
 
 This parser uses the libxml2 library which must be installed on your
 system
