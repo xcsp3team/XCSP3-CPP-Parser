@@ -1,11 +1,11 @@
 #include "XCSP3CoreParser.h"
 #include "XCSP3PrintCallbacks.h"
 #include "XCSP3SummaryCallbacks.h"
-
+#include "intension.h"
 using namespace XCSP3Core;
 
 int main(int argc,char **argv) {
-    XCSP3PrintCallbacks cb; // my interface between the parser and the solver
+    Intension cb; // my interface between the parser and the solver
 
    if(argc!=2) 
      throw std::runtime_error("usage: ./test xcsp3instance.xml");
