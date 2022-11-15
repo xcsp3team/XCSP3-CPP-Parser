@@ -337,6 +337,7 @@ void XMLParser::BasicConstraintTagAction::beginTag(const AttributeList &attribut
     this->parser->zeroIgnored = false;
     this->parser->condition = "";
     this->parser->rank = ANY;
+    this->parser->startIndex = 0;
     this->parser->index = NULL;
     this->parser->index2 = NULL;
     this->parser->closed = true;
