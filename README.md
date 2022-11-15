@@ -6,12 +6,12 @@ C/C++ parser for the CSP XML format version 3.0
 
 ### Introduction
 The files in this archive contains a C++ parser for the XML format of
-CSP/WCSP instances named XCSP 3.0 (see http://xcsp.org). 
+CSP/WCSP instances named XCSP 3.0 (see [xcsp.org](https://xcsp.org)). 
 
 This parser uses the libxml2 library which must be installed on your
 system
 
-See http://xmlsoft.org/
+See [xmlsoft.org](http://xmlsoft.org/)
 
 This library is probably installed on most Linux platforms. Note that
 you'll need both the libxml2 and the libxml2-devel packages to compile
@@ -67,12 +67,12 @@ for each element of the array
 8. Given a group of constraint, a call to the dedicated <code>builConstraintXXX</code> will occur for each arguments
 of the group (the same occurs for slide).
 
-###Requirements
+### Requirements
  - libxml2
  - cmake >= 3.6
  - c++11 compiler
  
-###Installation
+### Installation
 open a console and type ````./build.sh````
 
 

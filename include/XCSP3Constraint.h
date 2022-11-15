@@ -235,7 +235,7 @@ namespace XCSP3Core {
      *                  COMPARISON BASED CONSTRAINTS
      ****************************************************************************
      ***************************************************************************/
-    extern vector<int> _except;
+    extern vector<int> ___except;
 
     class XConstraintAllDiff : public XConstraint, public XValues {
     // Values refer to except values
@@ -338,7 +338,7 @@ namespace XCSP3Core {
         vector<int> &except;
 
 
-        XConstraintNValues(std::string idd, std::string c) : XConstraint(idd, c), except(_except) {}
+        XConstraintNValues(std::string idd, std::string c) : XConstraint(idd, c), except(___except) {}
 
 
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
