@@ -3,3 +3,11 @@
 *.a
 test
 testlib
+Testing
+*.so
+CMakeFiles
+CMakeCache.txt
+.cmake
+cmake-build-debug
+cmake_install.cmake
+*.cbp
