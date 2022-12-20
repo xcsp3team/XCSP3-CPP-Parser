@@ -1244,6 +1244,7 @@ void XCSP3Manager::newConstraintKnapsack(XConstraintKnapsack *constraint) {
     if(discardedClasses(constraint->classes))
         return;
 
+    auto *c = dynamic_cast<XConstraintKnapsack*>(constraint);
     vector<int> profits, weights;
     int v;
     for(XEntity *xe: constraint->profits) {
@@ -1254,14 +1255,11 @@ void XCSP3Manager::newConstraintKnapsack(XConstraintKnapsack *constraint) {
         isInteger(xe, v);
         weights.push_back(v);
     }
-    XCondition xc;
-    constraint->extractCondition(xc);
+    XCondition weightsCondition, profitsCondition;
 
-    int value;
-    if(isInteger(constraint->value, value))
-        callback->buildConstraintKnapsack(constraint->id, constraint->list, weights, profits, value, xc);
-    else
-        callback->buildConstraintKnapsack(constraint->id, constraint->list, weights, profits, (XVariable *) constraint->value, xc);
+    XCSP3Core::XConstraintKnapsack::extract(weightsCondition, constraint->condition);
+    XCSP3Core::XConstraintKnapsack::extract(profitsCondition, c->profitCondition.condition);
+    callback->buildConstraintKnapsack(constraint->id, constraint->list, weights, profits, weightsCondition, profitsCondition);
 }
 
 

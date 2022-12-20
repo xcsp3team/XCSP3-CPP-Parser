@@ -235,9 +235,7 @@ namespace XCSP3Core {
 
         void buildConstraintFlow(string id, vector<XVariable *> &list, vector<int> &balance, vector<int> &weights, vector<vector<int> > &arcs, XCondition &xc) override;
 
-        void buildConstraintKnapsack(string id, vector<XVariable *> &list, vector<int> &weights, vector<int> &profits, int limit, XCondition &xc) override;
-
-        void buildConstraintKnapsack(string id, vector<XVariable *> &list, vector<int> &weights, vector<int> &profits, XVariable *limit, XCondition &xc) override;
+        void buildConstraintKnapsack(string id, vector<XVariable *> &list, vector<int> &weights, vector<int> &profits,XCondition weightsCondition, XCondition &profitCondition) override;
 
         void buildObjectiveMinimizeExpression(string expr) override;
 
@@ -1165,7 +1163,7 @@ void XCSP3PrintCallbacks::buildConstraintFlow(string id, vector<XVariable *> &li
     cout << "        condition:" << cond << endl;
 
 }
-void XCSP3PrintCallbacks::buildConstraintKnapsack(string id, vector<XVariable *> &list, vector<int> &weights, vector<int> &profits, int limit, XCondition &xc) {
+void XCSP3PrintCallbacks::buildConstraintKnapsack(string id, vector<XVariable *> &list, vector<int> &weights, vector<int> &profits,XCondition weightsCondition, XCondition &profitCondition) {
     cout << "\n    Knapsack constraint with integer limit" << endl;
     cout << "        list:";
     displayList(list);
@@ -1173,23 +1171,10 @@ void XCSP3PrintCallbacks::buildConstraintKnapsack(string id, vector<XVariable *>
     displayList(profits);
     cout << "        weights: ";
     displayList(weights);
-    cout << "        limit: " << limit << endl;
-    cout << "        condition:" << xc << endl;
-
+    cout << "        weightsConditions: " << weightsCondition << endl;
+    cout << "        profitscondition:" << profitCondition << endl;
 }
 
-void XCSP3PrintCallbacks::buildConstraintKnapsack(string id, vector<XVariable *> &list, vector<int> &weights, vector<int> &profits, XVariable *limit, XCondition &xc) {
-    cout << "\n    Knapsack constraint with variable limit" << endl;
-    cout << "        list:";
-    displayList(list);
-    cout << "        profits: ";
-    displayList(profits);
-    cout << "        weights: ";
-    displayList(weights);
-    cout << "        limit: " << limit->id << endl;
-    cout << "        condition:" << xc << endl;
-
-}
 
 
 void XCSP3PrintCallbacks::buildObjectiveMinimizeExpression(string expr) {

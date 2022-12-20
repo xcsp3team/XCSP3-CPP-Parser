@@ -349,6 +349,10 @@ void XInitialCondition::unfoldParameters(XConstraintGroup *group, vector<XVariab
 
 
 void XInitialCondition::extractCondition(XCondition &xc) { // Create the op and the operand (which can be a value, an interval or a XVariable)
+    XInitialCondition::extract(xc, condition);
+}
+
+void XInitialCondition::extract(XCondition &xc, string &condition) { // Create the op and the operand (which can be a value, an interval or a XVariable)
     std::regex const rglt(R"(\(.*(le|lt|ge|gt|in|eq|ne),(.*)\).*)");
     std::smatch match;
     std::regex_match(condition, match, rglt);
@@ -628,8 +632,8 @@ void XConstraintFlow::unfoldParameters(XConstraintGroup *group, vector<XVariable
 void XConstraintKnapsack::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
     XConstraintKnapsack *xc = dynamic_cast<XConstraintKnapsack *>(original);
     XConstraint::unfoldParameters(group, arguments, original);
-    XValue::unfoldParameters(group, arguments, original);
     XInitialCondition::unfoldParameters(group, arguments, original);
+    group->unfoldString(profitCondition.condition, arguments);
     group->unfoldVector(profits, arguments, xc->profits);
     group->unfoldVector(weights, arguments, xc->weights);
 }

@@ -214,6 +214,8 @@ namespace XCSP3Core {
 
         bool zeroIgnored;          // for nooverlap
         string condition;          // used to store a condition in prefix form
+        string condition2;         // Fow knapsack only
+        bool secondContition;
         bool star;                 // true if the extension contain star in tuples
         int startIndex, startIndex2;            // used in some list tag
         int startRowIndex, startColIndex;
@@ -743,16 +745,29 @@ namespace XCSP3Core {
 
             // UTF8String txt, bool last
             virtual void text(const UTF8String txt, bool) {
-                this->parser->condition += txt.to(this->parser->condition);
+                if(this->parser->secondContition)
+                    this->parser->condition2 += txt.to(this->parser->condition2);
+                else
+                    this->parser->condition += txt.to(this->parser->condition);
             }
 
 
             virtual void endTag() {
-                this->parser->condition = trim(this->parser->condition);
+                string cond;
+                if(this->parser->secondContition) {
+                    this->parser->condition2 = trim(this->parser->condition2);
+                    cond = this->parser->condition2;
+                }
+                else {
+                    this->parser->condition = trim(this->parser->condition);
+                    cond = this->parser->condition;
+                }
 
                 std::regex const rglt(R"(\(.*(le|lt|ge|gt|in|eq|ne),%([0-9]+)\).*)");
                 std::smatch match;
-                std::regex_match(this->parser->condition, match, rglt);
+                std::regex_match(cond, match, rglt);
+
+                this->parser->secondContition = true;
 
                 if(match.size() != 3)
                     return;
@@ -760,6 +775,7 @@ namespace XCSP3Core {
                 if(XParameterVariable::max < tmp)
                     XParameterVariable::max = tmp;
                 }
+
         };
 
 

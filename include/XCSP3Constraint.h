@@ -108,6 +108,7 @@ namespace XCSP3Core {
 
         virtual void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original);
         void extractCondition(XCondition &xc);  // Create the op and the operand (which can be a value, an interval or a XVariable)
+        static void extract(XCondition &xc, string &c);
     };
 
     class XValues {
@@ -585,11 +586,12 @@ namespace XCSP3Core {
     };
 
 
-    class XConstraintKnapsack :  public XConstraint, public XInitialCondition, public XValue {
+    class XConstraintKnapsack :  public XConstraint, public XInitialCondition {
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     public:
         vector<XVariable *>profits;
         vector<XVariable *> weights;
+        XInitialCondition profitCondition;
 
         XConstraintKnapsack(std::string idd, std::string c) : XConstraint(idd, c) {}
     };

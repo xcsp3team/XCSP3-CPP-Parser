@@ -336,6 +336,8 @@ void XMLParser::BasicConstraintTagAction::beginTag(const AttributeList &attribut
     this->parser->star = false;
     this->parser->zeroIgnored = false;
     this->parser->condition = "";
+    this->parser->condition2 = "";
+    this->parser->secondContition = false;
     this->parser->rank = ANY;
     this->parser->startIndex = 0;
     this->parser->index = NULL;
@@ -1279,8 +1281,7 @@ void XMLParser::KnapsackTagAction::endTag() {
     constraint->profits.assign(this->parser->heights.begin(), this->parser->heights.end());
     constraint->weights.assign(this->parser->weights.begin(), this->parser->weights.end());
     constraint->condition = this->parser->condition;
-    constraint->value = this->parser->values[0];
-
+    constraint->profitCondition.condition = this->parser->condition2;
 
     if(this->group == NULL) {
         this->parser->manager->newConstraintKnapsack(constraint);
