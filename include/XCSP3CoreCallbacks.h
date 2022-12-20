@@ -2197,6 +2197,23 @@ namespace XCSP3Core {
         }
 
         /**
+         * The callback function related to precedence  constraint with defined variable size
+         *
+         * Example:
+         * <precedence class="symmetry-breaking">
+         * <list> x[][] </list>
+         * </precedence>
+         *
+         * @param id the id (name) of the constraint
+         * @param list the list of variables (not necessary the scope)
+         */
+        virtual void buildConstraintPrecedence(string id, vector<XVariable *> &list) {
+            (void)id; (void)list;
+            throw runtime_error("precedence constraint not yet supported");
+        }
+
+
+        /**
          * The callback function related to precedence   constraint with defined variable size
          *
          * Example:

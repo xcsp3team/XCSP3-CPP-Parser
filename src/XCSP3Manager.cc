@@ -1207,8 +1207,10 @@ void XCSP3Manager::newConstraintPrecedence(XConstraintPrecedence *constraint) {
         isInteger(xe, v);
         values.push_back(v);
     }
-
-    callback->buildConstraintPrecedence(constraint->id, constraint->list, values);
+    if(values.empty())
+        callback->buildConstraintPrecedence(constraint->id, constraint->list);
+    else
+        callback->buildConstraintPrecedence(constraint->id, constraint->list, values);
 }
 
 
