@@ -495,11 +495,12 @@ namespace XCSP3Core {
      **************************************************************************/
     class XConstraintBinPacking : public XConstraint, public XValues, public XInitialCondition {
     public :
-
-
+        vector<XVariable*> limits;
+        vector<XVariable*> loads;
+        std::string conditions;
+        int startIndex;
 
         XConstraintBinPacking(std::string idd, std::string c) : XConstraint(idd, c) {}
-
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
     };
     /***************************************************************************
@@ -512,9 +513,7 @@ namespace XCSP3Core {
         vector<XInterval> widths; // interval
         vector<vector<int> > patterns;
 
-
         XConstraintStretch(std::string idd, std::string c) : XConstraint(idd, c) {}
-
 
         // Group is valied with lists only.
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;

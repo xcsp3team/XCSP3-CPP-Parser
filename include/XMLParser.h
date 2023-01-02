@@ -198,6 +198,8 @@ namespace XCSP3Core {
         vector<XVariable *> values; // used to store a list of variables
         vector<XVariable *> occurs;   // used in cardinality
         vector<XVariable *> weights;   // used in flow
+        vector<XVariable *> limits;   // used in binPacking
+        vector<XVariable *> loads;   // used in binPacking
 
         vector<int> integers;  // used to store a list of coefficients
 
@@ -213,6 +215,7 @@ namespace XCSP3Core {
         string classes;
 
         bool zeroIgnored;          // for nooverlap
+        string conditions;         //  for conditions in binPacking
         string condition;          // used to store a condition in prefix form
         string condition2;         // Fow knapsack only
         bool secondContition;
@@ -774,13 +777,29 @@ namespace XCSP3Core {
                 int tmp =  std::stoi(match[2].str());
                 if(XParameterVariable::max < tmp)
                     XParameterVariable::max = tmp;
-                }
+            }
 
         };
 
+        class ConditionsTagAction : public TagAction {
+        public:
+            ConditionsTagAction(XMLParser *parser, string name) : TagAction(parser, name) { }
 
-        /***************************************************************************
-         * Actions performed on CONDITION tag
+            void beginTag(const AttributeList &attributes) override{
+                if(!attributes["startIndex"].isNull()) {
+                    std::string tmp;
+                    attributes["startIndex"].to(tmp);
+                    this->parser->startIndex = std::stoi(tmp);
+                }
+
+            }
+            void text(const UTF8String txt, bool) override {
+                this->parser->conditions += txt.to(this->parser->conditions);
+            }
+        };
+
+            /***************************************************************************
+         * Actions performed on List of integer tag
          ****************************************************************************/
 
         class ListOfIntegerTagAction : public TagAction {

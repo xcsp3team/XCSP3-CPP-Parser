@@ -577,6 +577,8 @@ void XConstraintBinPacking::unfoldParameters(XConstraintGroup *group, vector<XVa
     XConstraint::unfoldParameters(group, arguments, original);
     XValues::unfoldParameters(group, arguments, original);
     XInitialCondition::unfoldParameters(group, arguments, original);
+    group->unfoldVector(limits, arguments, xc->limits);
+    group->unfoldVector(loads, arguments, xc->loads);
 }
 
 

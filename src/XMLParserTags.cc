@@ -332,11 +332,14 @@ void XMLParser::BasicConstraintTagAction::beginTag(const AttributeList &attribut
     this->parser->transitions.clear();
     this->parser->nbParameters = 0;
     this->parser->occurs.clear();
+    this->parser->limits.clear();
+    this->parser->loads.clear();
 
     this->parser->star = false;
     this->parser->zeroIgnored = false;
     this->parser->condition = "";
     this->parser->condition2 = "";
+    this->parser->conditions = "";
     this->parser->secondContition = false;
     this->parser->rank = ANY;
     this->parser->startIndex = 0;
@@ -1124,8 +1127,10 @@ void XMLParser::BinPackingTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     constraint->values.assign(this->parser->values.begin(), this->parser->values.end());
     constraint->condition = this->parser->condition;
-
-
+    constraint->limits.assign(this->parser->limits.begin(), this->parser->limits.end());
+    constraint->loads.assign(this->parser->loads.begin(), this->parser->loads.end());
+    constraint->conditions = this->parser->conditions;
+    constraint->startIndex = this->parser->startIndex;
     if(this->group == nullptr) {
         this->parser->manager->newConstraintBinPacking(constraint);
         delete constraint;

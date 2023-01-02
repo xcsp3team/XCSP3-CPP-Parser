@@ -2085,6 +2085,21 @@ namespace XCSP3Core {
             (void)id; (void)list; (void)sizes; (void)cond;
             throw runtime_error("binPacking constraint  is not yet supported");
         }
+
+        virtual void buildConstraintBinPacking(string id, vector<XVariable *> &list, vector<int> &sizes, vector<int> &capacities, bool load) {
+            (void)id; (void)list; (void)sizes; (void)capacities; (void)load;
+            throw runtime_error("binPacking constraint with capacities (int) is not yet supported");
+        }
+
+        virtual void buildConstraintBinPacking(string id, vector<XVariable *> &list, vector<int> &sizes, vector<XVariable*> &capacities, bool load) {
+            (void)id; (void)list; (void)sizes; (void)capacities; (void)load;
+            throw runtime_error("binPacking constraint with capacities (Var) is not yet supported");
+        }
+
+        virtual void buildConstraintBinPacking(string id, vector<XVariable *> &list, vector<int> &sizes, vector<XCondition> &conditions, int startindex) {
+            (void)id; (void)list; (void)sizes; (void)conditions; (void)startindex;
+            throw runtime_error("binPacking constraint with array of conditions is not yet supported");
+        }
 //--------------------------------------------------------------------------------------
 // instantiation constraints
 //--------------------------------------------------------------------------------------

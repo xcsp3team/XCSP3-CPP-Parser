@@ -453,6 +453,9 @@ XMLParser::XMLParser(XCSP3CoreCallbacks *cb) {
     registerTagAction(tagList, new OperatorTagAction(this, "operator"));
 
     registerTagAction(tagList, new BinPackingTagAction(this, "binPacking"));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "limits", this->limits));
+    registerTagAction(tagList, new ListOfVariablesOrIntegerTagAction(this, "loads", this->loads));
+    registerTagAction(tagList, new ConditionsTagAction(this, "conditions"));
 
 
     registerTagAction(tagList, new RegularTagAction(this, "regular"));

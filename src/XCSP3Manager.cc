@@ -1131,12 +1131,15 @@ void XCSP3Manager::newConstraintCumulative(XConstraintCumulative *constraint) {
                                             constraint->ends, xc);
 }
 
-
+// if loads=true, capacities are loads (operator =), otherwise capacities are limits (operator <=)
 void XCSP3Manager::newConstraintBinPacking(XConstraintBinPacking *constraint) {
     if(discardedClasses(constraint->classes))
         return;
     int v;
     vector<int> sizes;
+    vector<int> capacitiesInt;
+    vector<XVariable*> capacitiesVars;
+
 
     for(XEntity *xe: constraint->values) {
         if(isInteger(xe, v))
@@ -1144,6 +1147,58 @@ void XCSP3Manager::newConstraintBinPacking(XConstraintBinPacking *constraint) {
         else
             throw runtime_error("in binPacking constraint: sizes must be integers");
     }
+    if(constraint->limits.size() > 0) {
+        for(XEntity *xe: constraint->limits) {
+            if(isInteger(xe, v))
+                capacitiesInt.push_back(v);
+            else {
+                XVariable *xv = (XVariable *) xe;
+                capacitiesVars.push_back(xv);
+            }
+        }
+        if(capacitiesVars.size() > 0 && capacitiesInt.size() > 0)
+            throw runtime_error("In bickpacking, limits must all have the same type");
+        if(capacitiesInt.size() > 0)
+            callback->buildConstraintBinPacking(constraint->id, constraint->list, sizes, capacitiesInt, false);
+        else
+            callback->buildConstraintBinPacking(constraint->id, constraint->list, sizes, capacitiesVars, false);
+        return;
+    }
+
+    if(constraint->loads.size() > 0) {
+        for(XEntity *xe: constraint->loads) {
+            if(isInteger(xe, v))
+                capacitiesInt.push_back(v);
+            else {
+                XVariable *xv = (XVariable *) xe;
+                capacitiesVars.push_back(xv);
+            }
+        }
+        if(capacitiesVars.size() > 0 && capacitiesInt.size() > 0)
+            throw runtime_error("In bickpacking, loads must all have the same type");
+        if(capacitiesInt.size() > 0)
+            callback->buildConstraintBinPacking(constraint->id, constraint->list, sizes, capacitiesInt, true);
+        else
+            callback->buildConstraintBinPacking(constraint->id, constraint->list, sizes, capacitiesVars, true);
+        return;
+    }
+    constraint->conditions = trim(constraint->conditions);
+    if(!constraint->conditions.empty()) {
+        vector<XCondition> conditions;
+        string current = "";
+        for(char c : constraint->conditions) {
+            current += c;
+            if(c == ')') {
+                XCondition xc;
+                XInitialCondition::extract(xc, current);
+                conditions.push_back(xc);
+                current = "";
+            }
+        }
+        callback->buildConstraintBinPacking(constraint->id, constraint->list, sizes, conditions, constraint->startIndex);
+        return;
+    }
+
 
     XCondition xc;
     constraint->extractCondition(xc);
@@ -1364,6 +1419,8 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             unfoldConstraint<XConstraintCumulative>(group, i, &XCSP3Manager::newConstraintCumulative);
         if(group->type == FLOW)
             unfoldConstraint<XConstraintFlow>(group, i, &XCSP3Manager::newConstraintFlow);
+        if(group->type == BINPACKING)
+            unfoldConstraint<XConstraintBinPacking>(group, i, &XCSP3Manager::newConstraintBinPacking);
         if(group->type == KNAPSACK)
             unfoldConstraint<XConstraintKnapsack>(group, i, &XCSP3Manager::newConstraintKnapsack);
         if(group->type == MAXARG)
