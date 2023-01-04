@@ -1246,7 +1246,6 @@ void XMLParser::FlowTagAction::endTag() {
     int v=0;
     int i = 0;
     for (XEntity *xe: this->parser->lengths) {
-
         if(isInteger(xe, v)) { // Horrible, but too lazy....
             if(i%2 == 0)
                 constraint->arcs.push_back(vector<int>());

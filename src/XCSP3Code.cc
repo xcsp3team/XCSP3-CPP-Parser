@@ -579,6 +579,7 @@ void XConstraintBinPacking::unfoldParameters(XConstraintGroup *group, vector<XVa
     XInitialCondition::unfoldParameters(group, arguments, original);
     group->unfoldVector(limits, arguments, xc->limits);
     group->unfoldVector(loads, arguments, xc->loads);
+    group->unfoldString(xc->conditions, arguments);
 }
 
 
@@ -626,6 +627,7 @@ void XConstraintFlow::unfoldParameters(XConstraintGroup *group, vector<XVariable
     XInitialCondition::unfoldParameters(group, arguments, original);
     group->unfoldVector(weights, arguments, xc->weights);
     group->unfoldVector(balance, arguments, xc->balance);
+    arcs.assign(xc->arcs.begin(), xc->arcs.end());
 }
 
 
