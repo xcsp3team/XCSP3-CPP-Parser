@@ -567,13 +567,6 @@ void XConstraintCumulative::unfoldParameters(XConstraintGroup *group, vector<XVa
     //XConstraint::unfoldParameters(group, arguments, original); // Done with origins.
     XLengths::unfoldParameters(group, arguments, original);
     XInitialCondition::unfoldParameters(group, arguments, original);
-    for(auto *x: arguments)
-        std::cout << x->id << " " ;
-    std::cout << "\n";
-    for(auto *x: origins)
-        std::cout << x->id << " " ;
-    std::cout << "\n--\n";
-
     group->unfoldVector(origins, arguments, xc->origins);
     group->unfoldVector(ends, arguments, xc->ends);
     group->unfoldVector(heights, arguments, xc->heights);

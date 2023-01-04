@@ -1352,7 +1352,7 @@ XCSP3PrintCallbacks::buildConstraintCumulative(string id, vector<XVariable *> &o
 void XCSP3PrintCallbacks::buildConstraintCumulative(string id, vector<XVariable *> &origins, vector<int> &lengths,
                                                     vector<int> &heights, XCondition &xc) {
     cout << "\n    Cumulative constraint" << endl;
-    cout << "        list:" << origins.size();
+    cout << "        list:";
     displayList(origins);
     cout << "        lengths:";
     displayList(lengths);
