@@ -1263,9 +1263,9 @@ void XCSP3Manager::newConstraintPrecedence(XConstraintPrecedence *constraint) {
         values.push_back(v);
     }
     if(values.empty())
-        callback->buildConstraintPrecedence(constraint->id, constraint->list);
+        callback->buildConstraintPrecedence(constraint->id, constraint->list, constraint->covered);
     else
-        callback->buildConstraintPrecedence(constraint->id, constraint->list, values);
+        callback->buildConstraintPrecedence(constraint->id, constraint->list, values, constraint->covered);
 }
 
 

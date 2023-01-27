@@ -346,6 +346,7 @@ void XMLParser::BasicConstraintTagAction::beginTag(const AttributeList &attribut
     this->parser->index = nullptr;
     this->parser->index2 = nullptr;
     this->parser->closed = true;
+    this->parser->covered = false;
     this->parser->listTag->nbCallsToList = 0;
     this->parser->startIndex = 0;
 
@@ -1211,7 +1212,7 @@ void XMLParser::PrecedenceTagAction::text(const UTF8String txt, bool) {
 void XMLParser::PrecedenceTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     constraint->values.assign(this->parser->values.begin(), this->parser->values.end());
-
+    constraint->covered = this->parser->covered;
     if(this->group == nullptr) {
         this->parser->manager->newConstraintPrecedence(constraint);
         delete constraint;
@@ -1390,6 +1391,10 @@ void XMLParser::ListOfVariablesOrIntegerTagAction::beginTag(const AttributeList 
         string tmp;
         attributes["closed"].to(tmp);
         this->parser->closed = (tmp == "true");
+    }
+    if(!attributes["covered"].isNull()) {
+        if(attributes["covered"] == "true")
+            this->parser->covered = true;
     }
 }
 

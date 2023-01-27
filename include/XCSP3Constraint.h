@@ -570,7 +570,8 @@ namespace XCSP3Core {
         void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
 
     public:
-        XConstraintPrecedence(std::string idd, std::string c) : XConstraint(idd, c) {}
+        bool covered;
+        XConstraintPrecedence(std::string idd, std::string c) : XConstraint(idd, c), covered(false) {}
     };
 
 

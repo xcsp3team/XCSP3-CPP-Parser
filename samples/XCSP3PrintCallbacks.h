@@ -229,7 +229,7 @@ namespace XCSP3Core {
 
         void buildConstraintCircuit(string id, vector<XVariable *> &list, int startIndex, XVariable *size) override;
 
-        void buildConstraintPrecedence(string id, vector<XVariable *> &list, vector<int> values) override;
+        void buildConstraintPrecedence(string id, vector<XVariable *> &list, vector<int> values, bool covered) override;
 
         void buildConstraintBinPacking(string id, vector<XVariable *> &list, vector<int> &sizes, XCondition &cond) override;
 
@@ -1156,12 +1156,13 @@ void XCSP3PrintCallbacks::buildConstraintCircuit(string, vector<XVariable *> &li
     cout << "        size: " << size->id << endl;
 }
 
-void XCSP3PrintCallbacks::buildConstraintPrecedence(string id, vector<XVariable *> &list, vector<int> values) {
+void XCSP3PrintCallbacks::buildConstraintPrecedence(string id, vector<XVariable *> &list, vector<int> values, bool covered) {
     cout << "\n    Precedence constraint" << endl;
     cout << "        list:";
     displayList(list);
     cout << "        values: ";
     displayList(values);
+    cout << "        covered?  " << covered << endl;
 }
 
 

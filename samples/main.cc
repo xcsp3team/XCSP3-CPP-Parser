@@ -1,6 +1,6 @@
 #include "XCSP3CoreParser.h"
 #include "XCSP3PrintCallbacks.h"
-#include "XCSP3SummaryCallbacks.h"
+#   include "XCSP3SummaryCallbacks.h"
 //#include "intension.h"
 using namespace XCSP3Core;
 

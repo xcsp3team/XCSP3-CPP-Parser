@@ -2222,8 +2222,8 @@ namespace XCSP3Core {
          * @param id the id (name) of the constraint
          * @param list the list of variables (not necessary the scope)
          */
-        virtual void buildConstraintPrecedence(string id, vector<XVariable *> &list) {
-            (void)id; (void)list;
+        virtual void buildConstraintPrecedence(string id, vector<XVariable *> &list, bool covered) {
+            (void)id; (void)list; (void)covered;
             throw runtime_error("precedence constraint not yet supported");
         }
 
@@ -2241,8 +2241,8 @@ namespace XCSP3Core {
          * @param list the list of variables (not necessary the scope)
          * @param values the different vaules
          */
-        virtual void buildConstraintPrecedence(string id, vector<XVariable *> &list, vector<int> values) {
-            (void)id; (void)list; (void)values;
+        virtual void buildConstraintPrecedence(string id, vector<XVariable *> &list, vector<int> values, bool covered) {
+            (void)id; (void)list; (void)values; (void)covered;
             throw runtime_error("precedence constraint not yet supported");
         }
 

@@ -222,6 +222,7 @@ namespace XCSP3Core {
         bool star;                 // true if the extension contain star in tuples
         int startIndex, startIndex2;            // used in some list tag
         int startRowIndex, startColIndex;
+        bool covered;
         XVariable *index;          // used with tag index
         XVariable *index2;         // Only for element matrix
         RankType rank;             // used with rank tag
