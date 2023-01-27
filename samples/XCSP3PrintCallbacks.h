@@ -289,6 +289,9 @@ namespace XCSP3Core {
 
 
         void buildAnnotationDecision(vector<XVariable*> &list) override;
+
+        void buildConstraintCount(string id, vector<Tree *> &trees, vector<int> &values, XCondition &xc) override;
+
         bool canonize;
     };
 
@@ -1163,6 +1166,10 @@ void XCSP3PrintCallbacks::buildConstraintPrecedence(string id, vector<XVariable 
     cout << "        values: ";
     displayList(values);
     cout << "        covered?  " << covered << endl;
+}
+
+void XCSP3PrintCallbacks::buildConstraintCount(string id, vector<Tree *> &trees, vector<int> &values, XCondition &xc) {
+    cout << "\n    Count constraint with trees and integer values" << endl;
 }
 
 

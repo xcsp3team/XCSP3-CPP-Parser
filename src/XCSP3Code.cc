@@ -439,6 +439,18 @@ void XConstraintIntension::unfoldParameters(XConstraintGroup *group, vector<XVar
     group->unfoldString(function, arguments);
 }
 
+void XConstraintRegular::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments,
+                                          XConstraint *original) {
+    XConstraint::unfoldParameters(group, arguments, original);
+    XConstraintRegular *xr = dynamic_cast<XConstraintRegular *>(original);
+    start = xr->start;
+    group->unfoldString(start, arguments);
+    final.assign(xr->final.begin(), xr->final.end());
+    for(auto &s : final) {
+        group->unfoldString(s, arguments);
+    }
+    transitions.assign(xr->transitions.begin(), xr->transitions.end());
+}
 
 void XConstraintGroup::unfoldArgumentNumber(int i, XConstraint *builtConstraint) {
     builtConstraint->unfoldParameters(this, arguments[i], constraint);

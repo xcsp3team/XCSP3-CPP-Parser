@@ -215,7 +215,7 @@ namespace XCSP3Core {
         vector<string> &final;
         vector<XTransition> &transitions;
 
-
+        void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
         XConstraintRegular(std::string idd, std::string c) : XConstraint(idd, c), start(st), final(fi), transitions(tr) {}
     };
 

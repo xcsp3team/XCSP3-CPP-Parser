@@ -456,7 +456,10 @@ void XMLParser::RegularTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     constraint->start = this->parser->start;
     constraint->final.clear();
+    std::cout <<  parser->final << std::endl;
     split(this->parser->final, ' ', constraint->final);
+    std::cout <<  constraint->final.size() << std::endl;
+
     constraint->transitions.assign(this->parser->transitions.begin(), this->parser->transitions.end());
 
     if(this->group == nullptr) {
