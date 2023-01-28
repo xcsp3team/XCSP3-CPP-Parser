@@ -1427,6 +1427,8 @@ void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
             unfoldConstraint<XConstraintMaximum>(group, i, &XCSP3Manager::newConstraintMaxArg);
         if(group->type == MINARG)
             unfoldConstraint<XConstraintMaximum>(group, i, &XCSP3Manager::newConstraintMinArg);
+        if(group->type == PRECEDENCE)
+            unfoldConstraint<XConstraintPrecedence>(group, i, &XCSP3Manager::newConstraintPrecedence);
 
         if(group->type == UNKNOWN) {
             throw runtime_error("Group constraint is badly defined");
