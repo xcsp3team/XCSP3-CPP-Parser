@@ -1212,7 +1212,13 @@ void XCSP3Manager::newConstraintBinPacking(XConstraintBinPacking *constraint) {
 void XCSP3Manager::newConstraintInstantiation(XConstraintInstantiation *constraint) {
     if(discardedClasses(constraint->classes))
         return;
-    callback->buildConstraintInstantiation(constraint->id, constraint->list, constraint->values);
+    vector<int> values;
+    int v;
+    for(XEntity *xe: constraint->values) {
+        isInteger(xe, v);
+        values.push_back(v);
+    }
+    callback->buildConstraintInstantiation(constraint->id, constraint->list, values);
 }
 
 //--------------------------------------------------------------------------------------

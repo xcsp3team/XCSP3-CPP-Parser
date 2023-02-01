@@ -1529,11 +1529,8 @@ void XMLParser::InstantiationTagAction::beginTag(const AttributeList &attributes
 void XMLParser::InstantiationTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     constraint->values.clear();
-    for(XEntity *xi : this->parser->values) {
-        int v;
-        isInteger(xi, v);
-        constraint->values.push_back(v);
-    }
+    constraint->values.assign(this->parser->values.begin(), this->parser->values.end());
+
     if(this->group == nullptr) {
         this->parser->manager->newConstraintInstantiation(constraint);
         delete constraint;

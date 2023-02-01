@@ -523,14 +523,11 @@ namespace XCSP3Core {
      * constraint instantiation
      **************************************************************************/
 
-    extern vector<int> _values;
 
-    class XConstraintInstantiation : public XConstraint {
+    class XConstraintInstantiation : public XConstraint, public XValues {
     public :
-        vector<int> &values;
-
-
-        XConstraintInstantiation(std::string idd, std::string c) : XConstraint(idd, c), values(_values) {}
+        void unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) override;
+        XConstraintInstantiation(std::string idd, std::string c) : XConstraint(idd, c) {}
     };
 
 

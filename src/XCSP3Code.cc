@@ -625,6 +625,10 @@ void XConstraintClause::unfoldParameters(XConstraintGroup *group, vector<XVariab
     }
 }
 
+void XConstraintInstantiation::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
+    XConstraint::unfoldParameters(group, arguments, original);
+    XValues::unfoldParameters(group, arguments, original);
+}
 
 
 void XConstraintPrecedence::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
