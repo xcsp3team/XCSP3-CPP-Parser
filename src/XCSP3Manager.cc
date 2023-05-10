@@ -1461,6 +1461,21 @@ void XCSP3Manager::addObjective(XObjective *objective) {
         return;
     }
 
+    vector<int> intcoeffs;
+    vector<XVariable *> varcoeffs;
+    int v;
+    // Create good coefficients.
+    if(objective->coeffs.size() > 0) {
+        for(XEntity *xe : objective->coeffs) {
+            if(isInteger(xe, v))
+                intcoeffs.push_back(v);
+            else
+                varcoeffs.push_back((XVariable *) mapping[xe->id]);
+        }
+        if(varcoeffs.size() > 0 && intcoeffs.size() > 0)
+            throw runtime_error("Error in coefficients of obejctive");
+    }
+
 
     // Expressions ??
     vector<Tree *> trees;
@@ -1473,16 +1488,23 @@ void XCSP3Manager::addObjective(XObjective *objective) {
                 callback->buildObjectiveMaximize(objective->type, trees);
             return;
         }
-        if(objective->goal == MINIMIZE)
-            callback->buildObjectiveMinimize(objective->type, trees, objective->coeffs);
-        else
-            callback->buildObjectiveMaximize(objective->type, trees, objective->coeffs);
-
+        if(objective->goal == MINIMIZE) {
+            if(intcoeffs.size() > 0)
+                callback->buildObjectiveMinimize(objective->type, trees, intcoeffs);
+            else
+                callback->buildObjectiveMinimize(objective->type, trees, varcoeffs);
+        }
+        else {
+            if(intcoeffs.size() > 0)
+                callback->buildObjectiveMaximize(objective->type, trees, intcoeffs);
+            else
+                callback->buildObjectiveMaximize(objective->type, trees, varcoeffs);
+        }
         return;
     }
 
 
-    if(objective->type == SUM_O && callback->normalizeSum) {
+    if(objective->type == SUM_O && (intcoeffs.size() > 0 || (objective->coeffs.size() == 0)) &&  callback->normalizeSum) {
         if(objective->coeffs.size() == 0) {
             bool toModify = false;
             // Check if a variable appears two times
@@ -1492,10 +1514,10 @@ void XCSP3Manager::addObjective(XObjective *objective) {
                         toModify = true;
                 }
             if(toModify)
-                objective->coeffs.assign(objective->list.size(), 1);
+                intcoeffs.assign(objective->list.size(), 1);
         }
-        if(objective->coeffs.size() > 0)
-            normalizeSum(objective->list, objective->coeffs);
+        if(intcoeffs.size() > 0)
+            normalizeSum(objective->list, intcoeffs);
     }
 
     if(objective->coeffs.size() == 0) {
@@ -1505,11 +1527,19 @@ void XCSP3Manager::addObjective(XObjective *objective) {
             callback->buildObjectiveMaximize(objective->type, objective->list);
         return;
     }
-    if(objective->goal == MINIMIZE)
-        callback->buildObjectiveMinimize(objective->type, objective->list, objective->coeffs);
-    else
-        callback->buildObjectiveMaximize(objective->type, objective->list, objective->coeffs);
+    if(objective->goal == MINIMIZE) {
+        if(intcoeffs.size() > 0)
+            callback->buildObjectiveMinimize(objective->type, objective->list, intcoeffs);
+        else
+            callback->buildObjectiveMinimize(objective->type, objective->list, varcoeffs);
 
+    } else {
+        if(intcoeffs.size() > 0)
+            callback->buildObjectiveMaximize(objective->type, objective->list, intcoeffs);
+        else
+            callback->buildObjectiveMaximize(objective->type, objective->list, varcoeffs);
+
+    }
 }
 
 

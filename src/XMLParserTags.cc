@@ -1323,18 +1323,13 @@ void XMLParser::ObjectivesTagAction::endTag() {
         objective->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     if(this->parser->values.size() > 0) {
         int value;
-        for(XEntity *xe : this->parser->values) {
-            isInteger(xe, value);
-            objective->coeffs.push_back(value);
-        }
+        objective->coeffs.assign(this->parser->values.begin(), this->parser->values.end());
     } else if(objective->type != EXPRESSION_O) {
-        objective->coeffs.assign(objective->list.size(), 1);
+        objective->coeffs.assign(objective->list.size(), new XInteger("1", 1));
     }
-
     this->parser->manager->addObjective(objective);
     delete objective;
     this->parser->manager->endObjectives();
-
 }
 
 
