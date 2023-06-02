@@ -796,7 +796,10 @@ void XMLParser::CardinalityTagAction::beginTag(const AttributeList &attributes) 
 
     // Must be called inside a constraint
     BasicConstraintTagAction::beginTag(attributes);
-    this->parser->closed = true;
+    this->parser->closed = false;
+    if(!attributes["closed"].isNull() && attributes["closed"] == "0")
+        this->parser->closed = true;
+
     constraint = new XConstraintCardinality(this->id, this->parser->classes);
 
     // Link constraint to group

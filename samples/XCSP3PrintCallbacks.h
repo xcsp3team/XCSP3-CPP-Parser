@@ -1068,7 +1068,7 @@ void XCSP3PrintCallbacks::buildConstraintNoOverlap(string, vector<XVariable *> &
 
 // string id, vector<XVariable *> &origins, vector<XVariable *> &lengths, bool zeroIgnored
 void XCSP3PrintCallbacks::buildConstraintNoOverlap(string, vector<XVariable *> &origins, vector<XVariable *> &lengths, bool) {
-    cout << "\n    nooverlap constraint" << endl;
+    cout << "\n    nooverlap constraint (origins and lenghts variables)" << endl;
     cout << "        origins:";
     displayList(origins);
     cout << "        lengths";
