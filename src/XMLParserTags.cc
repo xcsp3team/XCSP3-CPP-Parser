@@ -746,7 +746,11 @@ void XMLParser::NValuesTagAction::beginTag(const AttributeList &attributes) {
 void XMLParser::NValuesTagAction::endTag() {
     constraint->list.assign(this->parser->lists[0].begin(), this->parser->lists[0].end());
     constraint->condition = this->parser->condition;
-    constraint->except.assign(this->parser->integers.begin(), this->parser->integers.end());
+    for (XEntity *xi : this->parser->values) {
+        int v;
+        isInteger(xi, v);
+        constraint->except.push_back(v);
+    }
     if(this->group == nullptr) {
         this->parser->manager->newConstraintNValues(constraint);
         delete constraint;
