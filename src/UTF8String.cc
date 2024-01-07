@@ -91,7 +91,7 @@ int UTF8String::byteLength() const {
             ++_end;
     }
 
-    return _end - _beg;
+    return static_cast<int>(_end - _beg);
 }
 
 

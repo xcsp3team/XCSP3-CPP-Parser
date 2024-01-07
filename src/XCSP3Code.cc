@@ -167,9 +167,9 @@ XVariableArray::XVariableArray(std::string idd, XVariableArray *as) : sizes(as->
     indexes.assign(as->sizes.size(), 0);
     variables.assign(as->variables.size(), NULL);
     id = idd;
-    for(unsigned int i = 0 ; i < variables.size() ; i++) {
+    for(decltype(variables.size()) i = 0 ; i < variables.size() ; i++) {
         variables[i] = new XVariable(idd, as->variables[i]->domain, indexes);
-        for(int j = sizes.size() - 1 ; j >= 0 ; j--)
+        for(int j = static_cast<int>(sizes.size()/*unsigned*/) - 1 ; j >= 0 ; j--)
             if(++indexes[j] == sizes[j])
                 indexes[j] = 0;
             else
@@ -183,7 +183,7 @@ XVariableArray::~XVariableArray() {}
 
 void XVariableArray::indexesFor(int flatIndex, std::vector<int> &indexes) {
     indexes.resize(sizes.size());
-    for(int i = indexes.size() - 1 ; i > 0 ; i--) {
+    for(int i = static_cast<int>(indexes.size()) - 1; i > 0 ; i--) {
         indexes[i] = flatIndex % sizes[i];
         flatIndex = flatIndex / sizes[i];
     }
@@ -192,7 +192,7 @@ void XVariableArray::indexesFor(int flatIndex, std::vector<int> &indexes) {
 
 
 bool XVariableArray::incrementIndexes(vector<int> &indexes, vector<XIntegerEntity *> &ranges) {
-    int j = indexes.size() - 1;
+    int j = static_cast<int>(indexes.size()) - 1;
     for(; j >= 0 ; j--)
         if(ranges[j]->width() == 1)
             continue;
@@ -209,13 +209,13 @@ void XVariableArray::getVarsFor(vector<XVariable *> &list, string compactForm, v
     string tmp;
     // Compute the different ranges for all dimension
     for(unsigned int i = 0 ; i < sizes.size() ; i++) {
-        int pos = compactForm.find(']');
+        string::size_type pos = compactForm.find(']');
         tmp = compactForm.substr(1, pos - 1);
         compactForm = compactForm.substr(pos + 1);
         if(tmp.size() == 0) {
             ranges.push_back(new XIntegerInterval(0, sizes[i] - 1));
         } else {
-            size_t dot = tmp.find("..");
+            string::size_type dot = tmp.find("..");
             if(dot == string::npos)
                 ranges.push_back(new XIntegerValue(std::stoi(tmp)));
             else {
@@ -253,7 +253,7 @@ void XVariableArray::buildVarsWith(XDomainInteger *domain) {
     for(unsigned int i = 0 ; i < variables.size() ; i++) {
         if(variables[i] == NULL) // We need to create a variable
             variables[i] = new XVariable(id, domain, indexes);
-        for(int j = sizes.size() - 1 ; j >= 0 ; j--)
+        for(int j = static_cast<int>(sizes.size()) - 1 ; j >= 0 ; j--)
             if(++indexes[j] == sizes[j])
                 indexes[j] = 0;
             else
@@ -264,7 +264,7 @@ void XVariableArray::buildVarsWith(XDomainInteger *domain) {
 
 int XVariableArray::flatIndexFor(vector<int> indexes) {
     int sum = 0;
-    for(int i = indexes.size() - 1, nb = 1 ; i >= 0 ; i--) {
+    for(int i = static_cast<int>(indexes.size()) - 1, nb = 1; i >= 0 ; i--) {
         sum += indexes[i] * nb;
         nb *= sizes[i];
     }
@@ -312,7 +312,7 @@ void XConstraintGroup::unfoldVector(vector<XVariable *> &toUnfold, vector<XVaria
 
 
 void XConstraintGroup::unfoldString(string &toUnfold, vector<XVariable *> &args) {
-    for(int i = args.size() - 1 ; i >= 0 ; i--) {
+    for(int i = static_cast<int>(args.size()) - 1 ; i >= 0 ; i--) {
         string param = "%" + std::to_string(i);
         ReplaceStringInPlace(toUnfold, param, args[i]->id);
     }
@@ -374,7 +374,7 @@ void XInitialCondition::extract(XCondition &xc, string &condition) { // Create t
     if(tmp0 == "ne") xc.op = NE;
     //std::cout << condition <<": "<< tmp0 << " " <<tmp1 << std::endl;
     //printf("%d %d\n",' ',condition[condition.length()-1]);
-    size_t dotdot = tmp1.find('.');
+    string::size_type dotdot = tmp1.find('.');
     if(dotdot != string::npos) { // Normal variable
         xc.operandType = INTERVAL;
         xc.min = stoi(tmp1.substr(0, dotdot));
@@ -385,7 +385,7 @@ void XInitialCondition::extract(XCondition &xc, string &condition) { // Create t
     try {
         xc.val = stoi(tmp1);
         xc.operandType = INTEGER;
-    } catch(const invalid_argument &e) {
+    } catch(const invalid_argument &) {
         xc.var = tmp1;
         xc.operandType = VARIABLE;
     }
@@ -612,7 +612,6 @@ void XConstraintCircuit::unfoldParameters(XConstraintGroup *group, vector<XVaria
 void XConstraintClause::unfoldParameters(XConstraintGroup *group, vector<XVariable *> &arguments, XConstraint *original) {
 
     for(XVariable *xv : arguments) {
-        XTree *xt;
         if(dynamic_cast<XTree*>(xv) != nullptr) { // not
             if (xv->id.rfind("not(", 0) != 0)
                 throw runtime_error("a clause is malformed in a group: " + xv->id);
@@ -689,7 +688,7 @@ inline bool XCSP3Core::instanceof(const T *) {
 
 
 void XCSP3Core::ReplaceStringInPlace(std::string &subject, const std::string &search, const std::string &replace) {
-    size_t pos = 0;
+    std::string::size_type pos = 0;
     while((pos = subject.find(search, pos)) != std::string::npos) {
         subject.replace(pos, search.length(), replace);
         pos += replace.length();

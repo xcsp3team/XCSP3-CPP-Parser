@@ -78,14 +78,14 @@ int XCSP3CoreParser::parse(istream &in) {
         xmlSubstituteEntitiesDefault(1);
 
         in.read(buffer.get(), bufSize);
-        size = in.gcount();
+        size = static_cast<int>(in.gcount());
 
         if(size > 0) {
             parserCtxt = xmlCreatePushParserCtxt(&handler, &cspParser, buffer.get(), size, filename);
 
             while(in.good()) {
                 in.read(buffer.get(), bufSize);
-                size = in.gcount();
+                size = static_cast<int>(in.gcount());
 
                 if(size > 0)
                     xmlParseChunk(parserCtxt, buffer.get(), size, 0);
