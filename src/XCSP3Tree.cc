@@ -58,7 +58,7 @@ static inline std::string &trim(std::string &s) {
 }
 
 template <typename T>
-static int min(T v1, T v2, T v3) {
+static T min(T v1, T v2, T v3) {
     if (v1 == -1) v1 = std::numeric_limits<T>::max();
     if (v2 == -1) v2 = std::numeric_limits<T>::max();
     if (v3 == -1) v3 = std::numeric_limits<T>::max();
@@ -72,16 +72,16 @@ Node *Tree::fromStringToTree(std::string current) {
     std::vector<NodeOperator*> stack;
     std::vector<Node*> params;
     while (true) {
-        int posOpenParenthesis = current.find('(');
-        int posCloseParenthesis = current.find(')');
-        int posComma = current.find(',');
-        int nb = min(posCloseParenthesis, posComma, posOpenParenthesis);
+        string::size_type posOpenParenthesis = current.find('(');
+        string::size_type posCloseParenthesis = current.find(')');
+        string::size_type posComma = current.find(',');
+        string::size_type nb = min(posCloseParenthesis, posComma, posOpenParenthesis);
 
 
         string currentElement = current.substr(0, nb);
         if (currentElement != "" && nb != posOpenParenthesis)
             createBasicParameter(currentElement,stack,params);
-        
+
 
         if (nb == posCloseParenthesis)
             closeOperator(stack,params);
@@ -114,12 +114,14 @@ void Tree::createOperator(string currentElement, std::vector<NodeOperator*> &sta
 void Tree::closeOperator(std::vector<NodeOperator*> &stack,std::vector<Node*> &params) {
     NodeOperator *tmp = stack.back();
 
-    int startParams = params.size() - 1;
+    assert(params.size() > 0);
+    int startParams = static_cast<int>(params.size()) - 1;
     while (params[startParams] != nullptr)
         startParams--;
     startParams++;
+
     int nbP = 0;
-    for (unsigned int i = startParams; i < params.size(); i++, nbP++)
+    for (decltype(params.size()) i = startParams; i < params.size(); i++, nbP++)
         tmp->addParameter(params[i]);
     stack.pop_back();
     //params.shrink(nbP);
@@ -143,7 +145,6 @@ void Tree::createBasicParameter(string currentElement, std::vector<NodeOperator*
             }
         if (position == -1) {
             listOfVariables.push_back(currentElement);
-            position = listOfVariables.size() - 1;
         }
         params.push_back(new NodeVariable(currentElement));
     }

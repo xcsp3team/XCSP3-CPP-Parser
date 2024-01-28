@@ -1069,7 +1069,7 @@ void XCSP3Manager::newConstraintNoOverlapKDim(XConstraintNoOverlap *constraint) 
     }
 
 
-    if(isInt > 0)
+    if(isInt)
         callback->buildConstraintNoOverlap(constraint->id, origins, intLengths, constraint->zeroIgnored);
     else
         callback->buildConstraintNoOverlap(constraint->id, origins, varLengths, constraint->zeroIgnored);

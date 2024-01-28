@@ -66,7 +66,16 @@ include_directories(
 add_library(${LIBRARY_NAME} STATIC ${LIB_SOURCES} ${LIB_HEADERS})
 add_library(${LIBRARY_NAME_DYNAMIC} SHARED ${LIB_SOURCES} ${LIB_HEADERS})
 #add_library(${LIBRARY_NAME} SHARED ${LIB_SOURCES} ${LIB_HEADERS})
+
+if(MSVC)
+    target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_17)
+    target_compile_features(${LIBRARY_NAME_DYNAMIC} PUBLIC cxx_std_17)
+    target_compile_options(${LIBRARY_NAME} PRIVATE /W3)
+    target_compile_options(${LIBRARY_NAME_DYNAMIC} PRIVATE /W3)
+endif()
+
 target_link_libraries(${LIBRARY_NAME} ${LIBXML2_LIBRARIES})
+target_link_libraries(${LIBRARY_NAME_DYNAMIC} ${LIBXML2_LIBRARIES})
 
 set_target_properties(${LIBRARY_NAME} PROPERTIES
         VERSION ${VERSION}
@@ -79,4 +88,11 @@ add_executable(${APPLICATION_NAME} ${APP_SOURCES})
 target_link_libraries(${APPLICATION_NAME} ${LIBRARY_NAME} ${LIBXML2_LIBRARIES})
 target_include_directories(${LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-
+if(MSVC)
+    set_target_properties(${LIBRARY_NAME} PROPERTIES
+        DEBUG_POSTFIX d
+    )
+    set_target_properties(${LIBRARY_NAME_DYNAMIC} PROPERTIES
+        DEBUG_POSTFIX d
+    )
+endif()

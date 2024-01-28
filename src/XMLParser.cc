@@ -216,7 +216,7 @@ void XMLParser::parseSequence(const UTF8String &txt, vector<XVariable *> &list, 
         }
         size_t percent = current.find('%');
         if(percent == string::npos) { // Normal variable
-            size_t pos = current.find('[');
+            int pos = static_cast<int>(current.find('['));
             if(pos == string::npos) { // Not an array
                 size_t dotdot = current.find('.');
                 if(dotdot == string::npos) {
@@ -238,7 +238,7 @@ void XMLParser::parseSequence(const UTF8String &txt, vector<XVariable *> &list, 
                             list.push_back(xi);
                             toFree.push_back(xi);
                         }
-                    } catch(invalid_argument &e) {
+                    } catch(invalid_argument &) {
                         if(current == "*")
                             list.push_back(new XInteger(current, STAR));
                         else {
@@ -317,7 +317,7 @@ void XMLParser::parseDomain(const UTF8String &txt, XDomainInteger &domain) {
     UTF8String dotdot("..");
     while(tokenizer.hasMoreTokens()) {
         UTF8String token = tokenizer.nextToken();
-        size_t pos = token.find(dotdot);
+        int pos = token.find(dotdot);
 
         if(pos == UTF8String::npos) {
             int val;
@@ -345,7 +345,7 @@ void XMLParser::parseListOfIntegerOrInterval(const UTF8String &txt, vector<XInte
     UTF8String dotdot = "..";
     while(tokenizer.hasMoreTokens()) {
         UTF8String token = tokenizer.nextToken();
-        size_t pos = token.find(dotdot);
+        int pos = token.find(dotdot);
 
         if(pos == UTF8String::npos) {
             int val;

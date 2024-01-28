@@ -310,7 +310,7 @@ void displayList(vector<T> &list, string separator = " ") {
         for(int i = 0; i < 3; i++)
             cout << list[i] << separator;
         cout << " ... ";
-        for(unsigned int i = list.size() - 4; i < list.size(); i++)
+        for(decltype(list.size()) i = list.size() - 4; i < list.size(); i++)
             cout << list[i] << separator;
         cout << endl;
         return;
@@ -326,7 +326,7 @@ void displayList(vector<XVariable *> &list, string separator = " ") {
         for(int i = 0; i < 3; i++)
             cout << list[i]->id << separator;
         cout << " ... ";
-        for(unsigned int i = list.size() - 4; i < list.size(); i++)
+        for(decltype(list.size()) i = list.size() - 4; i < list.size(); i++)
             cout << list[i]->id << separator;
         cout << endl;
         return;
@@ -643,10 +643,10 @@ void XCSP3PrintCallbacks::buildConstraintSum(string, vector<XVariable *> &list, 
         for(int i = 0; i < 3; i++)
             cout << (coeffs.size() == 0 ? 1 : coeffs[i]) << "*" << *(list[i]) << " ";
         cout << " ... ";
-        for(unsigned int i = list.size() - 4; i < list.size(); i++)
+        for(decltype(list.size()) i = list.size() - 4; i < list.size(); i++)
             cout << (coeffs.size() == 0 ? 1 : coeffs[i]) << "*" << *(list[i]) << " ";
     } else {
-        for(unsigned int i = 0; i < list.size(); i++)
+        for(decltype(list.size()) i = 0; i < list.size(); i++)
             cout << (coeffs.size() == 0 ? 1 : coeffs[i]) << "*" << *(list[i]) << " ";
     }
     cout << cond << endl;
@@ -670,10 +670,10 @@ void XCSP3PrintCallbacks::buildConstraintSum(string, vector<XVariable *> &list, 
         for(int i = 0; i < 3; i++)
             cout << coeffs[i]->id << "*" << *(list[i]) << " ";
         cout << " ... ";
-        for(unsigned int i = list.size() - 4; i < list.size(); i++)
+        for(decltype(list.size()) i = list.size() - 4; i < list.size(); i++)
             cout << coeffs[i]->id << "*" << *(list[i]) << " ";
     } else {
-        for(unsigned int i = 0; i < list.size(); i++)
+        for(decltype(list.size()) i = 0; i < list.size(); i++)
             cout << coeffs[i]->id << "*" << *(list[i]) << " ";
     }
     cout << cond << endl;
@@ -688,12 +688,12 @@ void XCSP3PrintCallbacks::buildConstraintSum(string id, vector<Tree *> &list, ve
             list[i]->prefixe();
         }
         cout << " ... ";
-        for(unsigned int i = list.size() - 4; i < list.size(); i++) {
+        for(decltype(list.size()) i = list.size() - 4; i < list.size(); i++) {
             cout << coeffs[i];
             list[i]->prefixe();
         }
     } else {
-        for(unsigned int i = 0; i < list.size(); i++) {
+        for(decltype(list.size()) i = 0; i < list.size(); i++) {
             cout << coeffs[i];
             list[i]->prefixe();
         }
@@ -707,11 +707,11 @@ void XCSP3PrintCallbacks::buildConstraintSum(string id, vector<Tree *> &list, XC
             list[i]->prefixe();
         }
         cout << " ... ";
-        for(unsigned int i = list.size() - 4; i < list.size(); i++) {
+        for(decltype(list.size()) i = list.size() - 4; i < list.size(); i++) {
             list[i]->prefixe();
         }
     } else {
-        for(unsigned int i = 0; i < list.size(); i++) {
+        for(decltype(list.size()) i = 0; i < list.size(); i++) {
             list[i]->prefixe();
         }
     }
