@@ -79,6 +79,13 @@ Node *Tree::fromStringToTree(std::string current) {
 
 
         string currentElement = current.substr(0, nb);
+
+
+        if(nb == string::npos) {// No operator, just a variable
+            createBasicParameter(currentElement,stack,params);
+            break;
+        }
+
         if (currentElement != "" && nb != posOpenParenthesis)
             createBasicParameter(currentElement,stack,params);
 
@@ -89,8 +96,7 @@ Node *Tree::fromStringToTree(std::string current) {
 
         if (nb == posOpenParenthesis)
             createOperator(currentElement,stack,params);
-        if(nb == std::numeric_limits<int>::max()) // No operator, just a variable
-            break;
+
 
         current = current.substr(nb + 1);
         if (current == "") break;
