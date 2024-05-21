@@ -185,6 +185,19 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList &attributes) {
             throw runtime_error("XCSP3Core expected type=\"integer\" for tag <var>");
     }
 
+    if(!attributes["size"].to(size))
+        throw runtime_error("expected attribute id for tag <array>");
+    vector<std::string> stringSizes = split(size, '[');
+    for(auto &stringSize: stringSizes) {
+        if(stringSize.empty())
+            continue;
+        sizes.push_back(std::stoi(stringSize.substr(0, stringSize.size() - 1)));
+    }
+    varArray = new XVariableArray(id, sizes);
+
+
+
+
 
     if(!attributes["as"].isNull()) {
         // Create a similar Variable
@@ -193,23 +206,13 @@ void XMLParser::ArrayTagAction::beginTag(const AttributeList &attributes) {
             throw runtime_error("Matrix variable as \"" + as + "\" does not exist");
         auto *similar = (XVariableArray *)
                 this->parser->variablesList[as];
-        varArray = new XVariableArray(id, similar);
-    } else {
-        if(!attributes["size"].to(size))
-            throw runtime_error("expected attribute id for tag <array>");
-        vector<std::string> stringSizes = split(size, '[');
-        for(auto & stringSize : stringSizes) {
-            if(stringSize.empty())
-                continue;
-            sizes.push_back(std::stoi(stringSize.substr(0, stringSize.size() - 1)));
-        }
-        varArray = new XVariableArray(id, sizes);
-
+        domain = similar->variables[0]->domain;
+    }  else {
         domain = new XDomainInteger();
         this->parser->allDomains.push_back(domain);
-        this->parser->manager->beginVariableArray(id);
     }
 
+    this->parser->manager->beginVariableArray(id);
     varArray->classes = classes;
 }
 
