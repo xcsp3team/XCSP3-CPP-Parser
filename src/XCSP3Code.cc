@@ -327,15 +327,25 @@ namespace XCSP3Core {
         if(xc.op == GT) sep = " > ";
         if(xc.op == GE) sep = " >= ";
         if(xc.op == EQ) sep = " = ";
+        if(xc.op == IN) sep = " IN " + sep;
+        if(xc.op == NOTIN) sep = " NOTIN " + sep;
 
         if(xc.operandType == INTEGER)
             O << sep << xc.val;
 
         if(xc.operandType == INTERVAL)
-            O << sep << "in [" << xc.min << "," << xc.max << "]";
+            O << sep << "[" << xc.min << ".." << xc.max << "]";
+
+        if(xc.operandType == SET) {
+            O << sep << "{";
+            for (int n : xc.set)
+                O << n << " ";
+            O << "}";
+        }
 
         if(xc.operandType == VARIABLE)
             O << sep << xc.var;
+
         return O;
     }
 }
@@ -372,6 +382,8 @@ void XInitialCondition::extract(XCondition &xc, string &condition) { // Create t
     if(tmp0 == "in") xc.op = IN;
     if(tmp0 == "eq") xc.op = EQ;
     if(tmp0 == "ne") xc.op = NE;
+    if(condition.find("notin") != std::string::npos) xc.op = NOTIN;
+
     //std::cout << condition <<": "<< tmp0 << " " <<tmp1 << std::endl;
     //printf("%d %d\n",' ',condition[condition.length()-1]);
     string::size_type dotdot = tmp1.find('.');
@@ -380,7 +392,17 @@ void XInitialCondition::extract(XCondition &xc, string &condition) { // Create t
         xc.min = stoi(tmp1.substr(0, dotdot));
         xc.max = stoi(tmp1.substr(dotdot + 2));
         return;
+    }
+    if(tmp1[0] == '{') { // Set of integers
+        xc.operandType = SET;
+        // Regex to find one or more digits
+        std::regex number_regex(R"(-?\d+)");
+        std::sregex_iterator begin(tmp1.begin(), tmp1.end(), number_regex);
+        std::sregex_iterator end;
 
+        for (std::sregex_iterator i = begin; i != end; ++i)
+            xc.set.push_back(std::stoi((*i).str()));
+        return;
     }
     try {
         xc.val = stoi(tmp1);
