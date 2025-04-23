@@ -123,6 +123,8 @@ namespace XCSP3Core {
 
         void buildConstraintOrdered(string id, vector<XVariable *> &list, vector<int> &lengths, OrderType order) override;
 
+        void buildConstraintOrdered(string id, vector<XVariable *> &list, vector<XVariable*> &lengths, OrderType order) override;
+
         void buildConstraintLex(string id, vector<vector<XVariable *>> &lists, OrderType order) override;
 
         void buildConstraintLexMatrix(string id, vector<vector<XVariable *>> &matrix, OrderType order) override;
@@ -601,6 +603,20 @@ void XCSP3PrintCallbacks::buildConstraintOrdered(string, vector<XVariable *> &li
     displayList(lengths); cout << "      ";
     displayList(list, sep);
 }
+
+// string id, vector<XVariable *> &list, vector<int> &lengths, OrderType order
+void XCSP3PrintCallbacks::buildConstraintOrdered(string, vector<XVariable *> &list, vector<XVariable *> &lengths, OrderType order) {
+    cout << "\n    ordered constraint with variable lengths" << endl;
+    string sep;
+    if(order == LT) sep = " < ";
+    if(order == LE) sep = " <= ";
+    if(order == GT) sep = " > ";
+    if(order == GE) sep = " >= ";
+    cout << "        ";
+    displayList(lengths); cout << "      ";
+    displayList(list, sep);
+}
+
 
 // string id, vector<vector<XVariable *>> &lists, OrderType order
 void XCSP3PrintCallbacks::buildConstraintLex(string, vector<vector<XVariable *>> &lists, OrderType order) {
