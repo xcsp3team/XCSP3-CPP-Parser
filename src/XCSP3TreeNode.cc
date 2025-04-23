@@ -441,6 +441,10 @@ Node::areSimilar(Node *canonized, Node *pattern, std::vector<ExpressionType> &op
 
     NodeOperator *nc = dynamic_cast<NodeOperator *>(canonized);
     NodeOperator *np = dynamic_cast<NodeOperator *>(pattern);
+
+    if (nc == nullptr || np == nullptr)
+        return false;
+
     if(nc->parameters.size() != np->parameters.size())
         return false;
 
