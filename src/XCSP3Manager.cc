@@ -782,10 +782,21 @@ void XCSP3Manager::newConstraintCardinality(XConstraintCardinality *constraint) 
     std::vector<XVariable *> varOccurs;
     std::vector<XInterval> intervalOccurs;
 
+    bool interval = false;
+    for (XEntity *xe: constraint->occurs) {
+        int min, max;
+        if(isInterval(xe, min, max))
+            interval = true;
+    }
+
     for(XEntity *xe: constraint->occurs) {
         if(isInteger(xe, v))
-            intOccurs.push_back(v);
-        else {
+        {
+            if (interval)
+                intervalOccurs.push_back(XInterval(v, v));
+            else
+                intOccurs.push_back(v);
+        } else {
             int min, max;
             if(isInterval(xe, min, max))
                 intervalOccurs.push_back(XInterval(min, max));
