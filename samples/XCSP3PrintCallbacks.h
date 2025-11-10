@@ -200,6 +200,8 @@ namespace XCSP3Core {
 
         void buildConstraintElement(string id, vector<XVariable *> &list, XVariable *index, int startIndex, XCondition &xc)  override;
 
+        void buildConstraintElement(string id, vector<int> &list, XVariable *index, int startIndex, XCondition &xc)  override;
+
         void buildConstraintChannel(string id, vector<XVariable *> &list, int startIndex) override;
 
         void buildConstraintChannel(string id, vector<XVariable *> &list1, int startIndex1, vector<XVariable *> &list2, int startIndex2) override;
@@ -987,6 +989,15 @@ void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<vector<int> >
 
 void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<XVariable *> &list, XVariable *index, int startIndex, XCondition &xc) {
     cout << "\n   element with list and condition\n";
+    displayList(list);
+    cout << "        Start index : " << startIndex << endl;
+    cout << "        index : " << *index << endl;
+
+    cout << "        condition: " << xc << endl;
+}
+
+void XCSP3PrintCallbacks::buildConstraintElement(string id, vector<int> &list, XVariable *index, int startIndex, XCondition &xc) {
+    cout << "\n   element with list of int and condition\n";
     displayList(list);
     cout << "        Start index : " << startIndex << endl;
     cout << "        index : " << *index << endl;

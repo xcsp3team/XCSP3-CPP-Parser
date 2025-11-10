@@ -1847,12 +1847,11 @@ void XMLParser::MatrixTagAction::beginTag(const AttributeList &attributes) {
 
     this->parser->startRowIndex = 0;
     this->parser->startColIndex = 0;
-
-
     if(!attributes["startRowIndex"].isNull())
         attributes["startRowIndex"].to(this->parser->startRowIndex);
     if(!attributes["startColIndex"].isNull())
         attributes["startColIndex"].to(this->parser->startColIndex);
+    this->parser->matrix.clear();
 }
 
 
@@ -1863,8 +1862,8 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
     string txt2;
     txt.to(txt2);
     txt2 = trim(txt2);
-    size_t p = txt2.find(("("));
-    if(p == string::npos) {
+    size_t p = txt2.find(("["));
+    if(p != string::npos) {
         string::size_type pos = txt2.find("[");
         if(pos == string::npos)
             throw runtime_error("matrix needs a 2-dim matrix");
@@ -1911,6 +1910,7 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
         delims.push_back('(');
         delims.push_back(')');
         delims.push_back(',');
+        this->parser->lists[0].clear();
         this->parser->parseSequence(txt, this->parser->lists[0], delims);
 
         for(XVariable *x : this->parser->lists[0]) {
