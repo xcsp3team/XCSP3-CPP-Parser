@@ -221,6 +221,9 @@ namespace XCSP3Core {
 
         void buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<vector<XVariable *>> &lengths, bool zeroIgnored) override;
 
+        void buildConstraintNoOverlap(string id, vector<vector<XVariable*>>& origins, vector<XVariable*>& varLengths,
+            vector<int>& intLengths, bool zeroIgnored) override;
+
         void buildConstraintInstantiation(string id, vector<XVariable *> &list, vector<int> &values) override;
 
         void buildConstraintClause(string id, vector<XVariable *> &positive, vector<XVariable *> &negative) override ;
@@ -1132,6 +1135,21 @@ void XCSP3PrintCallbacks::buildConstraintNoOverlap(string, vector<vector<XVariab
     for(unsigned int i = 0; i < origins.size(); i++) {
         cout << "        ";
         displayList(lengths[i]);
+    }
+}
+
+void XCSP3PrintCallbacks::buildConstraintNoOverlap(string id, vector<vector<XVariable*>>& origins, vector<XVariable*>& varLengths,
+            vector<int>& intLengths, bool zeroIgnored) {
+    cout << "\n    2dim (mixed lengths)  nooverlap constraint" << endl;
+    cout << "origins: " << endl;
+    for(unsigned int i = 0; i < origins.size(); i++) {
+        cout << "        ";
+        displayList(origins[i]);
+    }
+    cout << "lengths: " << endl;
+    for(unsigned int i = 0; i < origins.size(); i++) {
+        cout << "        ";
+        std::cout << "(" << varLengths[i]->id << ", " << intLengths[i] << ")" << std::endl;
     }
 }
 

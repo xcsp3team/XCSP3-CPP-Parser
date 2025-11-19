@@ -1066,6 +1066,32 @@ void XCSP3Manager::newConstraintNoOverlapKDim(XConstraintNoOverlap *constraint) 
     vector<vector<int>> intLengths;
     vector<vector<XVariable *>> varLengths;
     vector<vector<XVariable *>> origins;
+
+    for(XVariable *xe: constraint->origins) {
+        if(xe == NULL) {
+            origins.push_back(vector<XVariable *>());
+            continue;
+        }
+        origins.back().push_back(xe);
+    }
+
+    // Check if we have a mixed (X,4) in lenghts....
+    XVariable *tmp;
+    if (isVariable(constraint->lengths[1], tmp) && isInteger(constraint->lengths[2], v)) {
+        vector<XVariable *> vL;
+        vector<int> iL;
+        for (int i = 1; i < constraint->lengths.size(); i+=3) {
+            isVariable(constraint->lengths[i], tmp);
+            isInteger(constraint->lengths[i+1], v);
+            vL.push_back(tmp);
+            iL.push_back(v);
+        }
+        callback->buildConstraintNoOverlap(constraint->id, origins, vL, iL, constraint->zeroIgnored);
+        return;
+    }
+
+
+
     for(XEntity *xe: constraint->lengths) {
         if(xe == NULL) {
             varLengths.push_back(vector<XVariable *>());
@@ -1079,13 +1105,6 @@ void XCSP3Manager::newConstraintNoOverlapKDim(XConstraintNoOverlap *constraint) 
             XVariable *xv = (XVariable *) xe;
             varLengths.back().push_back(xv);
         }
-    }
-    for(XVariable *xe: constraint->origins) {
-        if(xe == NULL) {
-            origins.push_back(vector<XVariable *>());
-            continue;
-        }
-        origins.back().push_back(xe);
     }
 
 

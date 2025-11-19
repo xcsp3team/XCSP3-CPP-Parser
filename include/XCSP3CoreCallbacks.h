@@ -1900,6 +1900,27 @@ namespace XCSP3Core {
 
 
         /**
+         * The callback function related to a no overlap constraint with variable origins and 2 dimensional mixed var/int lenghts
+         * See http://xcsp.org/specifications/noOverlap
+         *
+         * Example:
+         * <noOverlap>
+         *    <origins> (x1,y1)(x2,y2)(x3,y3)(x4,y4) </origins>
+         *    <lengths> (z1,3)(z2,2)(z3,5)(z4,1) </lengths>
+         * </noOverlap>
+         *
+         * @param id  the id (name) of the constraint
+         * @param origins the vector of origins
+         * @param varLengths the vector of var lengths
+         * @param intLengths the vector of var lengths
+         * @param zeroIgnored are zero ignored?
+         */
+        virtual void buildConstraintNoOverlap(string id, vector<vector<XVariable *>> &origins, vector<XVariable *> &varLengths, vector<int> &intLengths, bool zeroIgnored) {
+            (void)id; (void)origins; (void)varLengths; (void)intLengths; (void)zeroIgnored;
+            throw runtime_error("2 dim nooverlap with mixed lengths constraint is not yet supported");
+        }
+
+        /**
          * The callback function related to a no overlap constraint with variable origins and 3 dimensional variable  lenghts
          * See http://xcsp.org/specifications/noOverlap
          *
