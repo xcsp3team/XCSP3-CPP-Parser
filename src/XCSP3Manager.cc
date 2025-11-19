@@ -1364,7 +1364,6 @@ void XCSP3Manager::unfoldConstraint(XConstraintGroup *group, int i, void (XCSP3M
 void XCSP3Manager::newConstraintGroup(XConstraintGroup *group) {
     if(discardedClasses(group->classes))
         return;
-
     vector<XVariable *> previousArguments; // Used to check if extension arguments have same domains
     callback->_arguments = &(group->arguments);
 

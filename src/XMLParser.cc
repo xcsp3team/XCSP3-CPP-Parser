@@ -214,6 +214,10 @@ void XMLParser::parseSequence(const UTF8String &txt, vector<XVariable *> &list, 
             list.push_back(new XTree(current));
             continue;
         }
+        if (current[0] == '{') {
+            list.push_back(new XSet(current));
+            continue;
+        }
         size_t percent = current.find('%');
         if(percent == string::npos) { // Normal variable
             int pos = static_cast<int>(current.find('['));

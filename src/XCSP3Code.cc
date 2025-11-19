@@ -372,6 +372,7 @@ void XInitialCondition::extract(XCondition &xc, string &condition) { // Create t
 
     xc.val = xc.min = xc.max = 0;
     xc.var = "";
+    xc.set.clear();
     string tmp0 = match[1].str();
     string tmp1 = match[2].str();
 
