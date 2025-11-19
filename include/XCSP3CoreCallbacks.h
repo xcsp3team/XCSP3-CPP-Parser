@@ -1630,6 +1630,27 @@ namespace XCSP3Core {
             throw runtime_error("Element variable constraint is not yet supported");
         }
 
+        /**
+         * The callback function related to a element constraint with variable value
+         * See http://xcsp.org/specifications/element
+         *
+         * Example:
+         * <element>
+         *    <list> 1 2 4 5  </list>
+         *    <index> x </index>
+         *    <value> z </value>
+         * </element>
+         *
+         * @param id the id (name) of the constraint
+         * @param list the list of integers
+         * @param value the value (here an integer)
+         * @param index the index (here a variable)
+         */
+        virtual void buildConstraintElement(string id, vector<int> &list, int startIndex, XVariable *index, RankType rank, int value) {
+            (void)id; (void)list; (void)startIndex; (void)index; (void)rank; (void)value;
+            throw runtime_error("Element value with index variable and list of int is not yet supported");
+        }
+
 
         /**
          * The callback function related to a element constraint with variable index and  int value

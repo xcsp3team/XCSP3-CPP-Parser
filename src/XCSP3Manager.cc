@@ -943,7 +943,7 @@ void XCSP3Manager::newConstraintElement(XConstraintElement *constraint) {
                 callback->buildConstraintElement(constraint->id, constraint->list, v);
         } else {
             if(listOfIntegers.size() > 0)
-                throw runtime_error("Not yet supported");
+                callback->buildConstraintElement(constraint->id, listOfIntegers, constraint->startIndex, constraint->index, constraint->rank, v);
             else
                 callback->buildConstraintElement(constraint->id, constraint->list, constraint->startIndex,
                                                  constraint->index, constraint->rank, v);
