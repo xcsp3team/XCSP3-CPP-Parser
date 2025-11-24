@@ -972,6 +972,7 @@ void XCSP3Manager::newConstraintElementMatrix(XConstraintElementMatrix *constrai
     if(discardedClasses(constraint->classes))
         return;
     int v;
+
     if(isInteger(constraint->matrix[0][0], v)) {
         vector<vector<int> > matrix;
         matrix.resize(constraint->matrix.size());
@@ -980,17 +981,33 @@ void XCSP3Manager::newConstraintElementMatrix(XConstraintElementMatrix *constrai
                 isInteger(constraint->matrix[i][j], v);
                 matrix[i].push_back(v);
             }
-        callback->buildConstraintElement(constraint->id, matrix, constraint->startRowIndex, constraint->index,
-                                         constraint->startColIndex, constraint->index2, constraint->value);
+        if(constraint->value == nullptr) {
+            XCondition xc;
+            constraint->extractCondition(xc);
+            callback->buildConstraintElement(constraint->id, matrix, constraint->startRowIndex, constraint->index,
+                                             constraint->startColIndex, constraint->index2, xc);
+        } else {
+            callback->buildConstraintElement(constraint->id, matrix, constraint->startRowIndex, constraint->index,
+                                 constraint->startColIndex, constraint->index2, constraint->value);
+        }
+
         return;
     }
-    if(isInteger(constraint->value, v))
-        callback->buildConstraintElement(constraint->id, constraint->matrix, constraint->startRowIndex,
-                                         constraint->index, constraint->startColIndex, constraint->index2, v);
-    else
-        callback->buildConstraintElement(constraint->id, constraint->matrix, constraint->startRowIndex,
-                                         constraint->index, constraint->startColIndex, constraint->index2,
-                                         constraint->value);
+    if (constraint->value == nullptr) {
+        XCondition xc;
+        constraint->extractCondition(xc);
+        callback->buildConstraintElement(constraint->id, constraint->matrix, constraint->startRowIndex, constraint->index,
+                                         constraint->startColIndex, constraint->index2, xc);
+    } else
+    {
+        if(isInteger(constraint->value, v))
+            callback->buildConstraintElement(constraint->id, constraint->matrix, constraint->startRowIndex,
+                                             constraint->index, constraint->startColIndex, constraint->index2, v);
+        else
+            callback->buildConstraintElement(constraint->id, constraint->matrix, constraint->startRowIndex,
+                                             constraint->index, constraint->startColIndex, constraint->index2,
+                                            constraint->value);
+    }
 }
 
 

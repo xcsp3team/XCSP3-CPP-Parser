@@ -1612,6 +1612,56 @@ namespace XCSP3Core {
         }
 
         /**
+               * The callback function related to a element constraint matrix
+               * See http://xcsp.org/specifications/element
+               *
+               * Example:  matrix[t][v] = z
+               * <element>
+               *    <matrix> (1 2 3)(4 5 6) </matrix>
+               *    <index> t v </index>
+               *    <condition>(eq,z)</condition>
+               * </element>
+               *
+               * @param id the id (name) of the constraint
+               * @param matrix the matrix (here a matrix of int)
+               * @param rowIndex the row index
+               * @param colIndex the col index
+               * @param startRowIndex the start index for rows
+               * @param startColIndex the start index for cols
+               * @param value the value (here a variable)
+               */
+
+        virtual void buildConstraintElement(string id, vector<vector<int> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, XCondition &xc) {
+            (void)id; (void)matrix; (void)startRowIndex; (void)rowIndex; (void)startColIndex; (void)colIndex; (void)xc;
+            throw runtime_error("Element matrix constraint (int) with condition is not yet supported");
+        }
+
+        /**
+       * The callback function related to a element constraint matrix
+       * See http://xcsp.org/specifications/element
+       *
+       * Example:  matrix[t][v] = z
+       * <element>
+       *    <matrix> (1 2 3)(4 5 6) </matrix>
+       *    <index> t v </index>
+       *    <condition>(eq,z)</condition>
+       * </element>
+       *
+       * @param id the id (name) of the constraint
+       * @param matrix the matrix (here a matrix of int)
+       * @param rowIndex the row index
+       * @param colIndex the col index
+       * @param startRowIndex the start index for rows
+       * @param startColIndex the start index for cols
+       * @param value the value (here a variable)
+       */
+
+        virtual void buildConstraintElement(string id, vector<vector<XVariable*> > &matrix, int startRowIndex, XVariable *rowIndex, int startColIndex, XVariable* colIndex, XCondition &xc) {
+            (void)id; (void)matrix; (void)startRowIndex; (void)rowIndex; (void)startColIndex; (void)colIndex; (void)xc;
+            throw runtime_error("Element matrix constraint (variables) with condition is not yet supported");
+        }
+
+        /**
          * The callback function related to a element constraint with variable value
          * See http://xcsp.org/specifications/element
          *

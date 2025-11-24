@@ -565,6 +565,7 @@ void XConstraintElementMatrix::unfoldParameters(XConstraintGroup *group, vector<
     XConstraint::unfoldParameters(group, arguments, original);
     XIndex::unfoldParameters(group, arguments, original);
     XValue::unfoldParameters(group, arguments, original);
+    XInitialCondition::unfoldParameters(group, arguments, original);
     startColIndex = xc->startColIndex;
     startRowIndex = xc->startRowIndex;
     XParameterVariable *xp;

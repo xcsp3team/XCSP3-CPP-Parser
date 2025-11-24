@@ -915,7 +915,11 @@ void XMLParser::ElementTagAction::endTag() {
     XConstraintElementMatrix *c  = nullptr;
     if(this->parser->matrix.size() > 0) {
         c = new XConstraintElementMatrix(this->id, this->parser->classes, this->parser->matrix);
-        c->value = this->parser->values[0];
+        c->value = nullptr;
+        if(this->parser->values.size() == 0)
+            c->condition = this->parser->condition;
+        else
+            c->value = this->parser->values[0];
         c->index = this->parser->index;
         c->rank = this->parser->rank;
         if(this->parser->index2 == nullptr)
