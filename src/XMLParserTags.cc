@@ -117,8 +117,7 @@ void XMLParser::VarTagAction::beginTag(const AttributeList &attributes) {
         if(this->parser->variablesList[as] == nullptr)
             throw runtime_error("Variable as \"" + as + "\" does not exist");
         if((similarArray = dynamic_cast<XVariableArray *>(this->parser->variablesList[as])) != nullptr) {
-            variableArray = new XVariableArray(id, similarArray);
-
+            variable = new XVariable(id, similarArray->variables[0]->domain);
         } else {
             auto *similar = (XVariable *)this->parser->variablesList[as];
             variable = new XVariable(id, similar->domain);
