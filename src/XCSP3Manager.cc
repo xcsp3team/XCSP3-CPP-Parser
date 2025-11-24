@@ -1077,7 +1077,7 @@ void XCSP3Manager::newConstraintNoOverlapKDim(XConstraintNoOverlap *constraint) 
 
     // Check if we have a mixed (X,4) in lenghts....
     XVariable *tmp;
-    std::cout << constraint->lengths[0] << " " <<constraint->lengths[1]->id << " " << constraint->lengths[2]->id << std::endl;
+    //std::cout << constraint->lengths[0] << " " <<constraint->lengths[1]->id << " " << constraint->lengths[2]->id << std::endl;
     if (isInteger(constraint->lengths[1], v) == false  && isInteger(constraint->lengths[2], v)) {
         vector<XVariable *> vL;
         vector<int> iL;
