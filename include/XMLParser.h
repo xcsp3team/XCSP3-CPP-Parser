@@ -945,6 +945,7 @@ namespace XCSP3Core {
          ****************************************************************************/
 
         class MatrixTagAction : public TagAction {
+            UTF8String matrix;
         public:
             MatrixTagAction(XMLParser *parser, string name) : TagAction(parser, name) { }
             void beginTag(const AttributeList &attributes) override;

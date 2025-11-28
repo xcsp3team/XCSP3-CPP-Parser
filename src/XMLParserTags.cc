@@ -1866,6 +1866,8 @@ void XMLParser::MatrixTagAction::beginTag(const AttributeList &attributes) {
     if(!attributes["startColIndex"].isNull())
         attributes["startColIndex"].to(this->parser->startColIndex);
     this->parser->matrix.clear();
+    matrix.clear();
+
 }
 
 
@@ -1873,8 +1875,13 @@ void XMLParser::MatrixTagAction::beginTag(const AttributeList &attributes) {
 void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
     if(txt.isWhiteSpace())
         return;
+    matrix.append(txt);
+}
+
+
+void XMLParser::MatrixTagAction::endTag() {
     string txt2;
-    txt.to(txt2);
+    matrix.to(txt2);
     txt2 = trim(txt2);
     size_t p = txt2.find(("["));
     if(p != string::npos) {
@@ -1910,7 +1917,7 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
         }
 
 
-        this->parser->parseSequence(txt, this->parser->lists[0]);
+        this->parser->parseSequence(matrix, this->parser->lists[0]);
         size_t nbCol = this->parser->lists[0].size() / nbV;
         for(int i = 0 ; i < nbV ; i++) {
             this->parser->matrix.push_back(vector<XVariable *>());
@@ -1925,7 +1932,7 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
         delims.push_back(')');
         delims.push_back(',');
         this->parser->lists[0].clear();
-        this->parser->parseSequence(txt, this->parser->lists[0], delims);
+        this->parser->parseSequence(matrix, this->parser->lists[0], delims);
 
         for(XVariable *x : this->parser->lists[0]) {
             if(x == nullptr)
@@ -1934,10 +1941,7 @@ void XMLParser::MatrixTagAction::text(const UTF8String txt, bool) {
                 this->parser->matrix.back().push_back(x);
         }
     }
-}
 
-
-void XMLParser::MatrixTagAction::endTag() {
     for(unsigned int i = 0 ; i < this->parser->matrix.size() - 1 ; i++)
         if(this->parser->matrix[i].size() != this->parser->matrix[i + 1].size())
             throw runtime_error("Matrix is not a matrix...");
