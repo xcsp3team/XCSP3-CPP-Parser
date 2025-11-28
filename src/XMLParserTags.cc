@@ -1447,16 +1447,27 @@ void XMLParser::ListOfIntegerOrIntervalTagAction::text(const UTF8String txt, boo
 // AttributeList &attributes
 void XMLParser::OriginsTagAction::beginTag(const AttributeList &) {
     listToFill.clear();
+    origins.clear();
+
 }
 
 
 // UTF8String txt, bool last
 void XMLParser::OriginsTagAction::text(const UTF8String txt, bool) {
+
+    if(txt.isWhiteSpace())
+        return;
+    origins.append(txt);
+
+
+}
+
+void XMLParser::OriginsTagAction::endTag() {
     vector<char> delims;
     delims.push_back('(');
     delims.push_back(')');
     delims.push_back(',');
-    this->parser->parseSequence(txt, listToFill, delims);
+    this->parser->parseSequence(origins, listToFill, delims);
 }
 
 
