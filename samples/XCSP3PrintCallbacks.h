@@ -240,7 +240,7 @@ namespace XCSP3Core {
 
         void buildConstraintBinPacking(string id, vector<XVariable *> &list, vector<int> &sizes, XCondition &cond) override;
 
-        void buildConstraintFlow(string id, vector<XVariable *> &list, vector<int> &balance, vector<int> &weights, vector<vector<int> > &arcs, XCondition &xc) override;
+        void buildConstraintFlow(string id, vector<XVariable *> &list, vector<int> &balance, vector<int> &weights, vector<vector<int> > &arcs, XCondition &cond) override;
 
         void buildConstraintKnapsack(string id, vector<XVariable *> &list, vector<int> &weights, vector<int> &profits,XCondition weightsCondition, XCondition &profitCondition) override;
 
@@ -1124,7 +1124,7 @@ void XCSP3PrintCallbacks::buildConstraintNoOverlap(string, vector<vector<XVariab
 
 
 // string id, vector<vector<XVariable *>> &origins, vector<vector<XVariable *>> &lengths, bool zeroIgnored
-void XCSP3PrintCallbacks::buildConstraintNoOverlap(string, vector<vector<XVariable *>> &origins, vector<vector<XVariable *>> &lengths, bool) {
+inline void XCSP3PrintCallbacks::buildConstraintNoOverlap(string, vector<vector<XVariable *>> &origins, vector<vector<XVariable *>> &lengths, bool) {
     cout << "\n    kdim (lenghts vars nooverlap constraint" << endl;
     cout << "origins: " << endl;
     for(unsigned int i = 0; i < origins.size(); i++) {
