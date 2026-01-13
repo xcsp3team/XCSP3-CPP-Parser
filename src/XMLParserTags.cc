@@ -955,6 +955,9 @@ void XMLParser::ElementTagAction::endTag() {
 
 void XMLParser::MinMaxTagAction::beginTag(const AttributeList &attributes) {
 
+    // Must be called inside a constraint
+    BasicConstraintTagAction::beginTag(attributes);
+
     if(!attributes["rank"].isNull()) {
         string rank;
         attributes["rank"].to(rank);
@@ -963,9 +966,8 @@ void XMLParser::MinMaxTagAction::beginTag(const AttributeList &attributes) {
         if(rank == "last") this->parser->rank = LAST;
     }
 
+        std::cout << "la " << this->parser->rank << std::endl;
 
-    // Must be called inside a constraint
-    BasicConstraintTagAction::beginTag(attributes);
 
     constraint = new XConstraintMaximum(this->id, this->parser->classes);
 

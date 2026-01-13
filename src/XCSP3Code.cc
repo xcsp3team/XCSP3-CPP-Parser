@@ -544,6 +544,7 @@ void XConstraintMaximum::unfoldParameters(XConstraintGroup *group, vector<XVaria
     XInitialCondition::unfoldParameters(group, arguments, original);
     startIndex = xc->startIndex;
     rank = xc->rank;
+    std::cout << " iic " << xc->rank << std::endl;
 }
 
 
