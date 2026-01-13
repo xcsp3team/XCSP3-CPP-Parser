@@ -2674,7 +2674,7 @@ namespace XCSP3Core {
          * @param list the scope
          * @param coefs the vector of coefficients (variables)
          */
-         void buildObjectiveMaximize(ExpressionObjective type, vector<Tree *> &trees, vector<XVariable *> &coefs) {
+         virtual void buildObjectiveMaximize(ExpressionObjective type, vector<Tree *> &trees, vector<XVariable *> &coefs) {
             (void)type; (void)trees; (void)coefs;
             throw runtime_error("maximize objective with expression  not yet supported");
         }
