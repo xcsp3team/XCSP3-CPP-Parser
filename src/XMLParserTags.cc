@@ -966,8 +966,6 @@ void XMLParser::MinMaxTagAction::beginTag(const AttributeList &attributes) {
         if(rank == "last") this->parser->rank = LAST;
     }
 
-        std::cout << "la " << this->parser->rank << std::endl;
-
 
     constraint = new XConstraintMaximum(this->id, this->parser->classes);
 
