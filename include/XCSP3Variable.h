@@ -36,7 +36,7 @@ namespace XCSP3Core {
     public :
         int min, max;
         XInterval(int mn, int mx) : min(mn), max(mx) { }
-        friend ostream &operator<<(ostream &f, const XInterval &ie);
+        friend std::ostream &operator<<(std::ostream &f, const XInterval &ie);
     };
 
 
@@ -55,13 +55,13 @@ namespace XCSP3Core {
 
     class XVariable : public XEntity {
     public :
-        string classes;
+        std::string classes;
         XDomainInteger *domain;
 
         XVariable(std::string idd, XDomainInteger *dom);
         XVariable(std::string idd, XDomainInteger *dom, std::vector<int> indexes);
         virtual ~XVariable();
-        friend ostream &operator<<(ostream &f, const XVariable &ie);
+        friend std::ostream &operator<<(std::ostream &f, const XVariable &ie);
     };
 
 
@@ -124,7 +124,7 @@ namespace XCSP3Core {
 
     class XVariableArray : public XEntity {
     public :
-        string classes;
+        std::string classes;
         std::vector<XVariable *> variables; // The flat (one-dimensional) array
         std::vector<int> sizes; // The size of the array, as defined in XCSP3.
 
@@ -155,15 +155,15 @@ namespace XCSP3Core {
 
 
 
-        int flatIndexFor(vector<int> indexes);
+        int flatIndexFor(std::vector<int> indexes);
 
 
-        bool incrementIndexes(vector<int> &indexes, vector<XIntegerEntity *> &ranges);
+        bool incrementIndexes(std::vector<int> &indexes, std::vector<XIntegerEntity *> &ranges);
 
 
 
         /** Returns the list of variables that match the specified compact form. For example, for x[1..3], the list will contain x[1] x[2] and x[3]. */
-        void getVarsFor(vector<XVariable *> &list, string compactForm, vector<int> *flatIndexes = NULL, bool storeIndexes = false);
+        void getVarsFor(std::vector<XVariable *> &list, std::string compactForm, std::vector<int> *flatIndexes = NULL, bool storeIndexes = false);
 
 
         /** 
