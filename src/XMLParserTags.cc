@@ -364,7 +364,16 @@ void XMLParser::ExtensionTagAction::beginTag(const AttributeList &attributes) {
     // Must be called inside a constraint
     BasicConstraintTagAction::beginTag(attributes);
 
+    if(!attributes["type"].isNull()) {
+        std::string type;
+        attributes["type"].to(type);
+        if(type.rfind("hybrid", 0) == 0)
+            throw runtime_error("c XCSP3Core does not support hybrid tables");
+    }
+
+
     constraint = new XConstraintExtension(this->id, this->parser->classes);
+
 
     // Link constraint to group
     if(this->group != nullptr) {
