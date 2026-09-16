@@ -593,9 +593,11 @@ namespace XCSP3Core {
 
 
         int evaluate(std::map<std::string, int> &tuple) override {
-            assert(parameters.size() == 2); // TODO if greater!!
             int nb = parameters[0]->evaluate(tuple);
-            return (nb) ? parameters[1]->evaluate(tuple) != 0 : parameters[1]->evaluate(tuple) == 0;
+            for (unsigned int i = 1; i < parameters.size(); i++)
+                if(nb != parameters[i]->evaluate(tuple))
+                    return 0;
+            return 1;
         }
     };
 
