@@ -31,6 +31,7 @@
 #include <stdexcept>
 #include <cerrno>
 #include <climits>
+#include <string>
 #include <vector>
 
 /**
@@ -49,7 +50,6 @@
  * This class can also represent a null string (in the SQL sense).
  */
 
-using namespace std;
 namespace XCSP3Core {
     class UTF8String {
     public:
@@ -127,7 +127,7 @@ namespace XCSP3Core {
                 if(ch < 0x80)
                     return 1; // only one byte
                 else if(ch < 0xC2)
-                    throw runtime_error("invalid UTF8 character");
+                    throw std::runtime_error("invalid UTF8 character");
                 else if(ch < 0xD0)
                     return 2; // 2 bytes
                 else if(ch < 0xF0)
@@ -135,7 +135,7 @@ namespace XCSP3Core {
                 else if(ch < 0xF5)
                     return 4; // 4 bytes
                 else
-                    throw runtime_error("invalid UTF8 character");
+                    throw std::runtime_error("invalid UTF8 character");
             }
 
 
@@ -143,7 +143,7 @@ namespace XCSP3Core {
                 ch <<= 6;
                 ++p;
                 if(*p < 0x80 || *p >= 0xC0)
-                    throw runtime_error("invalid UTF8 character");
+                    throw std::runtime_error("invalid UTF8 character");
                 ch |= *p & 0x3F;
             }
 
@@ -183,20 +183,20 @@ namespace XCSP3Core {
 
 
 
-        bool to(string &v) const;
+        bool to(std::string &v) const;
         bool to(int &v) const;
 
 
-        void appendTo(string &v) const;
+        void appendTo(std::string &v) const;
 
 
 
-        friend ostream &operator<<(ostream &f, const UTF8String s);
+        friend std::ostream &operator<<(std::ostream &f, const UTF8String s);
 
         class Tokenizer {
         private:
             iterator it, end;
-            vector<int> separators;
+            std::vector<int> separators;
         public:
             Tokenizer(const UTF8String s);
             void addSeparator(int ch);
@@ -210,7 +210,7 @@ namespace XCSP3Core {
         protected:
 
             inline bool isSeparator(int ch) {
-                for(vector<int>::const_iterator it = separators.begin();
+                for(std::vector<int>::const_iterator it = separators.begin();
                     it != separators.end(); ++it)
                     if(*it == ch)
                         return true;

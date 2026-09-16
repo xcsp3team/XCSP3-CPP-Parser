@@ -31,7 +31,6 @@
 #include <iostream>
 #include <stdexcept>
 
-using namespace std;
 namespace XCSP3Core {
 
     class XIntegerEntity {
@@ -44,7 +43,7 @@ namespace XCSP3Core {
 
         virtual void print(std::ostream &O) const = 0;
 
-        friend ostream &operator<<(ostream &f, const XIntegerEntity &ie);
+        friend std::ostream &operator<<(std::ostream &f, const XIntegerEntity &ie);
 
         virtual bool equals(XIntegerEntity *arg) = 0;
 
@@ -175,7 +174,7 @@ namespace XCSP3Core {
         }
 
 
-        friend ostream &operator<<(ostream &f, const XDomainInteger &d);
+        friend std::ostream &operator<<(std::ostream &f, const XDomainInteger &d);
 
 
         bool equals(XDomainInteger *arg) const {

@@ -75,13 +75,20 @@ int XCSP3CoreParser::parse(istream &in) {
     handler.comment = comment;
 
 
-        xmlSubstituteEntitiesDefault(1);
-
         in.read(buffer.get(), bufSize);
         size = static_cast<int>(in.gcount());
 
         if(size > 0) {
             parserCtxt = xmlCreatePushParserCtxt(&handler, &cspParser, buffer.get(), size, filename);
+
+            // Substitute entities. Replaces the deprecated process-global
+            // xmlSubstituteEntitiesDefault(1); the option is per-context and
+            // is honoured for the chunk already handed to xmlCreatePushParserCtxt.
+#if LIBXML_VERSION >= 21300
+            xmlCtxtSetOptions(parserCtxt, XML_PARSE_NOENT);
+#else
+            xmlCtxtUseOptions(parserCtxt, XML_PARSE_NOENT);
+#endif
 
             while(in.good()) {
                 in.read(buffer.get(), bufSize);
