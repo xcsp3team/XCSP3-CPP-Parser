@@ -393,6 +393,7 @@ void XInitialCondition::extract(XCondition &xc, string &condition) { // Create t
 
         for (std::sregex_iterator i = begin; i != end; ++i)
             xc.set.push_back(std::stoi((*i).str()));
+        std::sort(xc.set.begin(), xc.set.end());
         return;
     }
     try {
